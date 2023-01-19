@@ -4,7 +4,9 @@
 #include <sstream>
 #include <fstream>
 #include <functional>
+#include <numeric>
 
+// Brute force algorithm v1
 int bruteForce1(int a, int b) {
     int low = std::min(a, b);
     int high = std::max(a, b);
@@ -16,6 +18,7 @@ int bruteForce1(int a, int b) {
     return gcd;
 }
 
+// Brute force algorithm v2
 int bruteForce2(int a, int b) {
     int low = std::min(a, b);
     int high = std::max(a, b);
@@ -25,6 +28,7 @@ int bruteForce2(int a, int b) {
     }
 }
 
+// Euclid's algorithm
 int originalEuclid(int a, int b) {
     int low = std::min(a, b);
     int high = std::max(a,b);
@@ -37,6 +41,7 @@ int originalEuclid(int a, int b) {
     return high;
 }
 
+// "Improved?" Euclid's algorithm
 int v2Euclid(int a, int b) {
     int low = std::min(a, b);
     int high = std::max(a, b);
@@ -59,23 +64,25 @@ int v2Euclid(int a, int b) {
 }
 
 
-
-void test(int arrA[], int arrB[], std::function<int(int, int)> func, std::string testName) {
+// Scalable function to test each algorithm, output its stats to file
+std::vector<int> test(int arrA[], int arrB[], std::function<int(int, int)> func, std::string testName) {
     // Initialize values
-    int timeLow = 2147483647;
+    int timeLow = INT32_MAX;
     int timeHigh = 0;
     int totalTime = 0;
-    int times[1000];
+    std::vector<int> times;
+    // Initialize statistics CSV file
     std::stringstream csv;
-    csv << "Number One,Number Two,Their GCD,Time Spent (Nanoseconds)\n";     // CSV header
+    csv << "Number One,Number Two,Their GCD,Time Spent (Nanoseconds)\n";
     for (int i=0;i<1000;i++) {
         // Measure time of each calculation
         typedef std::chrono::high_resolution_clock Clock;
         auto start = Clock::now();
         int gcd = func(arrA[i], arrB[i]);
         auto stop = Clock::now();
+        // Nanosecond precision may not work on some systems
         auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(stop - start).count();
-        times[i] = elapsed;
+        times.push_back(elapsed);
         totalTime += elapsed;
         // Update min and max times
         if (elapsed < timeLow)
@@ -85,15 +92,20 @@ void test(int arrA[], int arrB[], std::function<int(int, int)> func, std::string
         // Output to string stream
         csv << arrA[i] << "," << arrB[i] << "," << gcd << "," << elapsed << "\n";
     }
+
     // Output results file
     std::ofstream file(testName + "_Results.csv", std::ofstream::trunc);
     file << csv.str();
     file.close();
-    std::sort(std::begin(times), std::end(times));
+    int timesSorted[1000];
+    std::copy(std::begin(times), std::end(times), std::begin(timesSorted));
+    // Sort list of times in order to take median
+    std::sort(std::begin(timesSorted), std::end(timesSorted));
     int median = (times[499]+times[500])/2;
-    // Generate statistics file
+
+    // Generate statistics CSV
     std::stringstream stats;
-    stats << "Statistics,Microseconds\n";
+    stats << "Statistics,Nanoseconds\n";
     stats << "Maximum Time," << timeHigh << "\n";
     stats << "Minimum Time," << timeLow << "\n";
     stats << "Average Time," << totalTime/1000 << "\n";
@@ -102,7 +114,24 @@ void test(int arrA[], int arrB[], std::function<int(int, int)> func, std::string
     std::ofstream statsFile(testName + "_Statistics.csv", std::ofstream::trunc);
     statsFile << stats.str();
     statsFile.close();
+    return times;
 }
+
+int vectorMean(std::vector<int> v) {
+    return std::reduce(v.begin(), v.end()) / v.size();
+}
+
+void compare(std::vector<int> v1, std::vector<int> v2, std::string a, std::string b) {
+    std::vector<int> save;
+    for (int i=0; i<v1.size(); i++) {
+        if (v2[i] < v1[i]) {
+            save.push_back((v1[i]-v2[i]));
+        }
+    }
+    std::cout << b << " outperformed " << a << " in " << save.size() << " pairs, saving an average of " << vectorMean(save) << " ns.\n";
+}
+
+
 
 int main() {
     srand(time(NULL));
@@ -114,10 +143,19 @@ int main() {
         arrB[i] = rand() % 1000 + 1;
     }
     // Run each test
-    test(arrA, arrB, bruteForce1, "BF_v1");
-    test(arrA, arrB, bruteForce2, "BF_v2");
-    test(arrA, arrB, originalEuclid, "OE");
-    test(arrA, arrB, v2Euclid, "SE");
+    std::vector<int> bf1times = test(arrA, arrB, bruteForce1, "BF_v1");
+    std::vector<int> bf2times = test(arrA, arrB, bruteForce2, "BF_v2");
+    std::vector<int> oetimes = test(arrA, arrB, originalEuclid, "OE");
+    std::vector<int> setimes = test(arrA, arrB, v2Euclid, "SE");
+
+    // Compare results
+    compare(bf1times, bf2times, "brute-force V1", "Brute-force v2");
+    compare(bf1times, oetimes, "brute-force v1", "Euclid (original)");
+    compare(bf2times, oetimes, "brute-force v2", "Euclid (original)");
+    compare(oetimes, setimes, "Euclid (original)", "Euclid V2");
+    compare(bf1times, setimes, "brute-force v1", "Euclid V2");
+    compare(bf2times, setimes, "brute-force v2", "Euclid V2");
+
 }
 
 
