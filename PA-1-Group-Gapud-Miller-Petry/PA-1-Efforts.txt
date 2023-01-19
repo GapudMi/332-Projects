@@ -1,0 +1,12 @@
+UPLOAD All the files here(Delete this line later)
+
+How to run the program?
+The program runs on its own with no need for user input.
+
+How were spreadsheets generated?
+By the program.
+
+Group member contribution
+Miguel Gapud 1: xxx% Miguel Gapud
+Abram Miller 2: xxx% (type full name here to acknowledge the agreement of your contribution)
+Lexi Petry 3: 100% (type full name here to acknowledge the agreement of your contribution)
