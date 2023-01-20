@@ -1,5 +1,5 @@
-Statistics,Microseconds
-Maximum Time,3532
-Minimum Time,78
-Average Time,1081
-Median Time,965
+Statistics,Nanoseconds
+Maximum Time,29900
+Minimum Time,100
+Average Time,1732.2
+Median Time,2200
