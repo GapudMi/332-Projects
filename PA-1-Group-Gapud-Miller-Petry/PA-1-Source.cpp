@@ -102,7 +102,7 @@ std::vector<int> test(int arrA[], int arrB[], std::function<int(int, int)> func,
     std::copy(std::begin(times), std::end(times), std::begin(timesSorted));
     // Sort list of times in order to take median
     std::sort(std::begin(timesSorted), std::end(timesSorted));
-    int median = (times[499]+times[500])/(double)2;
+    double median = (times[499]+times[500])/(double)2;
 
     // Generate statistics CSV
     std::stringstream stats;
@@ -118,7 +118,7 @@ std::vector<int> test(int arrA[], int arrB[], std::function<int(int, int)> func,
     return times;
 }
 
-int vectorMean(std::vector<int> v) {
+double vectorMean(std::vector<int> v) {
     return std::reduce(v.begin(), v.end()) / (double)v.size();
 }
 
