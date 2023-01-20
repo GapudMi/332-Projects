@@ -5,6 +5,7 @@
 #include <fstream>
 #include <functional>
 #include <numeric>
+#include <algorithm>
 
 // Brute force algorithm v1
 int bruteForce1(int a, int b) {
@@ -101,7 +102,7 @@ std::vector<int> test(int arrA[], int arrB[], std::function<int(int, int)> func,
     std::copy(std::begin(times), std::end(times), std::begin(timesSorted));
     // Sort list of times in order to take median
     std::sort(std::begin(timesSorted), std::end(timesSorted));
-    int median = (times[499]+times[500])/2;
+    int median = (times[499]+times[500])/(double)2;
 
     // Generate statistics CSV
     std::stringstream stats;
@@ -118,7 +119,7 @@ std::vector<int> test(int arrA[], int arrB[], std::function<int(int, int)> func,
 }
 
 int vectorMean(std::vector<int> v) {
-    return std::reduce(v.begin(), v.end()) / v.size();
+    return std::reduce(v.begin(), v.end()) / (double)v.size();
 }
 
 void compare(std::vector<int> v1, std::vector<int> v2, std::string a, std::string b) {
@@ -156,6 +157,9 @@ int main() {
     compare(bf1times, setimes, "brute-force v1", "Euclid V2");
     compare(bf2times, setimes, "brute-force v2", "Euclid V2");
 
+    // Allow results to be read.
+    std::cout << "Press enter to close.";
+    std::cin.get();
 }
 
 
