@@ -1,12 +1,12 @@
-UPLOAD All the files here(Delete this line later)
-
 How to run the program?
-The program runs on its own with no need for user input.
+After opening the PA-1-Executable.exe program, the program will automatically create the four results and statistics spreadsheets in the same file as the executable.
+The program will display the amount of time saved between algorithms as in the Conclusions.txt file.
+When you are finished with the program, you can press enter as requested, and it will close.
 
 How were spreadsheets generated?
 By the program.
 
 Group member contribution
-Miguel Gapud 1: xxx% Miguel Gapud
-Abram Miller 2: xxx% (type full name here to acknowledge the agreement of your contribution)
+Miguel Gapud 1: 100% Miguel Gapud
+Abram Miller 2: 33% (type full name here to acknowledge the agreement of your contribution)
 Justin Petry 3: 100% Justin Petry
