@@ -12,7 +12,7 @@ int bruteForce1(int a, int b) {
     int low = std::min(a, b);
     int high = std::max(a, b);
     int gcd;
-    for (int i=1; i<=low; i++) {
+    for (int i = 1; i <= low; i++) {
         if (low % i == 0 && high % i == 0)
             gcd = i;
     }
@@ -23,7 +23,7 @@ int bruteForce1(int a, int b) {
 int bruteForce2(int a, int b) {
     int low = std::min(a, b);
     int high = std::max(a, b);
-    for (int i=low; i>0; i--) {
+    for (int i = low; i > 0; i--) {
         if (low % i == 0 && high % i == 0)
             return i;
     }
@@ -32,7 +32,7 @@ int bruteForce2(int a, int b) {
 // Euclid's algorithm
 int originalEuclid(int a, int b) {
     int low = std::min(a, b);
-    int high = std::max(a,b);
+    int high = std::max(a, b);
     int remainder = -1;
     while (remainder != 0) {
         remainder = high % low;
@@ -54,7 +54,7 @@ int v2Euclid(int a, int b) {
             if (remainder >= low) {
                 remainder = remainder - low;
                 if (remainder >= low) {
-                    remainder = high - low * (high/low);
+                    remainder = high - low * (high / low);
                 }
             }
         }
@@ -75,7 +75,7 @@ std::vector<int> test(int arrA[], int arrB[], std::function<int(int, int)> func,
     // Initialize statistics CSV file
     std::stringstream csv;
     csv << "Number One,Number Two,Their GCD,Time Spent (Nanoseconds)\n";
-    for (int i=0;i<1000;i++) {
+    for (int i = 0; i < 1000; i++) {
         // Measure time of each calculation
         typedef std::chrono::high_resolution_clock Clock;
         auto start = Clock::now();
@@ -102,14 +102,14 @@ std::vector<int> test(int arrA[], int arrB[], std::function<int(int, int)> func,
     std::copy(std::begin(times), std::end(times), std::begin(timesSorted));
     // Sort list of times in order to take median
     std::sort(std::begin(timesSorted), std::end(timesSorted));
-    double median = (times[499]+times[500])/(double)2;
+    int median = (times[499] + times[500]) / 2;
 
     // Generate statistics CSV
     std::stringstream stats;
     stats << "Statistics,Nanoseconds\n";
     stats << "Maximum Time," << timeHigh << "\n";
     stats << "Minimum Time," << timeLow << "\n";
-    stats << "Average Time," << totalTime/1000 << "\n";
+    stats << "Average Time," << totalTime / 1000.0 << "\n";
     stats << "Median Time," << median << "\n";
     // Output statistics file
     std::ofstream statsFile(testName + "_Statistics.csv", std::ofstream::trunc);
@@ -118,15 +118,15 @@ std::vector<int> test(int arrA[], int arrB[], std::function<int(int, int)> func,
     return times;
 }
 
-double vectorMean(std::vector<int> v) {
-    return std::reduce(v.begin(), v.end()) / (double)v.size();
+int vectorMean(std::vector<int> v) {
+    return std::reduce(v.begin(), v.end()) / v.size();
 }
 
 void compare(std::vector<int> v1, std::vector<int> v2, std::string a, std::string b) {
     std::vector<int> save;
-    for (int i=0; i<v1.size(); i++) {
+    for (int i = 0; i < v1.size(); i++) {
         if (v2[i] < v1[i]) {
-            save.push_back((v1[i]-v2[i]));
+            save.push_back((v1[i] - v2[i]));
         }
     }
     std::cout << b << " outperformed " << a << " in " << save.size() << " pairs, saving an average of " << vectorMean(save) << " ns.\n";
@@ -161,6 +161,7 @@ int main() {
     std::cout << "Press enter to close.";
     std::cin.get();
 }
+
 
 
 
