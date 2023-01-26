@@ -3,6 +3,8 @@
 #include <utility>
 #include <vector>
 #include <fstream>
+#include <chrono>
+#include <sstream>
 
 void merge(double* a, int first, int mid, int last) {
     //int merged[n*2];
@@ -68,24 +70,37 @@ void spacer() {
 }
 
 int main() {
-    srand(time(NULL));
+    srand(time(nullptr));
 
     int len;
     int const numberOfArrays = 9;
 
     //The user needs to see both the unsorted and sorted copy at any time, so both need to be stored
-    //By making the arrays into double pointers, the lengths of each inner array can be different, 
-    //as they can be defined just before being populated. 
+    //By making the arrays into double pointers, the lengths of each inner array can be different,
+    //as they can be defined just before being populated.
     //Mainly, it avoids running out of stack memory by allowing the use of new
-    double** arrUnsorted = NULL;
+    double** arrUnsorted = nullptr;
     arrUnsorted = new double*[numberOfArrays];
-    double** arrSorted = NULL;
+    double** arrSorted = nullptr;
     arrSorted = new double* [numberOfArrays];
 
-    bool populated[numberOfArrays];
+    std::stringstream csv;
+    csv << "\"Input size n for Array_i\",\"Value of n· logn\",\"Time spent (nanoseconds)\",\"Value of (n· logn)/time (using scientific notation: x · 10y or xEy,with x being a rounded integer)\",\n";
     for (int i = 0; i < numberOfArrays; i++) {
-        populated[i] = false;
+        len = (i + 1) * 1200;
+        arrUnsorted[i] = new double[len];
+        arrSorted[i] = new double[len];
+        typedef std::chrono::high_resolution_clock Clock;
+        auto start = Clock::now();
+        populateArrays(arrUnsorted[i], arrSorted[i], len);
+        auto stop = Clock::now();
+        // Nanosecond precision may not work on some systems
+        auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
+        csv << len << "," << len * log10(len) << "," << elapsed << "," << "idk lol,\n";
     }
+    std::ofstream file("Mergesort_Time.csv", std::ofstream::trunc);
+    file << csv.str();
+    file.close();
 
     int userIn;
     int index;
@@ -100,17 +115,6 @@ int main() {
         else if (userIn == 0) break;
         else {
             index = userIn-1;
-            len = 1200 * userIn;
-
-            if(!populated[index]) {
-                populated[index] = true;
-                //std::cout << "unpopulated";
-
-                arrUnsorted[index] = new double[len];
-                arrSorted[index] = new double[len];
-
-                populateArrays(arrUnsorted[index], arrSorted[index], len);
-            }
             std::cout << "Printing unsorted values of Array_" << userIn << "." << std::endl;
             for (int j = 0; j < len; j++) {
                 std::cout << arrUnsorted[index][j] << " ";
