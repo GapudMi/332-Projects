@@ -2,13 +2,14 @@
 #include <cmath>
 #include <utility>
 #include <vector>
+#include <fstream>
 
-void merge(int* a, int first, int mid, int last) {
+void merge(double* a, int first, int mid, int last) {
     //int merged[n*2];
     auto s1 = mid - first + 1;
     auto s2 = last - mid;
-    auto *a1 = new int[s1];
-    auto *a2 = new int[s2];
+    auto* a1 = new double[s1];
+    auto* a2 = new double[s2];
 
     for (auto i = 0; i < s1; i++)
         a1[i] = a[first + i];
@@ -37,7 +38,7 @@ void merge(int* a, int first, int mid, int last) {
     delete[] a2;
 }
 
-void mergeSort(int* a, int first, int last){
+void mergeSort(double* a, int first, int last) {
     if (first >= last) {
         return;
     }
@@ -50,19 +51,76 @@ void mergeSort(int* a, int first, int last){
     }
 
 }
+
+//Populate arrays
+void populateArrays(double* unsorted, double* sorted, int len) {
+    for (int j = 0; j < len; j++) {
+        //Generate random real number to the 1,000th place from 0-999.999 by summing an integer and decimal component
+        unsorted[j] = (rand() % 999 + 1) + (rand() % 1000 + 1)/1000.0;
+        sorted[j] = unsorted[j];
+    }
+    mergeSort(sorted, 0, len - 1);
+}
+
 int main() {
     srand(time(NULL));
-    int fuckyou[1000];
-    for (int i=0; i<1000; i++) {
-        fuckyou[i] = rand() % 10000 + 1;
+
+    int len;
+    int const numberOfArrays = 9;
+
+    //The user needs to see both the unsorted and sorted copy at any time, so both need to be stored
+    //By making the arrays into double pointers, the lengths of each inner array can be different, 
+    //as they can be defined just before being populated. 
+    //Mainly, it avoids running out of stack memory by allowing the use of new
+    double** arrUnsorted = NULL;
+    arrUnsorted = new double*[numberOfArrays];
+    double** arrSorted = NULL;
+    arrSorted = new double* [numberOfArrays];
+
+    bool populated[numberOfArrays];
+    for (int i = 0; i < numberOfArrays; i++) {
+        populated[i] = false;
     }
-    mergeSort(fuckyou, 0, 999);
-    for (int i=0; i<1000; i++) {
-        std::cout << fuckyou[i] << " ";
+
+    int userIn;
+    int index;
+    while (true) {
+        std::cout << "Which array do you want to see? Type a number 1-9 and press enter to select an array, or type 0 and press enter to quit." << std::endl;
+        std::cin >> userIn;
+        std::cout << std::endl;
+
+        if (userIn < 0 || userIn>9) {
+            std::cout << "Invalid input. Try again." << std::endl;
+        }
+        else if (userIn == 0) break;
+        else {
+            index = userIn-1;
+            len = 1200 * userIn;
+
+            if(!populated[index]) {
+                populated[index] = true;
+                //std::cout << "unpopulated";
+
+                arrUnsorted[index] = new double[len];
+                arrSorted[index] = new double[len];
+
+                populateArrays(arrUnsorted[index], arrSorted[index], len);
+            }
+
+            std::cout << "Printing unsorted values of Array_" << userIn << "." << std::endl;
+            for (int j = 0; j < len; j++) {
+                std::cout << arrUnsorted[index][j] << " ";
+            }
+            std::cout << std::endl << "End of unsorted array " << userIn << std::endl;
+
+            std::cout << "Printing unsorted values of Array_" << userIn << "." << std::endl;
+            for (int j = 0; j < len; j++) {
+                std::cout << arrSorted[index][j] << " ";
+            }
+            std::cout << std::endl << "End of sorted array " << userIn << std::endl;
+        }
+        std::cout << std::endl;
     }
-
-
-
 
     return 0;
 }
