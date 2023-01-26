@@ -62,6 +62,11 @@ void populateArrays(double* unsorted, double* sorted, int len) {
     mergeSort(sorted, 0, len - 1);
 }
 
+//Adding spacers makes outputs more readable
+void spacer() {
+    std::cout << "\n-=====================================-\n\n";
+}
+
 int main() {
     srand(time(NULL));
 
@@ -87,7 +92,7 @@ int main() {
     while (true) {
         std::cout << "Which array do you want to see? Type a number 1-9 and press enter to select an array, or type 0 and press enter to quit." << std::endl;
         std::cin >> userIn;
-        std::cout << std::endl;
+        spacer();
 
         if (userIn < 0 || userIn>9) {
             std::cout << "Invalid input. Try again." << std::endl;
@@ -106,20 +111,20 @@ int main() {
 
                 populateArrays(arrUnsorted[index], arrSorted[index], len);
             }
-
             std::cout << "Printing unsorted values of Array_" << userIn << "." << std::endl;
             for (int j = 0; j < len; j++) {
                 std::cout << arrUnsorted[index][j] << " ";
             }
             std::cout << std::endl << "End of unsorted array " << userIn << std::endl;
 
+            spacer();
             std::cout << "Printing unsorted values of Array_" << userIn << "." << std::endl;
             for (int j = 0; j < len; j++) {
                 std::cout << arrSorted[index][j] << " ";
             }
             std::cout << std::endl << "End of sorted array " << userIn << std::endl;
         }
-        std::cout << std::endl;
+        spacer();
     }
 
     return 0;
