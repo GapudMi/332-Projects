@@ -85,7 +85,7 @@ int main() {
     arrSorted = new double* [numberOfArrays];
 
     std::stringstream csv;
-    csv << "\"Input size n for Array_i\",\"Value of n· logn\",\"Time spent (nanoseconds)\",\"Value of (n· logn)/time (using scientific notation: x · 10y or xEy,with x being a rounded integer)\",\n";
+    csv << "\"Input size n for Array_i\",\"Value of n*logn\",\"Time spent (nanoseconds)\",\"Value of (n*logn)/time\",\n";
     for (int i = 0; i < numberOfArrays; i++) {
         len = (i + 1) * 1200;
         arrUnsorted[i] = new double[len];
@@ -96,7 +96,11 @@ int main() {
         auto stop = Clock::now();
         // Nanosecond precision may not work on some systems
         auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
-        csv << len << "," << len * log10(len) << "," << elapsed << "," << "idk lol,\n";
+        float n = len * log10(len) / elapsed;
+        float m = floor(log10(n));
+        n = n / pow(10, m);
+
+        csv << len << "," << len * log10(len) << "," << elapsed << "," << n << "e" << m << ",\n";
     }
     std::ofstream file("Mergesort_Time.csv", std::ofstream::trunc);
     file << csv.str();
