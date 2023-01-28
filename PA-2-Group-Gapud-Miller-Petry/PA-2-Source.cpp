@@ -99,7 +99,7 @@ int main() {
         
         float n = len * log2(len) / elapsed;
         float m = floor(log10(n));
-        n = n / pow(10, m);
+        n = round(n / pow(10, m));
 
         csv << len << "," << len * log2(len) << "," << elapsed << "," << n << "e" << m << ",\n";
     }
