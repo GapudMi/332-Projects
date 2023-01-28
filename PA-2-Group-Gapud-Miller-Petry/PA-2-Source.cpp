@@ -96,11 +96,11 @@ int main() {
         auto stop = Clock::now();
         // Nanosecond precision may not work on some systems
         auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
-        float n = len * log10(len) / elapsed;
-        float m = floor(log10(n));
-        n = n / pow(10, m);
+        float n = len * log2(len) / elapsed;
+        float m = floor(log2(n));
+        n = n / pow(2, m);
 
-        csv << len << "," << len * log10(len) << "," << elapsed << "," << n << "e" << m << ",\n";
+        csv << len << "," << len * log2(len) << "," << elapsed << "," << n << "e" << m << ",\n";
     }
     std::ofstream file("Mergesort_Time.csv", std::ofstream::trunc);
     file << csv.str();
