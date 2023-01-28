@@ -1,8 +1,12 @@
 How to run the program?
-Upon opening the executable, the program will prompt the user for an input 1-9.
+Upon opening the executable, the program will generate the csv file in the folder of the executable. Then, it will prompt the user for an input 1-9, or 0 to quit. 
+After the user presses any single number 1-9 then presses enter, the program will print all the values of corresponding unsorted array 
+then the values of the sorted array. After that, the initial prompt will return. If the user presses 0 then enter, the program will immediately close.
+
 How was the spreadsheet generated?
-By the program (or manually).
+By the program.
+
 Group member contribution
-Full Name 1: xxx% (type full name here to acknowledge the agreement of your contribution)
-Full Name 2: xxx% (type full name here to acknowledge the agreement of your contribution)
-Full Name 3: xxx% (type full name here to acknowledge the agreement of your contribution)
+Miguel Gapud 1: 100% Miguel Gapud
+Justin Petry 2: 100% (type full name here to acknowledge the agreement of your contribution)
+Abram Miller 3: 100% (type full name here to acknowledge the agreement of your contribution)
