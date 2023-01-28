@@ -96,9 +96,10 @@ int main() {
         auto stop = Clock::now();
         // Nanosecond precision may not work on some systems
         auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
+        
         float n = len * log2(len) / elapsed;
-        float m = floor(log2(n));
-        n = n / pow(2, m);
+        float m = floor(log10(n));
+        n = n / pow(10, m);
 
         csv << len << "," << len * log2(len) << "," << elapsed << "," << n << "e" << m << ",\n";
     }
