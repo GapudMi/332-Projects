@@ -1,7 +1,6 @@
 #include <iostream>
 #include <cmath>
 #include <utility>
-#include <vector>
 #include <fstream>
 #include <chrono>
 #include <sstream>
