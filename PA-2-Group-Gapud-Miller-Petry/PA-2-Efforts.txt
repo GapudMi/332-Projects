@@ -1,1 +1,8 @@
- 
+How to run the program?
+Upon opening the executable, the program will prompt the user for an input 1-9.
+How was the spreadsheet generated?
+By the program (or manually).
+Group member contribution
+Full Name 1: xxx% (type full name here to acknowledge the agreement of your contribution)
+Full Name 2: xxx% (type full name here to acknowledge the agreement of your contribution)
+Full Name 3: xxx% (type full name here to acknowledge the agreement of your contribution)
