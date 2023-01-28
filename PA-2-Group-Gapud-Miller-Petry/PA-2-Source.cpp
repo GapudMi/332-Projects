@@ -120,14 +120,14 @@ int main() {
         else {
             index = userIn-1;
             std::cout << "Printing unsorted values of Array_" << userIn << "." << std::endl;
-            for (int j = 0; j < len; j++) {
+            for (int j = 0; j < userIn*1200; j++) {
                 std::cout << arrUnsorted[index][j] << " ";
             }
             std::cout << std::endl << "End of unsorted array " << userIn << std::endl;
 
             spacer();
             std::cout << "Printing unsorted values of Array_" << userIn << "." << std::endl;
-            for (int j = 0; j < len; j++) {
+            for (int j = 0; j < userIn*1200; j++) {
                 std::cout << arrSorted[index][j] << " ";
             }
             std::cout << std::endl << "End of sorted array " << userIn << std::endl;
