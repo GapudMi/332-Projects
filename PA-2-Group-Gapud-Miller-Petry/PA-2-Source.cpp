@@ -85,7 +85,7 @@ int main() {
     arrSorted = new double* [numberOfArrays];
 
     std::stringstream csv;
-    csv << "\"Input size n for Array_i\",\"Value of n*logn\",\"Time spent (nanoseconds)\",\"Value of (n*logn)/time\",\n";
+    csv << "\"Input size n for Array_i\",\"Value of n*logn\",\"Time spent (microseconds)\",\"Value of (n*logn)/time\",\n";
     for (int i = 0; i < numberOfArrays; i++) {
         len = (i + 1) * 1200;
         arrUnsorted[i] = new double[len];
