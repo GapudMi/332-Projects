@@ -85,7 +85,7 @@ int main() {
     arrSorted = new double* [numberOfArrays];
 
     std::stringstream csv;
-    csv << "\"Input size n for Array_i\",\"Value of n*logn\",\"Time spent (microseconds)\",\"Value of (n*logn)/time\",\n";
+    csv << "\"Input size n for Array_i\",\"Value of n*logn\",\"Time spent (nanoseconds)\",\"Value of (n*logn)/time\",\n";
     for (int i = 0; i < numberOfArrays; i++) {
         len = (i + 1) * 1200;
         arrUnsorted[i] = new double[len];
@@ -95,7 +95,7 @@ int main() {
         populateArrays(arrUnsorted[i], arrSorted[i], len);
         auto stop = Clock::now();
         // Nanosecond precision may not work on some systems
-        auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(stop - start).count();
+        auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(stop - start).count();
         
         float n = len * log2(len) / elapsed;
         float m = floor(log10(n));
