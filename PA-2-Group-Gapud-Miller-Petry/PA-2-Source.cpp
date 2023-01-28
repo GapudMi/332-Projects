@@ -96,6 +96,7 @@ int main() {
         // Nanosecond precision may not work on some systems
         auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(stop - start).count();
         
+        //calculating nlog(n)/time in terms of scientific notation
         float n = len * log2(len) / elapsed;
         float m = floor(log10(n));
         n = round(n / pow(10, m));
