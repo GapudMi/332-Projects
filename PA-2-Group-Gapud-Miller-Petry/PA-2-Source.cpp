@@ -110,7 +110,7 @@ int main() {
     int userIn;
     int index;
     while (true) {
-        std::cout << "Which array do you want to see? Type a number 1-9 and press enter to select an array, or type 0 and press enter to quit." << std::endl;
+        std::cout << "Type a number 1-9 and press enter to display a pair of arrays, or type 0 and press enter to quit." << std::endl;
         std::cin >> userIn;
         spacer();
 
