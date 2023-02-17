@@ -53,6 +53,7 @@ int main() {
         std::cin >> input;
         std::transform(input.begin(), input.end(), input.begin(), ::tolower); // Convert input to lower case for case-nonsensitive input
         if (input == "exit") {
+            file.close();
             return 0;
         }
         std::cout << "Enter an index.\n";
@@ -69,7 +70,6 @@ int main() {
         catch (std::invalid_argument e) {
             std::cout << "Invalid option.\n";
         }
-        file.close();
     }
 }
 
