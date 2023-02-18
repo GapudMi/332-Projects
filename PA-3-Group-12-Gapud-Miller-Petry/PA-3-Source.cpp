@@ -42,7 +42,7 @@ int test(int n, std::vector<int>& list1, std::vector<int>& list2, std::fstream& 
 
 int main() {
     std::fstream file;
-    file.open("Fibonacci_Time.csv");
+    file.open("Fibonacci_Time.csv", std::ios::out);
     std::string header = "n,f(n),T1: Time spent on the recursive algorithm (nanoseconds),T2: Time spent on the DP algorithm (nanoseconds),Value of (2^n)/n,Value of T1/T2\n";
     file << header;
     std::vector<int> recursive;
