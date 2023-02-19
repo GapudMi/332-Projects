@@ -1,0 +1,13 @@
+﻿How to run the program?
+After opening the exe, the user can type “recursive” or “dynamic” then press enter to make the algorithm use the respective method to calculate the fibonacci sequence. 
+After that, the user can input the index of the fibonacci sequence they want to receive, where index 1 and index 2 are equal to 1. 
+At this point, the Fibonacci_Time.csv file is saved into the directory that the program is contained within.
+Then, the user is again prompted to type “recursive” or “dynamic” or to exit. When the user types “exit” the program will close.
+After successfully closing using “exit,” the program will save the entries into the Fibonacci_Time.csv file. 
+If the user does not use “exit” then the csv file will stay empty.
+
+
+Group member contribution
+Miguel Gapud: 100% Miguel Gapud
+Abram Miller: 75% (type full name here to acknowledge the agreement of your contribution)
+Justin Petry: 100% (type full name here to acknowledge the agreement of your contribution)
