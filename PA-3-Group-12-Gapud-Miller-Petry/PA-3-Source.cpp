@@ -9,7 +9,8 @@
 int recursiveFib(int n) {
     if (n == 0 || n == 1) {
         return n;
-    } else {
+    }
+    else {
         return recursiveFib(n - 1) + recursiveFib(n - 2);
     }
 }
@@ -20,13 +21,13 @@ int dynamicFib(int n) {
         return n;
     v.push_back(0);
     v.push_back(1);
-    for (int i=2; i<=n; i++) {
-        v.push_back(v[i-1] + v[i-2]);
+    for (int i = 2; i <= n; i++) {
+        v.push_back(v[i - 1] + v[i - 2]);
     }
     return v[n];
 }
 
-int test(int n, std::vector<int>& list1, std::vector<int>& list2, std::fstream& file) {
+int test(int n, std::vector<int>& list1, std::vector<int>& list2, std::fstream& file, std::string input) {
     typedef std::chrono::high_resolution_clock Clock;
     auto recurStart = Clock::now();
     list1.push_back(recursiveFib(n));
@@ -37,6 +38,7 @@ int test(int n, std::vector<int>& list1, std::vector<int>& list2, std::fstream& 
     auto dynStop = Clock::now();
     auto dynElapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(dynStop - dynStart).count();
     file << n << "," << list1.back() << "," << recurElapsed << "," << dynElapsed << ",tbd,tbd\n";
+    std::cout << "The " << input << " algorithm took " << ((input == "recursive") ? recurElapsed : dynElapsed) << " nanoseconds to complete.\n";
     return list1.back();
 }
 
@@ -48,23 +50,34 @@ int main() {
     std::vector<int> recursive;
     std::vector<int> dynamic;
     std::string input;
+    std::string indexInput;
     while (true) {
-        std::cout << "Use recursive algorithm or dynamic programming algorithm, or exit?\n";
-        std::cin >> input;
+        std::cout << "\nUse recursive algorithm or dynamic programming algorithm, or exit?\n";
+        std::getline(std::cin, input, '\n'); 
         std::transform(input.begin(), input.end(), input.begin(), ::tolower); // Convert input to lower case for case-nonsensitive input
         if (input == "exit") {
             file.close();
             return 0;
+        } // Attempting to pre-empt and include all different possible user inputs, then put them into two categories for easier logic later 
+        else if (input.find("recursive") != std::string::npos || input == "1") {
+            input = "recursive";
+        }
+        else if (input.find("dynamic") != std::string::npos || input == "2") {
+            input = "dynamic";
+        }
+        else {
+            std::cout << "Please enter only the name of the algorithm you want to use.\n";
+            continue;
         }
         std::cout << "Enter an index.\n";
-        std::cin >> input;
+        std::getline(std::cin, indexInput, '\n'); 
         try {
-            int n = std::stoi(input); // Attempt to convert input to int.
+            int n = std::stoi(indexInput); // Attempt to convert input to int.
             if (n < 0) {
-                std::cout << "Invalid option";
+                std::cout << "Invalid option\n";
                 continue;
             }
-            int result = test(n, recursive, dynamic, file);
+            int result = test(n, recursive, dynamic, file, input);
             std::cout << "Index " << n << " in the Fibonacci sequence is: " << result << std::endl;
         }
         catch (std::invalid_argument e) {
@@ -72,4 +85,3 @@ int main() {
         }
     }
 }
-
