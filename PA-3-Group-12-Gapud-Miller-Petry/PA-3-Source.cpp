@@ -28,6 +28,7 @@ int dynamicFib(int n) {
 }
 
 int test(int n, std::vector<int>& list1, std::vector<int>& list2, std::fstream& file, std::string input) {
+    // Fibbonaccis + timing
     typedef std::chrono::high_resolution_clock Clock;
     auto recurStart = Clock::now();
     list1.push_back(recursiveFib(n));
@@ -37,7 +38,24 @@ int test(int n, std::vector<int>& list1, std::vector<int>& list2, std::fstream& 
     list2.push_back(dynamicFib(n));
     auto dynStop = Clock::now();
     auto dynElapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(dynStop - dynStart).count();
-    file << n << "," << list1.back() << "," << recurElapsed << "," << dynElapsed << ",tbd,tbd\n";
+    file << n << "," << list1.back() << "," << recurElapsed << "," << dynElapsed << ",";
+    // Calculations for spreadsheet
+
+    // column 4
+    double x = pow(2, n)/n;
+    double y = floor(log10(x));
+    x = round(x / pow(10, y));
+    file << x << "E" << y << ",";
+    
+    // column 5
+    x = recurElapsed / (double)dynElapsed;
+    std::cout << "recurElapsed / dynElapsed = " << x << std::endl;
+    y = floor(log10(x));
+    std::cout << "floor(log10(x)) = " << y << std::endl;
+    x = round(x / pow(10, y));
+    std::cout << "round(x / pow(10, y)) = " << x << std::endl;
+    file << x << "E" << y << "\n";
+
     std::cout << "The " << input << " algorithm took " << ((input == "recursive") ? recurElapsed : dynElapsed) << " nanoseconds to complete.\n";
     return list1.back();
 }
@@ -70,7 +88,7 @@ int main() {
             continue;
         }
         std::cout << "Enter an index.\n";
-        std::getline(std::cin, indexInput, '\n'); 
+        std::getline(std::cin, indexInput, '\n'); // doing this avoids weird glitches where the algorith tried to take \n as an input 
         try {
             int n = std::stoi(indexInput); // Attempt to convert input to int.
             if (n < 0) {
