@@ -85,7 +85,7 @@ int main() {
             continue;
         }
         std::cout << "Enter an index.\n";
-        std::getline(std::cin, indexInput, '\n'); // doing this avoids weird glitches where the algorith tried to take \n as an input 
+        std::getline(std::cin, indexInput, '\n');
         try {
             int n = std::stoi(indexInput); // Attempt to convert input to int.
             if (n < 0) {
