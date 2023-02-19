@@ -49,11 +49,8 @@ int test(int n, std::vector<int>& list1, std::vector<int>& list2, std::fstream& 
     
     // column 5
     x = recurElapsed / (double)dynElapsed;
-    std::cout << "recurElapsed / dynElapsed = " << x << std::endl;
     y = floor(log10(x));
-    std::cout << "floor(log10(x)) = " << y << std::endl;
     x = round(x / pow(10, y));
-    std::cout << "round(x / pow(10, y)) = " << x << std::endl;
     file << x << "E" << y << "\n";
 
     std::cout << "The " << input << " algorithm took " << ((input == "recursive") ? recurElapsed : dynElapsed) << " nanoseconds to complete.\n";
