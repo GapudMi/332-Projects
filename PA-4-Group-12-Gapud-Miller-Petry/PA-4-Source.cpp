@@ -73,6 +73,10 @@ int main()
 			<< "\tType your desired step number and press enter,\n"
 			<< "\tor type \"exit\" and press enter to quit at any time.\n";
 		std::getline(std::cin, inputString);
+		std::transform(inputString.begin(), inputString.end(), inputString.begin(), ::tolower); // Convert input to lower case for case-nonsensitive input
+		if (inputString == "exit") {
+			return 0;
+		} 
 		try {
 			desiredStep = std::stoi(inputString);
 			std::cout << "\n\tSo we will be climbing to step number " << desiredStep << ".\n"
@@ -95,7 +99,7 @@ int main()
 
 			}
 		catch (std::invalid_argument e) {
-			std::cout << "Please just write a number.\n";
+			std::cout << "Please just write a number or \"exit\".\n";
 		}
 	}
 
