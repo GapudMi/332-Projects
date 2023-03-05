@@ -3,10 +3,19 @@
 #include <iostream>
 #include <vector>
 #include <string>
-
+#include <algorithm>
 
 int stairStepping(std::vector<int> steps, int destination) {
-	return 0;
+	//std::cout << destination << " ";
+
+	// I think this is correct, not the definition you gave us in class. 
+	// If the destination - step value == 0, that always means a path was found 
+	// This is because if some number of steps summed to the destination value, that sum - destination value necessarily equals zero.
+	if (destination == 0) return 1;
+	else if (destination < 0) return 0;
+	else {
+		return stairStepping(steps, destination - steps.at(0)) + stairStepping(steps, destination - steps.at(1));
+	}
 }
 
 std::vector<int> setVectorTo(std::string input) {
@@ -51,22 +60,27 @@ int main()
 
 	std::cout << "Welcome to the staircase. ";
 	while (true) {
-		std::cout << "What step do you want to climb to? Please write one number and press enter, or\n"
-			<< "type \"exit\" and press enter to quit at any time.\n";
+		std::cout << "\n\tWhat step do you want to climb to?\n"
+			<< "\tType your desired step number and press enter,\n"
+			<< "\tor type \"exit\" and press enter to quit at any time.\n";
 		std::getline(std::cin, inputString);
 		try {
 			desiredStep = std::stoi(inputString);
-			std::cout << "So we will be climbing to step number " << desiredStep << ".\n"
-				<< "What step sizes do you want to use? \n"
-				<< "Please write your step sizes separated by spaces then press enter.\n";
+			std::cout << "\n\tSo we will be climbing to step number " << desiredStep << ".\n"
+				<< "\tWhat step sizes do you want to use? \n"
+				<< "\tPlease write your step sizes separated by spaces then press enter.\n";
 			std::getline(std::cin, inputString, '\n');
 			if (parseUserInput(inputString)) {
 				userSteps = setVectorTo(inputString);
+				std::sort(userSteps.begin(), userSteps.end());
+				//debugging
+				//std::cout << "inputString: " << inputString << "\nstep sizes: " << userSteps.at(0) << "\t" << userSteps.at(1) << "\n";
+				
 				pathCount = stairStepping(userSteps, desiredStep);
-
+				std::cout << "\tWe found " << pathCount << ((pathCount == 1) ? " path " : " paths ") << "using those step sizes to get to step " << desiredStep << ".\n";
 			}
 			else {
-				std::cout << "Please type only numbers separated by spaces.\n";
+				std::cout << "\tPlease type only numbers separated by spaces.\n";
 				
 			}
 
