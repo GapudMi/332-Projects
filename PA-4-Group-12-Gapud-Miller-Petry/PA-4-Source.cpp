@@ -5,7 +5,7 @@
 #include <string>
 #include <algorithm>
 
-int stairStepping(std::vector<int> steps, int destination) {
+int stairSteppingRecursive(std::vector<int> steps, int destination) {
 	//std::cout << destination << " ";
 
 	// I think this is correct, not the definition you gave us in class. 
@@ -14,8 +14,13 @@ int stairStepping(std::vector<int> steps, int destination) {
 	if (destination == 0) return 1;
 	else if (destination < 0) return 0;
 	else {
-		return stairStepping(steps, destination - steps.at(0)) + stairStepping(steps, destination - steps.at(1));
+		return stairSteppingRecursive(steps, destination - steps.at(0)) + stairSteppingRecursive(steps, destination - steps.at(1));
 	}
+}
+
+int stairSteppingDynamic(std::vector<int>steps, int destination) {
+	// placeholder for later implementation.
+	return -1;
 }
 
 std::vector<int> setVectorTo(std::string input) {
@@ -76,7 +81,7 @@ int main()
 				//debugging
 				//std::cout << "inputString: " << inputString << "\nstep sizes: " << userSteps.at(0) << "\t" << userSteps.at(1) << "\n";
 				
-				pathCount = stairStepping(userSteps, desiredStep);
+				pathCount = stairSteppingRecursive(userSteps, desiredStep);
 				std::cout << "\tWe found " << pathCount << ((pathCount == 1) ? " path " : " paths ") << "using those step sizes to get to step " << desiredStep << ".\n";
 			}
 			else {
