@@ -1,6 +1,6 @@
 How to run the program?
 Xxxxxxxxxxxxxxxxxxxxxxxxxx (a brief explanation)
 Group member contribution
-Miguel Gapud 1: xxx% sign
-Justin Petry 2: xxx% sign
-Abram Miller 3: xxx% sign
+Miguel Gapud 1: 100% sign
+Justin Petry 2: 100% sign
+Abram Miller 3: 100% Abram Miller
