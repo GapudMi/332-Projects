@@ -4,6 +4,9 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <queue>
+#include "Node.h"
+
 
 int stairSteppingRecursive(std::vector<int> steps, int destination) {
 	//std::cout << destination << " ";
@@ -22,8 +25,58 @@ int stairSteppingRecursive(std::vector<int> steps, int destination) {
 	}
 }
 
+int pathMaker(std::vector<int> steps, int destination, std::queue<Node*> &q, Node*root) {
+	if (destination == 0) {
+		std::cout << "Reached Destination\n";
+		q.pop();
+		return 1;
+	}
+	else if (destination < 0) {
+		std::cout << "Overshot\n";
+		q.pop();
+		return 0;
+	}
+	else {
+		int x = 0;
+		std::cout << "Stepping: ";
+		for (int i = 0; i < steps.size(); i++) {
+			root = insertValue(root, steps.at(i), i, steps.size(), q);
+			x += stairSteppingRecursive(steps, destination - steps.at(i));
+		}
+		return x;
+	}
+}
+
+/* old pathMaker
+* 
+pathMaker(std::vector<int> steps, int destination, int*current)
+	if (destination == current) {
+		std::cout << "Reached Destination\n";
+		return 1;
+	}
+	else if (destination < current) {
+		std::cout << "Overshot, Erase\n";
+		return 0;
+	}
+	else {
+		//std::cout << "Stepping: ";
+		//test++;
+		int x = 0;
+		for (int i = 0; i < steps.size(); i++) {
+			std::cout << steps.at(i) << " ";
+			x += pathMaker(steps, destination, current + steps.at(i));
+			std::cout << "Finished with step size: " << steps.at(i) << std::endl;
+		}
+		std::cout << "x = " << x << "\n\n";
+		return x;
+	}
+*/
+
+void deleteTree(Node*& root) {
+
+}
+
 int stairSteppingDynamic(std::vector<int>steps, int destination) {
-	// placeholder for later implementation.
 	return -1;
 }
 
@@ -66,6 +119,7 @@ int main()
 	std::string inputString;
 	int desiredStep = 0;
 	int pathCount = 0;
+	std::queue<Node*> q;
 
 	std::cout << "Welcome to the staircase. ";
 	while (true) {
@@ -76,7 +130,7 @@ int main()
 		std::transform(inputString.begin(), inputString.end(), inputString.begin(), ::tolower); // Convert input to lower case for case-nonsensitive input
 		if (inputString == "exit") {
 			return 0;
-		} 
+		}
 		try {
 			desiredStep = std::stoi(inputString);
 			std::cout << "\n\tSo we will be climbing to step number " << desiredStep << ".\n"
@@ -88,16 +142,18 @@ int main()
 				std::sort(userSteps.begin(), userSteps.end());
 				//debugging
 				//std::cout << "inputString: " << inputString << "\nstep sizes: " << userSteps.at(0) << "\t" << userSteps.at(1) << "\n";
-				
+
 				pathCount = stairSteppingRecursive(userSteps, desiredStep);
 				std::cout << "\tWe found " << pathCount << ((pathCount == 1) ? " path " : " paths ") << "using those step sizes to get to step " << desiredStep << ".\n";
+
+				Node* root = NULL;
+				pathMaker(userSteps, desiredStep, q, root);
+
 			}
 			else {
 				std::cout << "\tPlease type only numbers separated by spaces.\n";
-				
 			}
-
-			}
+		}
 		catch (std::invalid_argument e) {
 			std::cout << "Please just write a number or \"exit\".\n";
 		}
@@ -105,4 +161,3 @@ int main()
 
 	return 0;
 }
-
