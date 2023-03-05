@@ -14,7 +14,11 @@ int stairSteppingRecursive(std::vector<int> steps, int destination) {
 	if (destination == 0) return 1;
 	else if (destination < 0) return 0;
 	else {
-		return stairSteppingRecursive(steps, destination - steps.at(0)) + stairSteppingRecursive(steps, destination - steps.at(1));
+		int x = 0;
+		for(int i = 0; i < steps.size(); i++){
+			x += stairSteppingRecursive(steps, destination - steps.at(i));
+		}
+		return x;
 	}
 }
 
