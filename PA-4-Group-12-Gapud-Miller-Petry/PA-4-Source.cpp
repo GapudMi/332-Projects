@@ -27,6 +27,84 @@ int stairSteppingDynamic(std::vector<int>steps, int destination) {
 	return -1;
 }
 
+std::vector<int> incrementBaseN(int base, std::vector<int> number, int index) {
+	if (number.at(index) < base - 1) {
+		number.at(index)++;
+		return number;
+	}
+	else { // (number.at(index)+1 == base)
+		for (int i = 0; i <= index; i++) {
+			number.at(i) = 0;
+		}
+		return incrementBaseN(base, number, index + 1);
+	}
+}
+
+void printRoutes(std::vector<int>steps, int destination, int pathCount) {
+	std::vector<std::vector<int>> history;
+	std::vector<int> routeHolder;
+	int foundPaths = 0;
+	int sum = 0;
+	bool dupe = false;
+
+	int base = steps.size();
+	std::vector<int> incrementHolder;
+	// The maximum path length = the destination / the smallest step size. It might be too long by one, but it should never be too small.
+	for (int i = 0; i < (destination / steps.at(0)); i++) {
+		incrementHolder.push_back(0);
+		routeHolder.push_back(0);
+	}
+
+	while (foundPaths < pathCount) {
+		// Create one whole naive path
+		sum = 0;
+		for (int j = 0; j < routeHolder.size(); j++) {
+			routeHolder.at(j) = 0;
+		}
+		for (int i = 0; i < incrementHolder.size(); i++) {
+			sum += steps.at(incrementHolder.at(i));
+			routeHolder.at(i) = steps.at(incrementHolder.at(i));
+			//std::cout << steps.at(incrementHolder.at(i)) << " ";
+			if (sum == destination) {
+				for (int j = 0; j < history.size(); j++) {
+					for (int k = 0; k <= i; k++) {
+						//std::cout << "\tk: "<< k << " route: " << routeHolder.at(k) << " history: " << history.at(j).at(k);
+						if (routeHolder.at(k) == history.at(j).at(k)) {
+							//std::cout << " dupe\n";
+							dupe = true;
+						}
+						else {
+							//std::cout << " not dupe\n";
+							dupe = false; break;
+						}
+					}
+					if (dupe) {
+						//std::cout << "DUPE\n";
+						break;
+					}
+				}
+				if (!dupe) {
+				history.push_back(routeHolder);
+				foundPaths++;
+				std::cout << "Way " << foundPaths << ": ";
+				for (int j = 0; j <= i; j++) {
+					std::cout << routeHolder.at(j) << ((j < i) ? "->" : "");
+				}
+				std::cout << std::endl;
+				}
+			}
+			else if (sum > destination) {
+				break;
+			}
+		}
+
+		// increasing number by 1.
+		incrementHolder = incrementBaseN(base, incrementHolder, 0);
+	}
+	//std::cout << "whatthefuck" ;
+	return;
+}
+
 std::vector<int> setVectorTo(std::string input) {
 	int numberLength = 0;
 	std::vector<int> output;
@@ -91,6 +169,8 @@ int main()
 				
 				pathCount = stairSteppingRecursive(userSteps, desiredStep);
 				std::cout << "\tWe found " << pathCount << ((pathCount == 1) ? " path " : " paths ") << "using those step sizes to get to step " << desiredStep << ".\n";
+				printRoutes(userSteps, desiredStep, pathCount);
+
 			}
 			else {
 				std::cout << "\tPlease type only numbers separated by spaces.\n";
