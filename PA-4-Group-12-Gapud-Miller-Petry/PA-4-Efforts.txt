@@ -7,5 +7,5 @@ At any time you are prompted for input, you can type "exit" to close the program
 
 Group member contribution
 Miguel Gapud 1: 100% Miguel Gapud
-Justin Petry 2: 99%
-Abram Miller 3: 0 . 0 ? %
+Justin Petry 2: 100% Justin Petry
+Abram Miller 3: 85% Abram Miller
