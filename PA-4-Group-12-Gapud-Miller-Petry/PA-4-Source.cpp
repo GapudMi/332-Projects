@@ -156,6 +156,7 @@ int stairSteppingDynamic(std::vector<int>steps, int destination) {
 		// calculate the stairstepping algorithm's return value and add it to the stairValue vector
 		for (int i = incrementor; i < steps.at(outer); i++) {
 			// initial conditions
+			if (steps.at(outer) > destination) break;
 			if (i < steps.at(0)) stairValue.at(i) = 0;
 			if (i == steps.at(0)) stairValue.at(i) = 1;
 			// other conditions
@@ -166,7 +167,7 @@ int stairSteppingDynamic(std::vector<int>steps, int destination) {
 					//std::cout << "\ti: " << i << std::endl;
 					//std::cout << "\tsteps.at(indexToAdd): " << steps.at(indexToAdd) << std::endl;
 					//std::cout << "\ti - steps.at(indexToAdd): " << i - steps.at(indexToAdd) << std::endl;
-					x += stairValue.at(i - steps.at(indexToAdd));
+					x += ((i - steps.at(indexToAdd)) > 0) ? stairValue.at(i - steps.at(indexToAdd)) : 0;
 				}
 				stairValue.at(i) = x;
 			}
@@ -181,7 +182,7 @@ int stairSteppingDynamic(std::vector<int>steps, int destination) {
 			//std::cout << "\tincrementor: " << incrementor << std::endl;
 			//std::cout << "\tsteps.at(indexToAdd): " << steps.at(indexToAdd) << std::endl;
 			//std::cout << "\tincrementor - steps.at(indexToAdd): " << incrementor - steps.at(indexToAdd) << std::endl;
-			x += stairValue.at(incrementor - steps.at(indexToAdd));
+			x += ((incrementor - steps.at(indexToAdd)) > 0) ? stairValue.at(incrementor - steps.at(indexToAdd)) : 0;
 		}
 		stairValue.at(incrementor) = x;
 		//std::cout << "last value:" << stairValue.at(incrementor) << " ";
@@ -190,6 +191,7 @@ int stairSteppingDynamic(std::vector<int>steps, int destination) {
 	int x = 0;
 	for (int indexToAdd = 0; indexToAdd < steps.size(); indexToAdd++) {
 		//std::cout << "\tsteps.at(indexToAdd): " << steps.at(indexToAdd) << std::endl;
+		if (steps.at(indexToAdd) > destination) break;
 		x += stairValue.at(destination - steps.at(indexToAdd));
 	}
 	//std::cout << "return value is " << x << std::endl;
@@ -248,7 +250,7 @@ int main()
 					pathCount = stairSteppingRecursive(userSteps, desiredStep);
 					std::cout << "\tWe found " << pathCount << ((pathCount == 1) ? " path " : " paths ") << "recursively using those step sizes to get to step " << desiredStep << ".\n";
 
-					pathCount = stairSteppingDynamic(userSteps, desiredStep+1);
+					pathCount = stairSteppingDynamic(userSteps, desiredStep+userSteps.at(0));
 					std::cout << "\tWe found " << pathCount << ((pathCount == 1) ? " path " : " paths ") << "dynamically using those step sizes to get to step " << desiredStep << ".\n";
 
 					printRoutes(userSteps, desiredStep, pathCount);
