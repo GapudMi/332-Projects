@@ -1,6 +1,11 @@
 How to run the program?
-Xxxxxxxxxxxxxxxxxxxxxxxxxx (a brief explanation)
+Opening the PA-4-Executable.exe file will bring you to a repl page. To run the program, press the green run button or the white triangle.
+Once the program runs, you will be prompted to type the step you want to climb to. Type only the stairstep you want to climb to then press enter. 
+You will then be prompted to type the allowed step sizes. Type only the step sizes you want, separated by spaces then press enter.
+The program will then show you the elapsed time of both recurisve and dynamic approaches as well as every valid path.
+At any time you are prompted for input, you can type "exit" to close the program.
+
 Group member contribution
-Miguel Gapud 1: % sign when work is finished
-Justin Petry 2: % sign when work is finished
-Abram Miller 3: % sign when work is finished
+Miguel Gapud 1: 100% Miguel Gapud
+Justin Petry 2: 99%
+Abram Miller 3: 0 . 0 ? %
