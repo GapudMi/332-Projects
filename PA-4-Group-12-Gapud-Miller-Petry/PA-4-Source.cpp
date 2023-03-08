@@ -22,11 +22,6 @@ int stairSteppingRecursive(std::vector<int> steps, int destination) {
 	}
 }
 
-int stairSteppingDynamic(std::vector<int>steps, int destination) {
-	// placeholder for later implementation.
-	return -1;
-}
-
 // This takes a vector and understands it as each entry of the vector being a digit in a number of base "base" and increments it by 1 according to those rules.
 std::vector<int> incrementBaseN(int base, std::vector<int> number, int index) {
 	if (number.at(index) < base - 1) {
@@ -139,6 +134,68 @@ bool parseUserInput(std::string input) {
 	return allNumbers;
 }
 
+int stairSteppingDynamic(std::vector<int>steps, int destination) {
+	std::vector<int> stairValue;
+	int incrementor = 0;
+
+	//for (int i = 0; i < steps.at(0); i++) {
+	//	stairValue.push_back(0);
+	//	std::cout << stairValue.at(i) << " ";
+	//}
+	//stairValue.push_back(1);
+	//std::cout << stairValue.at(stairValue.size()-1) << " ";
+
+	for (int i = 0; i < destination; i++) {
+		stairValue.push_back(0);
+	}
+
+	int value = 0;
+	// for each element in the steps vector
+	for (int outer = 0; outer < steps.size(); outer++) {
+		
+		// calculate the stairstepping algorithm's return value and add it to the stairValue vector
+		for (int i = incrementor; i < steps.at(outer); i++) {
+			// initial conditions
+			if (i < steps.at(0)) stairValue.at(i) = 0;
+			if (i == steps.at(0)) stairValue.at(i) = 1;
+			// other conditions
+			else if (i > steps.at(0)) {
+				int x = 0;
+				// stairValue.push_back(stairValue[i-steps.at(0)] + stairValue[i-steps.at(1)] ... )
+				for (int indexToAdd = 0; indexToAdd < outer; indexToAdd++) {
+					//std::cout << "\ti: " << i << std::endl;
+					//std::cout << "\tsteps.at(indexToAdd): " << steps.at(indexToAdd) << std::endl;
+					//std::cout << "\ti - steps.at(indexToAdd): " << i - steps.at(indexToAdd) << std::endl;
+					x += stairValue.at(i - steps.at(indexToAdd));
+				}
+				stairValue.at(i) = x;
+			}
+			//std::cout << "last value:" << stairValue.at(incrementor) << " ";
+			incrementor++;
+		}
+	}
+
+	for (incrementor; incrementor < destination; incrementor++) {
+		int x = 0;
+		for (int indexToAdd = 0; indexToAdd < steps.size(); indexToAdd++) {
+			//std::cout << "\tincrementor: " << incrementor << std::endl;
+			//std::cout << "\tsteps.at(indexToAdd): " << steps.at(indexToAdd) << std::endl;
+			//std::cout << "\tincrementor - steps.at(indexToAdd): " << incrementor - steps.at(indexToAdd) << std::endl;
+			x += stairValue.at(incrementor - steps.at(indexToAdd));
+		}
+		stairValue.at(incrementor) = x;
+		//std::cout << "last value:" << stairValue.at(incrementor) << " ";
+	}
+
+	int x = 0;
+	for (int indexToAdd = 0; indexToAdd < steps.size(); indexToAdd++) {
+		//std::cout << "\tsteps.at(indexToAdd): " << steps.at(indexToAdd) << std::endl;
+		x += stairValue.at(destination - steps.at(indexToAdd));
+	}
+	//std::cout << "return value is " << x << std::endl;
+	return x;
+}
+
 int main()
 {
 	std::vector<int> userSteps;
@@ -158,6 +215,10 @@ int main()
 		}
 		try {
 			desiredStep = std::stoi(inputString);
+			if (desiredStep <= 0) {
+				std::cout << "\tPlease only enter numbers greater than zero.\n";
+				continue;
+			}
 			std::cout << "\n\tSo we will be climbing to step number " << desiredStep << ".\n"
 				<< "\tWhat step sizes do you want to use? \n"
 				<< "\tPlease write your step sizes separated by spaces then press enter.\n";
@@ -169,6 +230,10 @@ int main()
 					continue;
 				}
 				std::sort(userSteps.begin(), userSteps.end());
+				if (userSteps.at(0) == 0) {
+					std::cout << "\tPlease only enter numbers greater than zero.\n";
+					continue;
+				}
 				bool dupe = true;
 				for (int i = 0; i < userSteps.size()-1; i++) {
 					if (userSteps.at(i) == userSteps.at(i + 1)) {
@@ -181,13 +246,16 @@ int main()
 
 				if(!dupe){
 					pathCount = stairSteppingRecursive(userSteps, desiredStep);
-					std::cout << "\tWe found " << pathCount << ((pathCount == 1) ? " path " : " paths ") << "using those step sizes to get to step " << desiredStep << ".\n";
+					std::cout << "\tWe found " << pathCount << ((pathCount == 1) ? " path " : " paths ") << "recursively using those step sizes to get to step " << desiredStep << ".\n";
+
+					pathCount = stairSteppingDynamic(userSteps, desiredStep+1);
+					std::cout << "\tWe found " << pathCount << ((pathCount == 1) ? " path " : " paths ") << "dynamically using those step sizes to get to step " << desiredStep << ".\n";
+
 					printRoutes(userSteps, desiredStep, pathCount);
 				}
 			}
 			else {
-				std::cout << "\tPlease type only 2 or more numbers separated by spaces.\n";
-
+				std::cout << "\tPlease type only 2 or more numbers greater than zero separated by spaces.\n";
 			}
 
 		}
