@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <chrono>
 
 int stairSteppingRecursive(std::vector<int> steps, int destination) {
 	//std::cout << destination << " ";
@@ -152,7 +153,7 @@ int stairSteppingDynamic(std::vector<int>steps, int destination) {
 	int value = 0;
 	// for each element in the steps vector
 	for (int outer = 0; outer < steps.size(); outer++) {
-		
+
 		// calculate the stairstepping algorithm's return value and add it to the stairValue vector
 		for (int i = incrementor; i < steps.at(outer); i++) {
 			// initial conditions
@@ -227,7 +228,7 @@ int main()
 			std::getline(std::cin, inputString, '\n');
 			if (parseUserInput(inputString)) {
 				userSteps = setVectorTo(inputString);
-				if (userSteps.size()==1) {
+				if (userSteps.size() == 1) {
 					std::cout << "\tPlease enter two or more step sizes.\n";
 					continue;
 				}
@@ -237,7 +238,7 @@ int main()
 					continue;
 				}
 				bool dupe = true;
-				for (int i = 0; i < userSteps.size()-1; i++) {
+				for (int i = 0; i < userSteps.size() - 1; i++) {
 					if (userSteps.at(i) == userSteps.at(i + 1)) {
 						std::cout << "\tPlease do not enter duplicate values.\n";
 						dupe = true;
@@ -246,12 +247,19 @@ int main()
 					else dupe = false;
 				}
 
-				if(!dupe){
+				if (!dupe) {
+					typedef std::chrono::high_resolution_clock Clock;
+					auto recurStart = Clock::now();
 					pathCount = stairSteppingRecursive(userSteps, desiredStep);
+					auto recurStop = Clock::now();
 					std::cout << "\tWe found " << pathCount << ((pathCount == 1) ? " path " : " paths ") << "recursively using those step sizes to get to step " << desiredStep << ".\n";
-
-					pathCount = stairSteppingDynamic(userSteps, desiredStep+userSteps.at(0));
+					auto dynStart = Clock::now();
+					pathCount = stairSteppingDynamic(userSteps, desiredStep + userSteps.at(0));
+					auto dynStop = Clock::now();
 					std::cout << "\tWe found " << pathCount << ((pathCount == 1) ? " path " : " paths ") << "dynamically using those step sizes to get to step " << desiredStep << ".\n";
+					std::cout << "\tTime elapsed in recursive algorithm: " << std::chrono::duration_cast<std::chrono::nanoseconds>(recurStop - recurStart).count() << std::endl;
+					std::cout << "\tTime elapsed in non-recursive algorithm: " << std::chrono::duration_cast<std::chrono::nanoseconds>(dynStop - dynStart).count() << std::endl;
+
 
 					printRoutes(userSteps, desiredStep, pathCount);
 				}
