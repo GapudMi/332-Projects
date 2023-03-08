@@ -37,7 +37,7 @@ std::vector<int> incrementBaseN(int base, std::vector<int> number, int index) {
 	}
 }
 
-// This is a brute force algorithm that finds every way that the three steps can sum to the destination,
+// This is a brute force algorithm that finds every way that the steps can sum to the destination,
 void printRoutes(std::vector<int>steps, int destination, int pathCount) {
 	std::vector<std::vector<int>> history;
 	std::vector<int> routeHolder;
