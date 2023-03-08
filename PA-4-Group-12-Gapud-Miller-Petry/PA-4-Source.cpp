@@ -44,7 +44,6 @@ void printRoutes(std::vector<int>steps, int destination, int pathCount) {
 	int foundPaths = 0;
 	int sum = 0;
 	bool dupe = false;
-
 	int base = steps.size();
 	std::vector<int> incrementHolder;
 
@@ -86,7 +85,7 @@ void printRoutes(std::vector<int>steps, int destination, int pathCount) {
 				if (!dupe) {
 					history.push_back(routeHolder);
 					foundPaths++;
-					std::cout << "Way " << foundPaths << ": ";
+					std::cout << "\t     Way " << foundPaths << ": ";
 					for (int j = 0; j <= i; j++) {
 						std::cout << routeHolder.at(j) << ((j < i) ? "->" : "");
 					}
@@ -139,21 +138,12 @@ int stairSteppingDynamic(std::vector<int>steps, int destination) {
 	std::vector<int> stairValue;
 	int incrementor = 0;
 
-	//for (int i = 0; i < steps.at(0); i++) {
-	//	stairValue.push_back(0);
-	//	std::cout << stairValue.at(i) << " ";
-	//}
-	//stairValue.push_back(1);
-	//std::cout << stairValue.at(stairValue.size()-1) << " ";
-
 	for (int i = 0; i < destination; i++) {
 		stairValue.push_back(0);
 	}
 
-	int value = 0;
-	// for each element in the steps vector
+	// for each element in the steps vector,
 	for (int outer = 0; outer < steps.size(); outer++) {
-
 		// calculate the stairstepping algorithm's return value and add it to the stairValue vector
 		for (int i = incrementor; i < steps.at(outer); i++) {
 			// initial conditions
@@ -163,16 +153,11 @@ int stairSteppingDynamic(std::vector<int>steps, int destination) {
 			// other conditions
 			else if (i > steps.at(0)) {
 				int x = 0;
-				// stairValue.push_back(stairValue[i-steps.at(0)] + stairValue[i-steps.at(1)] ... )
 				for (int indexToAdd = 0; indexToAdd < outer; indexToAdd++) {
-					//std::cout << "\ti: " << i << std::endl;
-					//std::cout << "\tsteps.at(indexToAdd): " << steps.at(indexToAdd) << std::endl;
-					//std::cout << "\ti - steps.at(indexToAdd): " << i - steps.at(indexToAdd) << std::endl;
 					x += ((i - steps.at(indexToAdd)) > 0) ? stairValue.at(i - steps.at(indexToAdd)) : 0;
 				}
 				stairValue.at(i) = x;
 			}
-			//std::cout << "last value:" << stairValue.at(incrementor) << " ";
 			incrementor++;
 		}
 	}
@@ -180,22 +165,16 @@ int stairSteppingDynamic(std::vector<int>steps, int destination) {
 	for (incrementor; incrementor < destination; incrementor++) {
 		int x = 0;
 		for (int indexToAdd = 0; indexToAdd < steps.size(); indexToAdd++) {
-			//std::cout << "\tincrementor: " << incrementor << std::endl;
-			//std::cout << "\tsteps.at(indexToAdd): " << steps.at(indexToAdd) << std::endl;
-			//std::cout << "\tincrementor - steps.at(indexToAdd): " << incrementor - steps.at(indexToAdd) << std::endl;
 			x += ((incrementor - steps.at(indexToAdd)) > 0) ? stairValue.at(incrementor - steps.at(indexToAdd)) : 0;
 		}
 		stairValue.at(incrementor) = x;
-		//std::cout << "last value:" << stairValue.at(incrementor) << " ";
 	}
 
 	int x = 0;
 	for (int indexToAdd = 0; indexToAdd < steps.size(); indexToAdd++) {
-		//std::cout << "\tsteps.at(indexToAdd): " << steps.at(indexToAdd) << std::endl;
 		if (steps.at(indexToAdd) > destination) break;
 		x += stairValue.at(destination - steps.at(indexToAdd));
 	}
-	//std::cout << "return value is " << x << std::endl;
 	return x;
 }
 
@@ -205,14 +184,19 @@ int main()
 	std::string inputString;
 	int desiredStep = 0;
 	int pathCount = 0;
-
-	std::cout << "Welcome to the staircase. ";
+	std::string divider = "     =============================================================================\n";
+	std::cout << "Welcome to the staircase. \n";
 	while (true) {
-		std::cout << "\n\tWhat step do you want to climb to?\n"
+		std::cout << divider;
+		std::cout << "\tWhat step do you want to climb to?\n"
 			<< "\tType your desired step number and press enter,\n"
 			<< "\tor type \"exit\" and press enter to quit at any time.\n";
+		std::cout << divider;
+
 		std::getline(std::cin, inputString);
 		std::transform(inputString.begin(), inputString.end(), inputString.begin(), ::tolower); // Convert input to lower case for case-nonsensitive input
+		std::cout << divider;
+
 		if (inputString == "exit") {
 			return 0;
 		}
@@ -222,55 +206,62 @@ int main()
 				std::cout << "\tPlease only enter numbers greater than zero.\n";
 				continue;
 			}
-			std::cout << "\n\tSo we will be climbing to step number " << desiredStep << ".\n"
+			std::cout << "\tSo we will be climbing to step number " << desiredStep << ".\n"
 				<< "\tWhat step sizes do you want to use? \n"
 				<< "\tPlease write your step sizes separated by spaces then press enter.\n";
+			std::cout << divider;
 			std::getline(std::cin, inputString, '\n');
-			if (parseUserInput(inputString)) {
-				userSteps = setVectorTo(inputString);
-				if (userSteps.size() == 1) {
-					std::cout << "\tPlease enter two or more step sizes.\n";
-					continue;
-				}
-				std::sort(userSteps.begin(), userSteps.end());
-				if (userSteps.at(0) == 0) {
-					std::cout << "\tPlease only enter numbers greater than zero.\n";
-					continue;
-				}
-				bool dupe = true;
-				for (int i = 0; i < userSteps.size() - 1; i++) {
-					if (userSteps.at(i) == userSteps.at(i + 1)) {
-						std::cout << "\tPlease do not enter duplicate values.\n";
-						dupe = true;
-						break;
+			std::cout << divider;
+			try {
+				if (parseUserInput(inputString)) {
+					userSteps = setVectorTo(inputString);
+					if (userSteps.size() <= 1) {
+						std::cout << "\tPlease enter two or more step sizes.\n";
+						continue;
 					}
-					else dupe = false;
+					std::sort(userSteps.begin(), userSteps.end());
+					if (userSteps.at(0) <= 0) {
+						std::cout << "\tPlease only enter numbers greater than zero.\n";
+						continue;
+					}
+					bool dupe = true;
+					for (int i = 0; i < userSteps.size() - 1; i++) {
+						if (userSteps.at(i) == userSteps.at(i + 1)) {
+							std::cout << "\tPlease do not enter duplicate values.\n";
+							dupe = true;
+							break;
+						}
+						else dupe = false;
+					}
+
+					if (!dupe) {
+						typedef std::chrono::high_resolution_clock Clock;
+						auto recurStart = Clock::now();
+						pathCount = stairSteppingRecursive(userSteps, desiredStep);
+						auto recurStop = Clock::now();
+						std::cout << "\tWe found " << pathCount << ((pathCount == 1) ? " path " : " paths ") << "recursively using those step sizes to get to step " << desiredStep << ".\n";
+						auto dynStart = Clock::now();
+						pathCount = stairSteppingDynamic(userSteps, desiredStep + userSteps.at(0));
+						auto dynStop = Clock::now();
+						std::cout << "\tWe found " << pathCount << ((pathCount == 1) ? " path " : " paths ") << "dynamically using those step sizes to get to step " << desiredStep << ".\n";
+						std::cout << "\tTime elapsed in recursive algorithm: " << std::chrono::duration_cast<std::chrono::nanoseconds>(recurStop - recurStart).count() << std::endl;
+						std::cout << "\tTime elapsed in non-recursive algorithm: " << std::chrono::duration_cast<std::chrono::nanoseconds>(dynStop - dynStart).count() << std::endl;
+						std::cout << divider;
+
+
+						printRoutes(userSteps, desiredStep, pathCount);
+					}
 				}
-
-				if (!dupe) {
-					typedef std::chrono::high_resolution_clock Clock;
-					auto recurStart = Clock::now();
-					pathCount = stairSteppingRecursive(userSteps, desiredStep);
-					auto recurStop = Clock::now();
-					std::cout << "\tWe found " << pathCount << ((pathCount == 1) ? " path " : " paths ") << "recursively using those step sizes to get to step " << desiredStep << ".\n";
-					auto dynStart = Clock::now();
-					pathCount = stairSteppingDynamic(userSteps, desiredStep + userSteps.at(0));
-					auto dynStop = Clock::now();
-					std::cout << "\tWe found " << pathCount << ((pathCount == 1) ? " path " : " paths ") << "dynamically using those step sizes to get to step " << desiredStep << ".\n";
-					std::cout << "\tTime elapsed in recursive algorithm: " << std::chrono::duration_cast<std::chrono::nanoseconds>(recurStop - recurStart).count() << std::endl;
-					std::cout << "\tTime elapsed in non-recursive algorithm: " << std::chrono::duration_cast<std::chrono::nanoseconds>(dynStop - dynStart).count() << std::endl;
-
-
-					printRoutes(userSteps, desiredStep, pathCount);
+				else {
+					std::cout << "\tPlease type only 2 or more numbers greater than zero separated by spaces.\n";
 				}
 			}
-			else {
-				std::cout << "\tPlease type only 2 or more numbers greater than zero separated by spaces.\n";
+			catch (std::out_of_range) {
+				std::cout << "\tPlease enter two or more step sizes.\n";
 			}
-
 		}
 		catch (std::invalid_argument e) {
-			std::cout << "Please just write a number or \"exit\".\n";
+			std::cout << "\tPlease only write a number or \"exit\".\n";
 		}
 	}
 
