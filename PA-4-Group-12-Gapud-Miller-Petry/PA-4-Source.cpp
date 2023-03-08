@@ -242,8 +242,9 @@ int main()
 						auto dynStart = Clock::now();
 						pathCount = stairSteppingDynamic(userSteps, desiredStep + userSteps.at(0));
 						auto dynStop = Clock::now();
-						std::cout << "\tTime elapsed in recursive algorithm: " << std::chrono::duration_cast<std::chrono::nanoseconds>(recurStop - recurStart).count() << std::endl;
-						std::cout << "\tTime elapsed in non-recursive algorithm: " << std::chrono::duration_cast<std::chrono::nanoseconds>(dynStop - dynStart).count() << std::endl;
+						
+						std::cout << "\tTime elapsed in recursive algorithm: " << std::chrono::duration_cast<std::chrono::nanoseconds>(recurStop - recurStart).count() << " nanoseconds." << std::endl;
+						std::cout << "\tTime elapsed in non-recursive algorithm: " << std::chrono::duration_cast<std::chrono::nanoseconds>(dynStop - dynStart).count() << " nanoseconds." << std::endl;
 						std::cout << divider;
 						std::cout << "\t" << ((pathCount == 1) ? " There is a total of " : " There are a total of ") << pathCount << ((pathCount == 1) ? " way" : " ways")  << ".\n";
 
