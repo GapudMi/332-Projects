@@ -13,14 +13,14 @@ struct Task {
     void print() { std::cout << "Pay is "<<pay<< " startTime is " << startTime << " endTime is " << endTime << std::endl; }
 };
 
-bool compareTasks(Task *a, Task* b) {
-    if (a->endTime < b->endTime) return true;
+bool compareTasks(Task a, Task b) {
+    if (a.endTime < b.endTime) return true;
     return false;
 }
 
 int main() {
     int numTasks = 0;
-    std::vector<Task*> tasks;
+    std::vector<Task> tasks;
     std::string inputString;
     std::string divider = "     =============================================================================\n";
     while (true) {
@@ -52,21 +52,21 @@ int main() {
                   << "\tEnter all times as integers between 0 and 512.\n"
                   << "\tPress enter after each input.\n" << divider;
         for (int i = 0; i < numTasks; i++) {
-            Task * task = new Task;
+           Task task;
             std::string start;
             std::string end;
             std::cout << "\tTask " << i + 1 << std::endl;
             std::cout << "\tWhat is this task's payment?\n";
-            std::cin >> task->pay;
+            std::cin >> task.pay;
             while (true) {
                 std::cout << "\tWhat time does this task start?\n";
-                std::cin >> start;
-
+                    std::cin >> start;
+                
                 std::cout << "\tWhat time does this task end?\n";
-                std::cin >> end;
-                task->endTime = std::stoi(end);
-                task->startTime = std::stoi(start);
-                if (task->endTime > task->startTime)
+                    std::cin >> end;
+                task.endTime = std::stoi(end);
+                task.startTime = std::stoi(start);
+                if (task.endTime > task.startTime)
                     break;
                 std::cout << "\tEnd time must be after start time.\n";
             }
@@ -78,7 +78,7 @@ int main() {
         std::sort(tasks.begin(), tasks.end(), compareTasks);
 
         for (int i = 0; i < tasks.size(); i++) {
-            tasks.at(i)->print();
+            tasks.at(i).print();
         }
     }
 }
