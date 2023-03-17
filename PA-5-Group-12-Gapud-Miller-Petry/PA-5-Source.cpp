@@ -19,8 +19,7 @@ struct Task {
 
 // Returns true if a ends before b
 bool compareTasks(Task a, Task b) {
-    if (a.endTime < b.endTime) return true;
-    return false;
+        return (a.endTime < b.endTime);
 }
 
 // Brute force algorithms utilizing permutations
@@ -63,11 +62,11 @@ int main() {
     std::vector<Task> tasks;
     std::string inputString;
     std::string divider = "     =============================================================================\n";
+    std::cout << divider;
+    std::cout << "\tHow many paid tasks are there?\n"
+              << "\tType your number and press enter,\n"
+              << "\tor type \"exit\" and press enter to quit at any time.\n" << divider;
     while (true) {
-        std::cout << divider;
-        std::cout << "\tHow many paid tasks are there?\n"
-                  << "\tType your number and press enter,\n"
-                  << "\tor type \"exit\" and press enter to quit at any time.\n" << divider;
         while (true) {
             try {
                 std::getline(std::cin, inputString);
@@ -113,9 +112,9 @@ int main() {
                 }
                 std::cout << "\tInvalid input, please try again.\n";
             }
+            std::cout << "\tWhat time does this task start?\n";
             while (true) {
                 try {
-                    std::cout << "\tWhat time does this task start?\n";
                     std::cin >> start;
                     task.startTime = std::stoi(start);
                     if (task.startTime < 0) {
@@ -128,9 +127,9 @@ int main() {
                 }
                 std::cout << "\tInvalid input, please try again.\n";
             }
+            std::cout << "\tWhat time does this task end?\n";
             while (true) {
                 try {
-                    std::cout << "\tWhat time does this task end?\n";
                     std::cin >> end;
                     task.endTime = std::stoi(end);
                     if (task.endTime < 0) {
