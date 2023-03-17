@@ -139,7 +139,7 @@ int main() {
                 for (int i = 0; i < numTasks; i++) {
                     int randomStart = (rand() % (200-10));
                     task.startTime = randomStart;
-                    int randomEnd = randomStart + (rand() % (200-randomStart));
+                    int randomEnd = 1 + randomStart + (rand() % (200 - 1 - randomStart));
                     task.endTime = randomEnd;
                     int randomPay = rand() % 50;
                     task.pay = randomPay;
