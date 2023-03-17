@@ -6,6 +6,7 @@
 #include <limits>
 #include <vector>
 #include <ctime>
+#include <optional>
 
 struct Task {
     int pay;
@@ -29,16 +30,21 @@ bool parseUserInput(std::string input) {
     return allNumbers;
 }
 
-std::tm parseTime(std::string str) {
-    //std::cout << str.substr(0, str.find(':')) << std::endl;
-    //std::cout << str.substr(str.find(':')+1) << std::endl;
-
-    int hour = std::stoi(str.substr(0, str.find(':')));
-    int minute = std::stoi(str.substr(str.find(':')+1));
-    std::tm time{};
-    time.tm_hour = hour;
-    time.tm_min = minute;
-    return time;
+// Convert string time into the C++ time struct
+std::optional<std::tm> parseTime(std::string str) {
+    if (std::count(str.begin(), str.end(), ':') != 1)
+        return {};
+    try {
+        int hour = std::stoi(str.substr(0, str.find(':')));
+        int minute = std::stoi(str.substr(str.find(':')+1));
+        std::tm time{};
+        time.tm_hour = hour;
+        time.tm_min = minute;
+        return time;
+    }
+    catch(std::exception) {
+        return {};
+    }
 }
 
 int main() {
@@ -68,6 +74,7 @@ int main() {
         std::cout << "\tSo there are " << numTasks << " tasks.\n"
             << "\tYou will now enter the pay and duration of each task.\n"
             << "\tPlease enter the salary, then the start time, then the start time, and finally the end time.\n"
+            << "\tEnter all times in HH:MM format.\n"
             << "\tPress enter after each input.\n";
         std::cout << divider;
         for (int i = 0; i < numTasks; i++) {
@@ -79,11 +86,27 @@ int main() {
             std::cout << "\tWhat is this task's payment?\n";
             std::cin >> task.pay;
             std::cout << "\tWhat time does this task start?\n";
-            std::cin >> start;
-            task.startTime = parseTime(start);
+            while (true) {
+                std::cin >> start;
+                try {
+                    task.startTime = parseTime(start).value();
+                    break;
+                }
+                catch (std::bad_optional_access e) {
+                    std::cout << "\tInvalid format, please try again.\n";
+                }
+            }
             std::cout << "\tWhat time does this task end?\n";
-            std::cin >> end;
-            task.endTime = parseTime(end);
+            while (true) {
+                std::cin >> end;
+                try {
+                    task.endTime = parseTime(end).value();
+                    break;
+                }
+                catch (std::bad_optional_access e) {
+                    std::cout << "\tInvalid format, please try again.\n";
+                }
+            }
             std::cout << divider;
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             tasks.push_back(task);
