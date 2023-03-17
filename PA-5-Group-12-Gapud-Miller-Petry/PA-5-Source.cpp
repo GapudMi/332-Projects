@@ -124,7 +124,7 @@ void visualization(std::vector<Task> set) {
             if (j == 0) break;
             std::cout << '-';
         }
-        std::cout << "|\n";
+        std::cout << "| Pay: " << set.at(i).pay << "\n";
     }
 
     std::cout << taskSpacer << ((set.size() < 10) ? " " : ((set.size() < 100) ? "  " : "   ")); dottedLine(set, 5, '^', ' ');
