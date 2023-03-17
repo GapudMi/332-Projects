@@ -14,37 +14,34 @@ struct Task {
     std::tm endTime;
 };
 
-// Makes sure user string is only integers and spaces. Also looks for "exit".
-bool parseUserInput(std::string input) {
-    if (input.find("exit") != -1) {
-        std::cout << "Exiting...";
-        exit(0);
-    }
-    bool allNumbers = true;
-    for (int i = 0; i < input.length(); i++) {
-        if (!isdigit(input[i])) {
-            // allow spaces
-            allNumbers = (input[i] == ' ');
-        }
-    }
-    return allNumbers;
-}
-
 // Convert string time into the C++ time struct
-std::optional<std::tm> parseTime(std::string str) {
+std::tm parseTime(std::string str) {
+    std::tm time{};
+    int hour;
+    int minute;
     if (std::count(str.begin(), str.end(), ':') != 1)
-        return {};
+        return (std::tm){-1};
     try {
-        int hour = std::stoi(str.substr(0, str.find(':')));
-        int minute = std::stoi(str.substr(str.find(':')+1));
-        std::tm time{};
-        time.tm_hour = hour;
-        time.tm_min = minute;
-        return time;
+        hour = std::stoi(str.substr(0, str.find(':')));
+        minute = std::stoi(str.substr(str.find(':') + 1));
     }
     catch(std::exception) {
-        return {};
+        return (std::tm){-1};
     }
+    time.tm_hour = hour;
+    time.tm_min = minute;
+    return time;
+
+}
+
+// Returns true if gt > lt, otherwise returns false.
+bool compareTime(std::tm gt, std::tm lt) {
+    if (gt.tm_hour > lt.tm_hour)
+        return true;
+    else if (gt.tm_min > lt.tm_min)
+        return true;
+    else
+        return false;
 }
 
 int main() {
@@ -85,27 +82,29 @@ int main() {
             std::cout << "\tTask " << i+1 << std::endl;
             std::cout << "\tWhat is this task's payment?\n";
             std::cin >> task.pay;
-            std::cout << "\tWhat time does this task start?\n";
             while (true) {
-                std::cin >> start;
-                try {
-                    task.startTime = parseTime(start).value();
-                    break;
-                }
-                catch (std::bad_optional_access e) {
+                std::cout << "\tWhat time does this task start?\n";
+                // nested while true statements dear god
+                while (true) {
+                    std::cin >> start;
+                    task.startTime = parseTime(start);
+                    // If successfully parsed, we will continue to the next input.
+                    // If parse failed, try again.
+                    if (task.startTime.tm_sec != -1)
+                        break;
                     std::cout << "\tInvalid format, please try again.\n";
                 }
-            }
-            std::cout << "\tWhat time does this task end?\n";
-            while (true) {
-                std::cin >> end;
-                try {
-                    task.endTime = parseTime(end).value();
-                    break;
-                }
-                catch (std::bad_optional_access e) {
+                std::cout << "\tWhat time does this task end?\n";
+                while (true) {
+                    std::cin >> end;
+                    task.endTime = parseTime(end);
+                    if (task.endTime.tm_sec != -1)
+                        break;
                     std::cout << "\tInvalid format, please try again.\n";
                 }
+                if (compareTime(task.endTime, task.startTime))
+                    break;
+                std::cout << "\tEnd time must be after start time.\n";
             }
             std::cout << divider;
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
