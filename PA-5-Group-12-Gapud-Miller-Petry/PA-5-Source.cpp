@@ -53,27 +53,31 @@ int main() {
         std::cout << divider;
         std::cout << "\tHow many paid tasks are there?\n"
                   << "\tType your number and press enter,\n"
-                  << "\tor type \"exit\" and press enter to quit at any time.\n";
-        std::cout << divider;
-        std::getline(std::cin, inputString);
-        std::transform(inputString.begin(), inputString.end(), inputString.begin(),
-                       ::tolower); // Convert input to lower case for case-nonsensitive input
-        std::cout << divider;
+                  << "\tor type \"exit\" and press enter to quit at any time.\n" << divider;
 
-        if (inputString == "exit") {
-            return 0;
+        while (true) {
+            try {
+                std::getline(std::cin, inputString);
+                std::transform(inputString.begin(), inputString.end(), inputString.begin(),
+                               ::tolower); // Convert input to lower case for case-nonsensitive input
+                if (inputString == "exit") {
+                    return 0;
+                }
+                numTasks = std::stoi(inputString);
+                break;
+            }
+            catch (std::invalid_argument e) {
+                std::cout << "\tInvalid input, please try again.\n";
+            }
         }
-        numTasks = std::stoi(inputString);
         if (numTasks <= 0) {
             std::cout << "\tPlease only enter numbers greater than zero.\n";
             continue;
         }
-        std::cout << "\tSo there are " << numTasks << " tasks.\n"
-            << "\tYou will now enter the pay and duration of each task.\n"
+        std::cout << divider << "\tYou will now enter the pay and duration of each task.\n"
             << "\tPlease enter the salary, then the start time, then the start time, and finally the end time.\n"
             << "\tEnter all times in HH:MM format.\n"
-            << "\tPress enter after each input.\n";
-        std::cout << divider;
+            << "\tPress enter after each input.\n" << divider;
         for (int i = 0; i < numTasks; i++) {
             Task task;
             //int pay = 0;
@@ -84,7 +88,6 @@ int main() {
             std::cin >> task.pay;
             while (true) {
                 std::cout << "\tWhat time does this task start?\n";
-                // nested while true statements dear god
                 while (true) {
                     std::cin >> start;
                     task.startTime = parseTime(start);
