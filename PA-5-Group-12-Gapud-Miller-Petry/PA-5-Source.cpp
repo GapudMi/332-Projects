@@ -152,25 +152,44 @@ int main() {
             std::string end;
             std::string pay;
             task.id = i + 1;
-            while (true) {
                 std::cout << "\tTask " << i + 1 << std::endl;
                 std::cout << "\tWhat is this task's payment?\n";
                 std::cin >> pay;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 if (pay == "randomtasks") break;                                      // For debugging purposes, remove later
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-                std::cout << "\tWhat time does this task start?\n";
-                std::cin >> start;
-                std::cout << "\tWhat time does this task end?\n";
-                std::cin >> end;
+            std::cout << "\tWhat time does this task start?\n";
+                while (true) {
+                    std::cin >> start;
+                    try {
+                        task.startTime = std::stoi(start);
+                        if (task.startTime < 0)
+                            throw std::invalid_argument("");
+                        break;
+                    }
+                    catch (std::invalid_argument) {
+                        std::cout << "\tInvalid value, please try again.\n";
+                    }
+                }
+            std::cout << "\tWhat time does this task end?\n";
+                while (true) {
+                    std::cin >> end;
+                    try {
+                        task.endTime = std::stoi(end);
+                        if (task.endTime < 0)
+                            throw std::invalid_argument("");
+                        break;
+                    }
+                    catch (std::invalid_argument) {
+                        std::cout << "\tInvalid value, please try again.\n";
+                    }
+                }
                 task.pay = std::stoi(pay);
-                task.endTime = std::stoi(end);
-                task.startTime = std::stoi(start);
-                if (task.endTime > task.startTime)
-                    break;
-                std::cout << "\tEnd time must be after start time.\n";
-            }
+
+                /*if (task.endTime < task.startTime) {
+                    std::cout << "\tEnd time must be after start time.\n";
+                }*/
+
             std::cout << divider;
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
@@ -201,9 +220,12 @@ int main() {
 
         visualization(tasks);
         std::vector<Task> cringe = bruteForce(tasks);
+        int value = 0;
         std::cout << "Optimal route according to the brute force algorithm:\n";
         for (int i = 0; i < cringe.size(); i++) {
             std::cout << "Task #" << cringe[i].id << std::endl;
+            value += cringe[i].pay;
         }
+        std::cout << "Total pay: " << value;
     }
 }
