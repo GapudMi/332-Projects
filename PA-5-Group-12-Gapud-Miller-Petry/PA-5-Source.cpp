@@ -90,19 +90,19 @@ void visualization(std::vector<Task> set) {
 
     for (int i = 0; i < set.size(); i++) {
         //Add whitespace according to time before start time.
-        std::cout << "Task " << i + 1;
+        std::cout << "Task " << set.at(i).id;
         if (set.size() >= 100) {
-            std::cout << ((i + 1 >= 100) ? "" : " ");
+            std::cout << ((set.at(i).id >= 100) ? "" : " ");
         }
         if (set.size() >= 10) {
-            std::cout << ((i + 1 >= 10) ? "" : " ");
+            std::cout << ((set.at(i).id >= 10) ? "" : " ");
         }
         std::cout << ':';
         for (int j = 0; j < set.at(i).startTime; j++) {
             std::cout << " ";
         }
         for (int j = set.at(i).startTime; j < set.at(i).endTime; j++) {
-            std::cout << (char) 254u;
+            std::cout << (char)254u;
         }
         std::cout << "\n";
     }
