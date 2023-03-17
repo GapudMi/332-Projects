@@ -44,6 +44,10 @@ bool compareTime(std::tm gt, std::tm lt) {
         return false;
 }
 
+bool compareStartTime(Task lt, Task gt) {
+    return compareTime(lt.startTime, gt.startTime);
+}
+
 int main() {
     int numTasks = 0;
     std::vector<Task> tasks;
@@ -54,7 +58,6 @@ int main() {
         std::cout << "\tHow many paid tasks are there?\n"
                   << "\tType your number and press enter,\n"
                   << "\tor type \"exit\" and press enter to quit at any time.\n" << divider;
-
         while (true) {
             try {
                 std::getline(std::cin, inputString);
@@ -113,5 +116,7 @@ int main() {
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             tasks.push_back(task);
         }
+        // Sort tasks by their start time
+        std::sort(tasks.begin(), tasks.end(), compareStartTime);
     }
 }
