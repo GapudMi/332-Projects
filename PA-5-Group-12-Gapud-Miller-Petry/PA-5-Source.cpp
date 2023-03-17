@@ -57,8 +57,9 @@ std::vector<Task> bruteForce(std::vector<Task> tasks) {
     return bestRoute;
 }
 
+
 void numberLine(std::vector<Task> set, int interval) {
-    for (int i = 0; i < set.at(set.size() - 1).endTime; i += interval) {
+    for (int i = 0; i < set.at(set.size() - 1).endTime + 4; i += interval) {
         // counter every multiple of interval
         std::cout << i;
         std::string num = std::to_string(i);
@@ -70,10 +71,11 @@ void numberLine(std::vector<Task> set, int interval) {
 }
 
 void dottedLine(std::vector<Task> set, int interval, char marker, char normal) {
-    for (int i = 0; i < set.at(set.size() - 1).endTime; i++) {
+    for (int i = 0; i < set.at(set.size() - 1).endTime + 4; i++) {
         if (i % interval == 0) {
             std::cout << marker;
-        } else std::cout << normal;
+        }
+        else std::cout << normal;
     }
     std::cout << "\n";
 }
@@ -81,12 +83,11 @@ void dottedLine(std::vector<Task> set, int interval, char marker, char normal) {
 void visualization(std::vector<Task> set) {
     std::cout << "\nStarting visualization\n";
     //whitespace alignment to account for the space where the task numbers are written
-    std::string taskSpacer = "       ";
+    std::string taskSpacer = "      ";
     std::cout << taskSpacer << ((set.size() < 10) ? " " : ((set.size() < 100) ? "  " : "   "));
     numberLine(set, 5);
 
-    std::cout << taskSpacer << ((set.size() < 10) ? " " : ((set.size() < 100) ? "  " : "   "));
-    dottedLine(set, 5, '|', '.');
+    std::cout << taskSpacer << ((set.size() < 10) ? " " : ((set.size() < 100) ? "  " : "   ")); dottedLine(set, 5, 'v', ' ');
 
     for (int i = 0; i < set.size(); i++) {
         //Add whitespace according to time before start time.
@@ -99,19 +100,38 @@ void visualization(std::vector<Task> set) {
         }
         std::cout << ':';
         for (int j = 0; j < set.at(i).startTime; j++) {
-            std::cout << " ";
+            if (j % 5 == 0) {
+                std::cout << "|";
+            }
+            else std::cout << "-";
         }
+        int barStartTime;
         for (int j = set.at(i).startTime; j < set.at(i).endTime; j++) {
+            barStartTime = set.at(i).startTime;
             std::cout << (char)254u;
         }
-        std::cout << "\n";
+        for (int j = set.at(i).endTime; j < set.at(set.size() - 1).endTime; j++) {
+            if (j % 5 == 0) {
+                std::cout << "|";
+            }
+            else std::cout << "-";
+        }
+        /* for debugging
+        std::cout << "\n\t";
+        std::cout << "[Start: " << set.at(i).startTime << ", End: " << set.at(i).endTime << ", Pay : " << set.at(i).pay << "]\n";
+        */
+        for (int j = (set.at(set.size() - 1).endTime) % 5; j < 5; j++) {
+            if (j == 0) break;
+            std::cout << '-';
+        }
+        std::cout << "|\n";
     }
 
-    std::cout << taskSpacer << ((set.size() < 10) ? " " : ((set.size() < 100) ? "  " : "   "));
-    dottedLine(set, 5, '|', '\'');
+    std::cout << taskSpacer << ((set.size() < 10) ? " " : ((set.size() < 100) ? "  " : "   ")); dottedLine(set, 5, '^', ' ');
     std::cout << taskSpacer << ((set.size() < 10) ? " " : ((set.size() < 100) ? "  " : "   "));
     numberLine(set, 5);
 }
+
 
 int main() {
     int numTasks = 0;
@@ -121,13 +141,13 @@ int main() {
     while (true) {
         std::cout << divider;
         std::cout << "\tHow many paid tasks are there?\n"
-                  << "\tType your number and press enter,\n"
-                  << "\tor type \"exit\" and press enter to quit at any time.\n" << divider;
+            << "\tType your number and press enter,\n"
+            << "\tor type \"exit\" and press enter to quit at any time.\n" << divider;
         while (true) {
             try {
                 std::getline(std::cin, inputString);
                 std::transform(inputString.begin(), inputString.end(), inputString.begin(),
-                               ::tolower); // Convert input to lower case for case-nonsensitive input
+                    ::tolower); // Convert input to lower case for case-nonsensitive input
                 if (inputString == "exit") {
                     return 0;
                 }
@@ -143,63 +163,34 @@ int main() {
             continue;
         }
         std::cout << divider << "\tYou will now enter the pay and duration of each task.\n"
-                  << "\tPlease enter the salary, then the start time, then the start time, and finally the end time.\n"
-                  << "\tEnter all times as integers between 0 and 220 if you want the visualization to work.\n"
-                  << "\tPress enter after each input.\n" << divider;
+            << "\tPlease enter the salary, then the start time, then the start time, and finally the end time.\n"
+            << "\tEnter all times as integers between 0 and 220 if you want the visualization to work.\n"
+            << "\tPress enter after each input.\n" << divider;
         for (int i = 0; i < numTasks; i++) {
             Task task;
             std::string start;
             std::string end;
             std::string pay;
             task.id = i + 1;
-                std::cout << "\tTask " << i + 1 << std::endl;
-                std::cout << "\tWhat is this task's payment?\n";
-                std::cin >> pay;
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                if (pay == "randomtasks") break;                                      // For debugging purposes, remove later
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            std::cout << "\tWhat time does this task start?\n";
-                while (true) {
-                    std::cin >> start;
-                    try {
-                        task.startTime = std::stoi(start);
-                        if (task.startTime < 0)
-                            throw std::invalid_argument("");
-                        break;
-                    }
-                    catch (std::invalid_argument) {
-                        std::cout << "\tInvalid value, please try again.\n";
-                    }
-                }
-            std::cout << "\tWhat time does this task end?\n";
-                while (true) {
-                    std::cin >> end;
-                    try {
-                        task.endTime = std::stoi(end);
-                        if (task.endTime < 0)
-                            throw std::invalid_argument("");
-                        break;
-                    }
-                    catch (std::invalid_argument) {
-                        std::cout << "\tInvalid value, please try again.\n";
-                    }
-                }
-                task.pay = std::stoi(pay);
-
-                /*if (task.endTime < task.startTime) {
-                    std::cout << "\tEnd time must be after start time.\n";
-                }*/
-
-            std::cout << divider;
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            if (pay == "randomtasks"){                                                  // For debugging purposes, remove later
+            std::cout << "\tTask " << i + 1 << std::endl;
+            std::cout << "\tWhat is this task's payment?\n";
+            std::cin >> pay;
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            if (pay == "randomtasks") {                                                  // For debugging purposes, remove later
                 srand((unsigned)time(NULL));
+                int randmax = 200;
+                int len = randmax/4;
+                /*// remove comment to test different things
+                std::cout << "\t Last possible endtime?\n";     //(total length of graph)
+                std::cin >> randmax;
+                std::cout << "\t Max length?\n";                //(shorter means more possible paths)
+                std::cin >> len;
+                */
+                
                 for (int i = 0; i < numTasks; i++) {
-                    int randomStart = (rand() % (200-10));
+                    int randomStart = (rand() % (randmax - len));
                     task.startTime = randomStart;
-                    int randomEnd = 1 + randomStart + (rand() % (200 - 1 - randomStart));
+                    int randomEnd = 1 + randomStart + (rand() % (len));
                     task.endTime = randomEnd;
                     int randomPay = rand() % 50;
                     task.pay = randomPay;
@@ -208,7 +199,41 @@ int main() {
                 }
                 break;
             }
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            std::cout << "\tWhat time does this task start?\n";
+            while (true) {
+                std::cin >> start;
+                try {
+                    task.startTime = std::stoi(start);
+                    if (task.startTime < 0)
+                        throw std::invalid_argument("");
+                    break;
+                }
+                catch (std::invalid_argument) {
+                    std::cout << "\tInvalid value, please try again.\n";
+                }
+            }
+            std::cout << "\tWhat time does this task end?\n";
+            while (true) {
+                std::cin >> end;
+                try {
+                    task.endTime = std::stoi(end);
+                    if (task.endTime < 0)
+                        throw std::invalid_argument("");
+                    break;
+                }
+                catch (std::invalid_argument) {
+                    std::cout << "\tInvalid value, please try again.\n";
+                }
+            }
+            task.pay = std::stoi(pay);
+
+            /*if (task.endTime < task.startTime) {
+                std::cout << "\tEnd time must be after start time.\n";
+            }*/
+
+            std::cout << divider;
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             tasks.push_back(task);
         }
         // Sort tasks by their END time, least to greatest
@@ -223,9 +248,10 @@ int main() {
         int value = 0;
         std::cout << "Optimal route according to the brute force algorithm:\n";
         for (int i = 0; i < cringe.size(); i++) {
-            std::cout << "Task #" << cringe[i].id << std::endl;
+            std::cout << "Task #" << cringe[i].id << ((i + 1 < cringe.size()) ? ", " : "\n");
             value += cringe[i].pay;
         }
-        std::cout << "Total pay: " << value;
+        std::cout << "Total pay: " << value << std::endl;
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     }
 }
