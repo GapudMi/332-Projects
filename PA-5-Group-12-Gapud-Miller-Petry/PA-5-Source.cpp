@@ -210,8 +210,6 @@ int main() {
             }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             tasks.push_back(task);
-            std::cout << divider;
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         }
         // Sort tasks by their END time, least to greatest
         std::sort(tasks.begin(), tasks.end(), compareTasks);
