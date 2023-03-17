@@ -11,14 +11,19 @@ struct Task {
     int startTime;
     int endTime;
     int id;
-    void print() { std::cout << "Pay is "<<pay<< "\nstartTime is " << startTime << "\nendTime is " << endTime << std::endl; }
+
+    void print() {
+        std::cout << "Pay is " << pay << "\nstartTime is " << startTime << "\nendTime is " << endTime << std::endl;
+    }
 };
 
+// Returns true if a ends before b
 bool compareTasks(Task a, Task b) {
     if (a.endTime < b.endTime) return true;
     return false;
 }
 
+// Brute force algorithms utilizing permutations
 std::vector<Task> bruteForce(std::vector<Task> tasks) {
     std::sort(tasks.begin(), tasks.end(), compareTasks);
     int maxValue = 0;
@@ -30,7 +35,7 @@ std::vector<Task> bruteForce(std::vector<Task> tasks) {
         std::vector<Task> route;
         int bottom = -1;
         int value = 0;
-        for (int i=0; i<p.size(); i++) {
+        for (int i = 0; i < p.size(); i++) {
             if (p[i] < bottom)
                 continue;
             if (route.size() == 0) {
@@ -49,8 +54,7 @@ std::vector<Task> bruteForce(std::vector<Task> tasks) {
             bestRoute = route;
             maxValue = value;
         }
-
-    } while (std::next_permutation(p.begin(),p.end()));
+    } while (std::next_permutation(p.begin(), p.end()));
     return bestRoute;
 }
 
@@ -91,22 +95,57 @@ int main() {
             Task task;
             std::string start;
             std::string end;
+            std::string pay;
             task.id = i;
             std::cout << "\tTask " << i + 1 << std::endl;
             std::cout << "\tWhat is this task's payment?\n";
-            std::cin >> task.pay;
             while (true) {
-                std::cout << "\tWhat time does this task start?\n";
-                std::cin >> start;
-
-                std::cout << "\tWhat time does this task end?\n";
-                std::cin >> end;
-                task.endTime = std::stoi(end);
-                task.startTime = std::stoi(start);
-                if (task.endTime > task.startTime)
+                try {
+                    std::cin >> pay;
+                    task.pay = std::stoi(pay);
+                    if (task.pay < 0) {
+                        std::cout << "\tPay may not be negative, please try again.\n";
+                        continue;
+                    }
                     break;
-                std::cout << "\tEnd time must be after start time.\n";
+                }
+                catch (std::invalid_argument) {
+                }
+                std::cout << "\tInvalid input, please try again.\n";
             }
+            while (true) {
+                try {
+                    std::cout << "\tWhat time does this task start?\n";
+                    std::cin >> start;
+                    task.startTime = std::stoi(start);
+                    if (task.startTime < 0) {
+                        std::cout << "\tTime may not be negative, please try again.\n";
+                        continue;
+                    }
+                    break;
+                }
+                catch (std::invalid_argument) {
+                }
+                std::cout << "\tInvalid input, please try again.\n";
+            }
+            while (true) {
+                try {
+                    std::cout << "\tWhat time does this task end?\n";
+                    std::cin >> end;
+                    task.endTime = std::stoi(end);
+                    if (task.endTime < 0) {
+                        std::cout << "Time may not be negative, please try again.\n";
+                        continue;
+                    }
+                    break;
+                }
+                catch (std::invalid_argument) {
+                }
+                std::cout << "\tInvalid input, please try again.\n";
+            }
+            if (task.endTime > task.startTime)
+                break;
+            std::cout << "\tEnd time must be after start time.\n";
             std::cout << divider;
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             tasks.push_back(task);
