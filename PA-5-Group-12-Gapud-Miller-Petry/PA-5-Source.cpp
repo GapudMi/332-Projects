@@ -153,7 +153,7 @@ void visualization(std::vector<Task> set) {
 
 
 int main() {
-    int numTasks = 0;
+    int numTasks = 10;
     std::vector<Task> tasks;
     std::string inputString;
     std::string divider = "     =============================================================================\n";
@@ -163,7 +163,7 @@ int main() {
         std::cout << "\tHow many paid tasks are there?\n"
             << "\tType your number and press enter,\n"
             << "\tor type \"exit\" and press enter to quit at any time.\n" << divider;
-        while (true) {
+        /*while (true) {
             try {
                 std::getline(std::cin, inputString);
                 std::transform(inputString.begin(), inputString.end(), inputString.begin(),
@@ -181,7 +181,7 @@ int main() {
         if (numTasks <= 0) {
             std::cout << "\tPlease only enter numbers greater than zero.\n";
             continue;
-        }
+        }*/
         std::cout << divider << "\tYou will now enter the pay and duration of each task.\n"
             << "\tPlease enter the salary, then the start time, then the start time, and finally the end time.\n"
             << "\tEnter all times as integers between 0 and 220 if you want the visualization to work.\n"
@@ -194,7 +194,8 @@ int main() {
             task.id = i + 1;
             std::cout << "\tTask " << i + 1 << std::endl;
             std::cout << "\tWhat is this task's payment?\n";
-            std::cin >> pay;
+            //std::cin >> pay;
+            pay = "randomtasks";
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             if (pay == "randomtasks") {                                                  // For debugging purposes, remove later
                 srand((unsigned)time(NULL));
@@ -289,6 +290,6 @@ int main() {
             }
         }
         std::cout << "\tTotal pay: " << value << std::endl;
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        //std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     }
 }
