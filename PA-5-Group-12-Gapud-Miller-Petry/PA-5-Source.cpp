@@ -16,6 +16,8 @@ struct Task {
     void print() {
         std::cout << "Task " << id << ": Pay is " << pay << "\nstartTime is " << startTime << "\nendTime is " << endTime << std::endl;
     }
+
+    bool operator==(const Task& b) const { return id == b.id; }
 };
 
 // Returns true if a ends before b
@@ -23,8 +25,14 @@ bool compareTasks(const Task& a, const Task& b) {
     return (a.endTime < b.endTime);
 }
 
-bool operator== (const Task& a, const Task& b) {
-    return a.id == b.id;
+bool routesEqual(const std::vector<Task>& a, const std::vector<Task>& b) {
+    if (a.size() != b.size())
+        return false;
+    for (int i=0; i<a.size(); i++) {
+        if (a[i].id != b[i].id)
+            return false;
+    }
+    return true;
 }
 
 // Brute force algorithms utilizing permutations
@@ -44,6 +52,7 @@ std::vector<std::vector<Task>> bruteForce(std::vector<Task> tasks) {
         }
 
         std::vector<Task> route;
+        route.clear();
         int bottom = -1;
         int value = 0;
         for (int i = 0; i < p.size(); i++) {
@@ -68,8 +77,10 @@ std::vector<std::vector<Task>> bruteForce(std::vector<Task> tasks) {
             maxValue = value;
         }
         else if (value == maxValue) {
-            if (route != bestRoute)
+            if (!routesEqual) {
+                std::cout << "something bad happened";
                 routeList.push_back(bestRoute);
+            }
 
         }
     } while (std::next_permutation(p.begin(), p.end()));
@@ -283,7 +294,7 @@ int main() {
             for (int i = 0; i < cringe.size(); i++) {
                 std::cout << "\t\tRoute " << i+1 << ":\n";
                 for (int j = 0; i < cringe[i].size(); j++) {
-                    std::cout << "\t\t\tTask #" << cringe[i][j].id << ((i + 1 < cringe[i].size()) ? ", " : "\n");
+                    std::cout << "Task #" << cringe[i][j].id << ((i + 1 < cringe[i].size()) ? ", " : "\n");
                     if (i==0)
                         value += cringe[i][j].pay;
                 }
