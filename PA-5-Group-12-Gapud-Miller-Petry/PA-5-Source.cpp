@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <vector>
 #include <limits>
+#include <chrono>
 
 struct Task {
     int pay;
@@ -28,7 +29,7 @@ bool operator== (const Task& a, const Task& b) {
 
 // Brute force algorithms utilizing permutations
 std::vector<std::vector<Task>> bruteForce(std::vector<Task> tasks) {
-    int routesFound = 0;
+    int routesCompleted = 0;
     std::vector<std::vector<Task>> routeList;
     std::sort(tasks.begin(), tasks.end(), compareTasks);
     int maxValue = 0;
@@ -37,6 +38,11 @@ std::vector<std::vector<Task>> bruteForce(std::vector<Task> tasks) {
     for (int i = 0; i < tasks.size(); i++)
         p.push_back(i);
     do {
+        if (p[0] > routesCompleted) {
+            routesCompleted++;
+            p.erase(p.begin()+1);
+        }
+
         std::vector<Task> route;
         int bottom = -1;
         int value = 0;
@@ -252,33 +258,37 @@ int main() {
         }
         // Sort tasks by their END time, least to greatest
         std::sort(tasks.begin(), tasks.end(), compareTasks);
-
+        /*
         for (int i = 0; i < tasks.size(); i++) {
             tasks.at(i).print();
-        }
+        }*/
 
         visualization(tasks);
+        typedef std::chrono::high_resolution_clock Clock;
+        auto bruteStart = Clock::now();
         auto cringe = bruteForce(tasks);
+        auto bruteStop = Clock::now();
+        std::cout << "\tTime elapsed in bruteforce algorithm: " << std::chrono::duration_cast<std::chrono::milliseconds>(bruteStop - bruteStart).count() << " milliseconds." << std::endl;
         int value = 0;
 
-        std::cout << "Optimal route according to the brute force algorithm:\n";
+        std::cout << "\tOptimal route according to the brute force algorithm:\n";
         if (cringe.size() == 1) {
             for (int i = 0; i < cringe[0].size(); i++) {
-                std::cout << "Task #" << cringe[0][i].id << ((i + 1 < cringe.size()) ? ", " : "\n");
+                std::cout << "\t\tTask #" << cringe[0][i].id << ((i + 1 < cringe.size()) ? ", " : "\n");
                 value += cringe[0][i].pay;
             }
         }
         else if (cringe.size() > 1) {
             for (int i = 0; i < cringe.size(); i++) {
-                std::cout << "Route " << i+1 << ":\n";
+                std::cout << "\t\tRoute " << i+1 << ":\n";
                 for (int j = 0; i < cringe[i].size(); j++) {
-                    std::cout << "Task #" << cringe[i][j].id << ((i + 1 < cringe[i].size()) ? ", " : "\n");
+                    std::cout << "\t\t\tTask #" << cringe[i][j].id << ((i + 1 < cringe[i].size()) ? ", " : "\n");
                     if (i==0)
                         value += cringe[i][j].pay;
                 }
             }
         }
-        std::cout << "Total pay: " << value << std::endl;
+        std::cout << "\tTotal pay: " << value << std::endl;
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     }
 }
