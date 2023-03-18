@@ -172,7 +172,7 @@ void visualization(std::vector<Task> set) {
 
 
 int main() {
-    int numTasks = 10;
+    int numTasks = 0;
     std::vector<Task> tasks;
     std::string inputString;
     std::string divider = "     =============================================================================\n";
