@@ -16,8 +16,6 @@ struct Task {
     void print() {
         std::cout << "Task " << id << ": Pay is " << pay << "\nstartTime is " << startTime << "\nendTime is " << endTime << std::endl;
     }
-
-    bool operator==(const Task& b) const { return id == b.id; }
 };
 
 // Returns true if a ends before b
@@ -25,11 +23,23 @@ bool compareTasks(const Task& a, const Task& b) {
     return (a.endTime < b.endTime);
 }
 
+bool operator== (const Task& a, const Task& b) {
+    return a.id == b.id;
+}
+
 bool routesEqual(const std::vector<Task>& a, const std::vector<Task>& b) {
     if (a.size() != b.size())
         return false;
     for (int i=0; i<a.size(); i++) {
         if (a[i].id != b[i].id)
+            return false;
+    }
+    return true;
+}
+
+bool vectorContainsRoute(const std::vector<std::vector<Task>>& a, const std::vector<Task>& b) {
+    for (std::vector<Task> r : a) {
+        if (!routesEqual(r, b))
             return false;
     }
     return true;
@@ -52,12 +62,9 @@ std::vector<std::vector<Task>> bruteForce(std::vector<Task> tasks) {
         }
 
         std::vector<Task> route;
-        route.clear();
         int bottom = -1;
         int value = 0;
         for (int i = 0; i < p.size(); i++) {
-            if (p[i] < bottom)
-                continue;
             if (route.size() == 0) {
                 route.push_back(tasks[p[i]]);
                 value += tasks[p[i]].pay;
@@ -67,8 +74,7 @@ std::vector<std::vector<Task>> bruteForce(std::vector<Task> tasks) {
             if (route.back().endTime > tasks[p[i]].startTime)
                 continue;
             route.push_back(tasks[p[i]]);
-            value += tasks[p[i]].pay;
-            bottom = p[i];
+            value += route.back().pay;
         }
         if (value > maxValue) {
             bestRoute = route;
@@ -77,9 +83,11 @@ std::vector<std::vector<Task>> bruteForce(std::vector<Task> tasks) {
             maxValue = value;
         }
         else if (value == maxValue) {
-            if (!routesEqual) {
-                std::cout << "something bad happened";
-                routeList.push_back(bestRoute);
+            if (!vectorContainsRoute(routeList, route)) {
+                routeList.push_back(route);
+                if (routeList.size() > 10) {
+                    std::cout << "hell";
+                }
             }
 
         }
@@ -174,7 +182,7 @@ int main() {
         std::cout << "\tHow many paid tasks are there?\n"
             << "\tType your number and press enter,\n"
             << "\tor type \"exit\" and press enter to quit at any time.\n" << divider;
-        /*while (true) {
+        while (true) {
             try {
                 std::getline(std::cin, inputString);
                 std::transform(inputString.begin(), inputString.end(), inputString.begin(),
@@ -192,7 +200,7 @@ int main() {
         if (numTasks <= 0) {
             std::cout << "\tPlease only enter numbers greater than zero.\n";
             continue;
-        }*/
+        }
         std::cout << divider << "\tYou will now enter the pay and duration of each task.\n"
             << "\tPlease enter the salary, then the start time, then the start time, and finally the end time.\n"
             << "\tEnter all times as integers between 0 and 220 if you want the visualization to work.\n"
@@ -205,8 +213,9 @@ int main() {
             task.id = i + 1;
             std::cout << "\tTask " << i + 1 << std::endl;
             std::cout << "\tWhat is this task's payment?\n";
-            //std::cin >> pay;
-            pay = "randomtasks";
+            std::cin >> pay;
+            // debug
+            //pay = "randomtasks";
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             if (pay == "randomtasks") {                                                  // For debugging purposes, remove later
                 srand((unsigned)time(NULL));
@@ -224,7 +233,7 @@ int main() {
                     task.startTime = randomStart;
                     int randomEnd = 1 + randomStart + (rand() % (len));
                     task.endTime = randomEnd;
-                    int randomPay = rand() % 50;
+                    int randomPay = rand() % 50 + 1;
                     task.pay = randomPay;
                     task.id = i + 1;
                     tasks.push_back(task);
@@ -293,8 +302,10 @@ int main() {
         else if (cringe.size() > 1) {
             for (int i = 0; i < cringe.size(); i++) {
                 std::cout << "\t\tRoute " << i+1 << ":\n";
-                for (int j = 0; i < cringe[i].size(); j++) {
-                    std::cout << "Task #" << cringe[i][j].id << ((i + 1 < cringe[i].size()) ? ", " : "\n");
+                if (i > 100)
+                    std::cout << "oopsie doopsie";
+                for (int j = 0; j < cringe[i].size(); j++) {
+                    std::cout << "\t\t\tTask #" << cringe[i][j].id << ((i + 1 < cringe[i].size()) ? ", " : "\n");
                     if (i==0)
                         value += cringe[i][j].pay;
                 }
@@ -302,5 +313,7 @@ int main() {
         }
         std::cout << "\tTotal pay: " << value << std::endl;
         //std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        //std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        // ^ sometimes this line makes it require an extra enter input and idk why
     }
 }
