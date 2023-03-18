@@ -13,17 +13,23 @@ struct Task {
     int id;
 
     void print() {
-        std::cout << "Pay is " << pay << "\nstartTime is " << startTime << "\nendTime is " << endTime << std::endl;
+        std::cout << "Task " << id << ": Pay is " << pay << "\nstartTime is " << startTime << "\nendTime is " << endTime << std::endl;
     }
 };
 
 // Returns true if a ends before b
-bool compareTasks(Task a, Task b) {
+bool compareTasks(const Task& a, const Task& b) {
     return (a.endTime < b.endTime);
 }
 
+bool operator== (const Task& a, const Task& b) {
+    return a.id == b.id;
+}
+
 // Brute force algorithms utilizing permutations
-std::vector<Task> bruteForce(std::vector<Task> tasks) {
+std::vector<std::vector<Task>> bruteForce(std::vector<Task> tasks) {
+    int routesFound = 0;
+    std::vector<std::vector<Task>> routeList;
     std::sort(tasks.begin(), tasks.end(), compareTasks);
     int maxValue = 0;
     std::vector<Task> bestRoute;
@@ -51,10 +57,17 @@ std::vector<Task> bruteForce(std::vector<Task> tasks) {
         }
         if (value > maxValue) {
             bestRoute = route;
+            routeList.clear();
+            routeList.push_back(bestRoute);
             maxValue = value;
         }
+        else if (value == maxValue) {
+            if (route != bestRoute)
+                routeList.push_back(bestRoute);
+
+        }
     } while (std::next_permutation(p.begin(), p.end()));
-    return bestRoute;
+    return routeList;
 }
 
 
@@ -139,6 +152,7 @@ int main() {
     std::string inputString;
     std::string divider = "     =============================================================================\n";
     while (true) {
+        tasks.clear();
         std::cout << divider;
         std::cout << "\tHow many paid tasks are there?\n"
             << "\tType your number and press enter,\n"
@@ -244,12 +258,25 @@ int main() {
         }
 
         visualization(tasks);
-        std::vector<Task> cringe = bruteForce(tasks);
+        auto cringe = bruteForce(tasks);
         int value = 0;
+
         std::cout << "Optimal route according to the brute force algorithm:\n";
-        for (int i = 0; i < cringe.size(); i++) {
-            std::cout << "Task #" << cringe[i].id << ((i + 1 < cringe.size()) ? ", " : "\n");
-            value += cringe[i].pay;
+        if (cringe.size() == 1) {
+            for (int i = 0; i < cringe[0].size(); i++) {
+                std::cout << "Task #" << cringe[0][i].id << ((i + 1 < cringe.size()) ? ", " : "\n");
+                value += cringe[0][i].pay;
+            }
+        }
+        else if (cringe.size() > 1) {
+            for (int i = 0; i < cringe.size(); i++) {
+                std::cout << "Route " << i+1 << ":\n";
+                for (int j = 0; i < cringe[i].size(); j++) {
+                    std::cout << "Task #" << cringe[i][j].id << ((i + 1 < cringe[i].size()) ? ", " : "\n");
+                    if (i==0)
+                        value += cringe[i][j].pay;
+                }
+            }
         }
         std::cout << "Total pay: " << value << std::endl;
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
