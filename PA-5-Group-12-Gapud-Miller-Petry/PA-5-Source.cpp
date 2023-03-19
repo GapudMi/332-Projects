@@ -14,12 +14,12 @@ struct Task {
     int id;
 
     void print() {
-        std::cout << "Task " << id << ": Pay is " << pay << "\nstartTime is " << startTime << "\nendTime is " << endTime << std::endl;
+        std::cout << "Task " << id << ": Pay is " << pay << " startTime is " << startTime << " endTime is " << endTime << std::endl;
     }
 };
 
 // Returns true if a ends before b
-bool compareTasks(const Task& a, const Task& b) {
+bool compareTasks(const Task a, const Task b) {
     return (a.endTime < b.endTime);
 }
 
@@ -27,7 +27,7 @@ bool operator== (const Task& a, const Task& b) {
     return a.id == b.id;
 }
 
-bool routesEqual(const std::vector<Task>& a, const std::vector<Task>& b) {
+bool routesEqual(const std::vector<Task> a, const std::vector<Task> b) {
     if (a.size() != b.size())
         return false;
     for (int i=0; i<a.size(); i++) {
@@ -37,18 +37,19 @@ bool routesEqual(const std::vector<Task>& a, const std::vector<Task>& b) {
     return true;
 }
 
-bool vectorContainsRoute(const std::vector<std::vector<Task>>& a, const std::vector<Task>& b) {
+bool vectorContainsRoute(const std::vector<std::vector<Task>> a, const std::vector<Task> b) {
     for (std::vector<Task> r : a) {
-        if (!routesEqual(r, b))
-            return false;
+        if (routesEqual(r, b))
+            return true;
     }
-    return true;
+    return false;
 }
 
 // Brute force algorithms utilizing permutations
-std::vector<std::vector<Task>> bruteForce(std::vector<Task> tasks) {
+std::pair<std::vector<std::vector<Task>>, std::vector<std::vector<Task>>> bruteForce(std::vector<Task> tasks) {
     int routesCompleted = 0;
-    std::vector<std::vector<Task>> routeList;
+    std::vector<std::vector<Task>> bestRouteList;
+    std::vector<std::vector<Task>> maxRouteList;
     std::sort(tasks.begin(), tasks.end(), compareTasks);
     int maxValue = 0;
     std::vector<Task> bestRoute;
@@ -76,23 +77,37 @@ std::vector<std::vector<Task>> bruteForce(std::vector<Task> tasks) {
             route.push_back(tasks[p[i]]);
             value += route.back().pay;
         }
+        if (maxRouteList.size() == 0) {
+            maxRouteList.push_back(route);
+        }
+        else if (route.size() > maxRouteList[0].size()) {
+            maxRouteList.clear();
+            maxRouteList.push_back(route);
+        }
+        else if (route.size() == maxRouteList[0].size()) {
+            if (not vectorContainsRoute(maxRouteList, route)) {
+                maxRouteList.push_back(route);
+            }
+
+        }
         if (value > maxValue) {
             bestRoute = route;
-            routeList.clear();
-            routeList.push_back(bestRoute);
+            bestRouteList.clear();
+            bestRouteList.push_back(bestRoute);
             maxValue = value;
         }
         else if (value == maxValue) {
-            if (!vectorContainsRoute(routeList, route)) {
-                routeList.push_back(route);
-                if (routeList.size() > 10) {
+            if (not vectorContainsRoute(bestRouteList, route)) {
+                bestRouteList.push_back(route);
+                if (bestRouteList.size() > 10) {
                     std::cout << "hell";
                 }
             }
 
         }
     } while (std::next_permutation(p.begin(), p.end()));
-    return routeList;
+    auto lkjhasdf = std::make_pair(bestRouteList, maxRouteList);
+    return lkjhasdf;
 }
 
 
@@ -170,6 +185,14 @@ void visualization(std::vector<Task> set) {
     numberLine(set, 5);
 }
 
+int printRoute(std::vector<Task> v) {
+    int value = 0;
+    for (int i = 0; i < v.size(); i++) {
+            std::cout << "\t\tTask #" << v[i].id << ((i + 1 < v.size()) ? ", " : "\n");
+            value += v[i].pay;
+    }
+    return value;
+}
 
 int main() {
     int numTasks = 10;
@@ -290,29 +313,26 @@ int main() {
         auto cringe = bruteForce(tasks);
         auto bruteStop = Clock::now();
         std::cout << "\tTime elapsed in bruteforce algorithm: " << std::chrono::duration_cast<std::chrono::milliseconds>(bruteStop - bruteStart).count() << " milliseconds." << std::endl;
-        int value = 0;
 
         std::cout << "\tOptimal route according to the brute force algorithm:\n";
-        if (cringe.size() == 1) {
-            for (int i = 0; i < cringe[0].size(); i++) {
-                std::cout << "\t\tTask #" << cringe[0][i].id << ((i + 1 < cringe.size()) ? ", " : "\n");
-                value += cringe[0][i].pay;
-            }
-        }
-        else if (cringe.size() > 1) {
-            for (int i = 0; i < cringe.size(); i++) {
-                std::cout << "\t\tRoute " << i+1 << ":\n";
-                if (i > 100)
-                    std::cout << "oopsie doopsie";
-                for (int j = 0; j < cringe[i].size(); j++) {
-                    std::cout << "\t\t\tTask #" << cringe[i][j].id << ((i + 1 < cringe[i].size()) ? ", " : "\n");
-                    if (i==0)
-                        value += cringe[i][j].pay;
-                }
+        int value = 0;
+        if (cringe.first.size() == 1)
+            value = printRoute(cringe.first[0]);
+        else {
+            for (std::vector<Task> r : cringe.first) {
+                value = printRoute(r);
             }
         }
         std::cout << "\tTotal pay: " << value << std::endl;
-        //std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cout << "\tLongest route(s) found:\n";
+        if (cringe.second.size() == 1)
+            printRoute(cringe.second[0]);
+        else {
+            for (std::vector<Task> r : cringe.second) {
+                std::cout << "\tRoute:\n";
+                printRoute(r);
+            }
+        }
         //std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         // ^ sometimes this line makes it require an extra enter input and idk why
     }
