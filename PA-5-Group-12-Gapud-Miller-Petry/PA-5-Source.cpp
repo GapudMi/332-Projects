@@ -330,7 +330,8 @@ int main() {
         else {
             for (std::vector<Task> r : cringe.second) {
                 std::cout << "\tRoute:\n";
-                printRoute(r);
+                value = printRoute(r);
+                std::cout << "\tTotal pay: " << value << std::endl;
             }
         }
         //std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
