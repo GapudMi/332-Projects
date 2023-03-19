@@ -140,10 +140,10 @@ std::vector<std::vector<Task>> maxRouteFinder(std::vector<Task> penis) {
         if (maxRouteList.size() == 0) {
             maxRouteList.push_back(penis);
         } else {
-            //maxRouteList.push_back(route);
-            if (not isRouteSubset(maxRouteList, route)) {
-                maxRouteList.push_back(route);
-            }
+            maxRouteList.push_back(route);
+            //if (not isRouteSubset(maxRouteList, route)) {
+                //maxRouteList.push_back(route);
+           // }
         }
     }while (std::next_permutation(p.begin(), p.end()));
     maxRouteList.erase(maxRouteList.begin());
