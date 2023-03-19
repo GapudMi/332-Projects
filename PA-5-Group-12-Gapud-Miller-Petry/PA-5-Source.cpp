@@ -182,7 +182,7 @@ int dynamic(std::vector<Task> tasks) {
         }
         // how to catch subsequent routes just containing the pre?
         if (sum == maxPayout) {
-            std::cout << "\t";
+            std::cout << "\t\t";
             for (int j = 0; j < allRoutes[outer].size(); j++) {
                 std::cout << "Task #" << allRoutes[outer][j].id << ((j == allRoutes[outer].size() - 1) ? "\n" : "->");
             }
@@ -268,7 +268,7 @@ void visualization(std::vector<Task> set) {
 
 int printRoute(std::vector<Task> v) {
     int value = 0;
-    std::cout << "\t";
+    std::cout << "\t\t";
     for (int i = 0; i < v.size(); i++) {
         std::cout << "Task #" << v[i].id << ((i + 1 < v.size()) ? "->" : "\n");
         value += v[i].pay;
@@ -394,7 +394,7 @@ int main() {
         auto bruteStart = Clock::now();
         auto cringe = bruteForce(tasks);
         auto bruteStop = Clock::now();
-        std::cout << "\tTime elapsed in bruteforce algorithm: " << std::chrono::duration_cast<std::chrono::milliseconds>(bruteStop - bruteStart).count() << " milliseconds." << std::endl;
+
         int value = 0;
 
         std::cout << "\tOptimal route according to the brute force algorithm:\n";
@@ -405,23 +405,23 @@ int main() {
                 value = printRoute(r);
             }
         }
-        std::cout << "\tTotal pay Brute: " << value << std::endl;
+        std::cout << "\t\tTotal pay Brute: " << value << std::endl << std::endl;
         //dynamo!
         auto dynStart = Clock::now();
         value = dynamic(tasks);
         auto dynStop = Clock::now();
+        std::cout << "\t\tTotal pay Dynamic: " << value << std::endl;
+        std::cout << "\n\tTime elapsed in bruteforce algorithm: " << std::chrono::duration_cast<std::chrono::milliseconds>(bruteStop - bruteStart).count() << " milliseconds." << std::endl;
         std::cout << "\tTime elapsed in dynamic algorithm: " << std::chrono::duration_cast<std::chrono::milliseconds>(dynStop - dynStart).count() << " milliseconds." << std::endl;
-        std::cout << "\tTotal pay Dynamic: " << value << std::endl;
 
-
-        std::cout << "\tLongest route(s) found:\n";
+        std::cout << "\n\tLongest route(s) found:\n";
         if (cringe.second.size() == 1)
             printRoute(cringe.second[0]);
         else {
             for (std::vector<Task> r : cringe.second) {
                 std::cout << "\tRoute:\n";
                 value = printRoute(r);
-                std::cout << "\tTotal pay: " << value << std::endl;
+                std::cout << "\t\tTotal pay: " << value << std::endl;
             }
         }
     }
