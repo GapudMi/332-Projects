@@ -46,10 +46,9 @@ bool vectorContainsRoute(const std::vector<std::vector<Task>> a, const std::vect
 }
 
 // Brute force algorithms utilizing permutations
-std::pair<std::vector<std::vector<Task>>, std::vector<std::vector<Task>>> bruteForce(std::vector<Task> tasks) {
+std::vector<std::vector<Task>> bruteForce(std::vector<Task> tasks) {
     int routesCompleted = 0;
     std::vector<std::vector<Task>> bestRouteList;
-    std::vector<std::vector<Task>> maxRouteList;
     std::sort(tasks.begin(), tasks.end(), compareTasks);
     int maxValue = 0;
     std::vector<Task> bestRoute;
@@ -77,22 +76,7 @@ std::pair<std::vector<std::vector<Task>>, std::vector<std::vector<Task>>> bruteF
             route.push_back(tasks[p[i]]);
             value += route.back().pay;
         }
-        if (maxRouteList.size() == 0) {
-            maxRouteList.push_back(route);
-        }
-        else {
-            if (not vectorContainsRoute(maxRouteList, route)) {
-                maxRouteList.push_back(route);
-            }
-        }
-        /*else if (route.size() > maxRouteList[0].size()) {
-            maxRouteList.clear();
-            maxRouteList.push_back(route);
-        }
-        else if (route.size() == maxRouteList[0].size()) {
 
-
-        }*/
         if (value > maxValue) {
             bestRoute = route;
             bestRouteList.clear();
@@ -109,8 +93,40 @@ std::pair<std::vector<std::vector<Task>>, std::vector<std::vector<Task>>> bruteF
 
         }
     } while (std::next_permutation(p.begin(), p.end()));
-    auto lkjhasdf = std::make_pair(bestRouteList, maxRouteList);
-    return lkjhasdf;
+    return bestRouteList;
+}
+
+std::vector<std::vector<Task>> maxRouteFinder(std::vector<Task> penis) {
+    std::vector<std::vector<Task>> maxRouteList;
+    std::vector<int> p;
+    std::sort(penis.begin(), penis.end(), compareTasks);
+    int routesCompleted = 0;
+    for (int i = 0; i < penis.size(); i++)
+        p.push_back(i);
+    do {
+        std::vector<Task> route;
+        for (int i = 0; i < p.size(); i++) {
+            if (p[0] > routesCompleted) {
+                routesCompleted++;
+                p.erase(p.begin() + 1);
+            }
+            if (route.size() == 0) {
+                route.push_back(penis[p[i]]);
+                continue;
+            }
+            if (route.back().endTime > penis[p[i]].startTime)
+                continue;
+            route.push_back(penis[p[i]]);
+        }
+        if (maxRouteList.size() == 0) {
+            maxRouteList.push_back(penis);
+        } else {
+            if (not vectorContainsRoute(maxRouteList, route)) {
+                maxRouteList.push_back(route); // TODO remove subsets
+            }
+        }
+    }while (std::next_permutation(p.begin(), p.end()));
+    return maxRouteList;
 }
 
 int dynamic(std::vector<Task> tasks) {
@@ -460,27 +476,27 @@ int main() {
         dynamic(tasks);
         auto dynStop = Clock::now();
         std::cout << "\n\tThe time elapsed in bruteforce algorithm is " << std::chrono::duration_cast<std::chrono::milliseconds>(bruteStop - bruteStart).count() << " milliseconds." << std::endl;
-        std::cout << "\tThe elapsed in the non-recursive DP algorithm is " << std::chrono::duration_cast<std::chrono::milliseconds>(dynStop - dynStart).count() << " milliseconds." << std::endl;
+        std::cout << "\tThe elapsed in the non-recursive DP algorithm is " << std::chrono::duration_cast<std::chrono::microseconds>(dynStop - dynStart).count() << " microseconds." << std::endl;
 
         std::cout << std::endl;
-        if (cringe.first.size() == 1)
-            printMaxRoute(cringe.first[0], value);
+        if (cringe.size() == 1)
+            printMaxRoute(cringe[0], value);
         else {
-            for (std::vector<Task> r : cringe.first) {
+            for (std::vector<Task> r : cringe) {
                 printMaxRoute(r, value);
             }
         }
         
-        
-        if (cringe.second.size() == 1){
+        auto maxRoutes = maxRouteFinder(tasks);
+        if (maxRoutes.size() == 1){
             std::cout << "\n\tThere is 1 set of tasks\n";
             std::cout << "\tOption 1: " ;
-            printRoute(cringe.second[0]);
+            printRoute(maxRoutes[0]);
         }
         else {
-            std::cout << "\n\tThere are " << cringe.second.size() << " different sets of tasks\n";
+            std::cout << "\n\tThere are " << maxRoutes.size() << " different sets of tasks\n";
             int i = 1;
-            for (std::vector<Task> r : cringe.second) {
+            for (std::vector<Task> r : maxRoutes) {
                 std::cout << "\tOption " << i << ": " ;
                 printRoute(r);
                 i++;
