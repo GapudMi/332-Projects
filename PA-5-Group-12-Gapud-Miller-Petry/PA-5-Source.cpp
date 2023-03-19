@@ -326,7 +326,7 @@ void printMaxRoute(std::vector<Task> v, int payout) {
 void printRoute(std::vector<Task> v) {
     int value = 0;
     for (int i = 0; i < v.size(); i++) {
-        std::cout << "Task_" << v[i].id << ((i + 1 < v.size()) ? "->" : "");
+        std::cout << "Task_" << v[i].id << ((i + 1 < v.size()) ? "->" : ", ");
         value += v[i].pay;
     }
     std::cout << "with a total earning of " << value << ".\n";
