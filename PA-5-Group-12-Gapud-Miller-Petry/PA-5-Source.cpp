@@ -295,7 +295,7 @@ int main() {
         std::cout << "\tOptimal route according to the brute force algorithm:\n";
         if (cringe.size() == 1) {
             for (int i = 0; i < cringe[0].size(); i++) {
-                std::cout << "\t\tTask #" << cringe[0][i].id << ((i + 1 < cringe.size()) ? ", " : "\n");
+                std::cout << "\t\tTask #" << cringe[0][i].id << ((i + 1 < cringe.size()) ? "->" : "\n");
                 value += cringe[0][i].pay;
             }
         }
@@ -305,7 +305,7 @@ int main() {
                 if (i > 100)
                     std::cout << "oopsie doopsie";
                 for (int j = 0; j < cringe[i].size(); j++) {
-                    std::cout << "\t\t\tTask #" << cringe[i][j].id << ((i + 1 < cringe[i].size()-1) ? "->" : "\n");
+                    std::cout << "\t\t\tTask #" << cringe[i][j].id << ((i + 1 < cringe[i].size()) ? "->" : "\n");
                     if (i==0)
                         value += cringe[i][j].pay;
                 }
