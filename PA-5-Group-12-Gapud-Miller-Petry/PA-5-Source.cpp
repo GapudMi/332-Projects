@@ -30,7 +30,7 @@ bool operator== (const Task& a, const Task& b) {
 bool routesEqual(const std::vector<Task> a, const std::vector<Task> b) {
     if (a.size() != b.size())
         return false;
-    for (int i=0; i<a.size(); i++) {
+    for (int i = 0; i < a.size(); i++) {
         if (a[i].id != b[i].id)
             return false;
     }
@@ -59,7 +59,7 @@ std::pair<std::vector<std::vector<Task>>, std::vector<std::vector<Task>>> bruteF
     do {
         if (p[0] > routesCompleted) {
             routesCompleted++;
-            p.erase(p.begin()+1);
+            p.erase(p.begin() + 1);
         }
 
         std::vector<Task> route;
@@ -110,6 +110,86 @@ std::pair<std::vector<std::vector<Task>>, std::vector<std::vector<Task>>> bruteF
     return lkjhasdf;
 }
 
+int dynamic(std::vector<Task> tasks) {
+    std::vector<std::vector<Task>> allRoutes;
+    std::vector<std::vector<Task>> allMaxRoutes;
+    std::vector<int> maxChoose;
+    std::vector<int> maxNoChoose;
+    std::vector<int> trueMax;
+    std::vector<Task> pre;
+    std::vector<int> preIndex;
+    Task noPrev; noPrev.endTime = 0; noPrev.startTime = 0; noPrev.pay = 0; noPrev.id = -1;
+
+    // Initial condition
+    int i = 0;
+    pre.push_back(noPrev);
+    maxChoose.push_back(tasks[i].pay);
+    maxNoChoose.push_back(0);
+    trueMax.push_back(tasks[i].pay);
+    allRoutes.push_back({ tasks[i] });
+    preIndex.push_back(-1);
+
+    // General cases
+    for (i = 1; i < tasks.size(); i++) {
+        bool hasPrev = false;
+        preIndex.push_back(-1);
+        for (int j = i; j >= 0; j--) {
+            if (tasks[i].startTime >= tasks[j].endTime) {
+                pre.push_back(tasks[j]);
+                preIndex[i] = j;
+                hasPrev = true;
+                break;
+            }
+        }
+        if (!hasPrev) { // NO PREVIOUS POSSIBLE NODES
+            pre.push_back(noPrev);
+            maxChoose.push_back(tasks[i].pay);
+            maxNoChoose.push_back(trueMax[i - 1]);
+            if (maxChoose[i] > maxNoChoose[i]) { // there's like some space here for determining duplicate paths
+                trueMax.push_back(maxChoose[i]);
+                allRoutes.push_back({ tasks[i] }); // you can just push back this node as a route because there are no other routes, and you chose this node
+            }
+            else {
+                trueMax.push_back(maxNoChoose[i]);
+                allRoutes.push_back(allRoutes[i - 1]); // if you didn't choose this node, then the previous node's route was chosen
+            }
+        }
+        else { // PREVIOUS NODES EXIST
+            maxChoose.push_back(tasks[i].pay + trueMax[preIndex[i]]);
+            maxNoChoose.push_back(trueMax[i - 1]);
+            std::vector<Task> thisRoute;
+            if (maxChoose[i] > maxNoChoose[i]) { // there's like some space here for determining duplicate paths
+                trueMax.push_back(maxChoose[i]);
+                thisRoute = allRoutes[preIndex[i]];
+                thisRoute.push_back(tasks[i]);
+                allRoutes.push_back(thisRoute);
+            }
+            else {
+                trueMax.push_back(maxNoChoose[i]);
+                allRoutes.push_back(allRoutes[i - 1]); // if you didn't choose this node, then the previous node's route was chosen
+            }
+        }
+    }
+
+    // Find which routes have the max payout and print them
+    int maxPayout = trueMax[trueMax.size() - 1];
+    for (int outer = 0; outer < allRoutes.size(); outer++) {
+        int sum = 0;
+        if ((preIndex[outer] != -1) && (allRoutes[outer] != allRoutes[outer - 1])) {
+            for (int inner = 0; inner < allRoutes[outer].size(); inner++) {
+                sum += allRoutes[outer][inner].pay;
+            }
+        }
+        // how to catch subsequent routes just containing the pre?
+        if (sum == maxPayout) {
+            for (int j = 0; j < allRoutes[outer].size(); j++) {
+                std::cout << "Task #" << allRoutes[outer][j].id << ((j == allRoutes[outer].size() - 1) ? "\n" : "->");
+            }
+        }
+
+    }
+    return maxPayout;
+}
 
 void numberLine(std::vector<Task> set, int interval) {
     for (int i = 0; i < set.at(set.size() - 1).endTime + 4; i += interval) {
@@ -188,8 +268,8 @@ void visualization(std::vector<Task> set) {
 int printRoute(std::vector<Task> v) {
     int value = 0;
     for (int i = 0; i < v.size(); i++) {
-            std::cout << "\t\tTask #" << v[i].id << ((i + 1 < v.size()) ? ", " : "\n");
-            value += v[i].pay;
+        std::cout << "\t\tTask #" << v[i].id << ((i + 1 < v.size()) ? ", " : "\n");
+        value += v[i].pay;
     }
     return value;
 }
@@ -243,14 +323,14 @@ int main() {
             if (pay == "randomtasks") {                                                  // For debugging purposes, remove later
                 srand((unsigned)time(NULL));
                 int randmax = 200;
-                int len = randmax/4;
+                int len = randmax / 4;
                 /*// remove comment to test different things
                 std::cout << "\t Last possible endtime?\n";     //(total length of graph)
                 std::cin >> randmax;
                 std::cout << "\t Max length?\n";                //(shorter means more possible paths)
                 std::cin >> len;
                 */
-                
+
                 for (int i = 0; i < numTasks; i++) {
                     int randomStart = (rand() % (randmax - len));
                     task.startTime = randomStart;
@@ -323,7 +403,15 @@ int main() {
                 value = printRoute(r);
             }
         }
-        std::cout << "\tTotal pay: " << value << std::endl;
+        std::cout << "\tTotal pay Brute: " << value << std::endl;
+        //dynamo!
+        auto dynStart = Clock::now();
+        value = dynamic(tasks);
+        auto dynStop = Clock::now();
+        std::cout << "\tTime elapsed in dynamic algorithm: " << std::chrono::duration_cast<std::chrono::milliseconds>(dynStop - dynStart).count() << " milliseconds." << std::endl;
+        std::cout << "\tTotal pay Dynamic: " << value << std::endl;
+
+
         std::cout << "\tLongest route(s) found:\n";
         if (cringe.second.size() == 1)
             printRoute(cringe.second[0]);
