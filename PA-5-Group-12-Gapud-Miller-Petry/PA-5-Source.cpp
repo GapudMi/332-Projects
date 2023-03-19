@@ -192,6 +192,53 @@ int dynamic(std::vector<Task> tasks) {
     return maxPayout;
 }
 
+// recursively find every unique set of tasks
+std::vector<std::vector<Task>> recursiveTasks(std::vector<Task> set) {
+    std::sort(set.begin(), set.end(), compareTasks);
+    auto routeList = taskListRecursive(set, nullptr);
+    //will add checks to get rid of non-unique sets
+    //compare every set to every other and remove them from routeList
+    //routeList.erase(routeList.begin());
+    return routeList;
+}
+
+// recursively finds *every* set of tasks
+std::vector<std::vector<Task>> taskListRecursive(std::vector<Task> set, Task* currTask) {
+    std::vector<std::vector<Task>> newSet;
+    std::vector<Task> nextSet;
+
+    //create vector of tasks that start after this one
+    if (currTask) {
+        for (int i = 0; i < set.size(); i++) {
+            if (set[i].startTime >= currTask->endTime &&
+                set[i].startTime != set[i].endTime) { //being cautious
+                nextSet.push_back(set[i]);
+            }
+        }
+    }
+    else {
+        nextSet = set;
+    }
+
+    //base case
+    if (nextSet.size() == 0) {
+        newSet.push_back(nextSet);
+        return newSet;
+    }
+    //recursive case
+    else {
+        for (int i = 0; i < nextSet.size(); i++) {
+            auto tempSet = taskListRecursive(nextSet, &nextSet[i]);
+
+            for (int j = 0; j < tempSet.size(); j++) {
+                tempSet[j].insert(tempSet[j].begin(), nextSet[i]); //inserts the current Task at the bigenning of the set
+                newSet.push_back(tempSet[j]);
+            }
+        }
+        return newSet;
+    }
+}
+
 void numberLine(std::vector<Task> set, int interval) {
     for (int i = 0; i < set.at(set.size() - 1).endTime + 4; i += interval) {
         // counter every multiple of interval
