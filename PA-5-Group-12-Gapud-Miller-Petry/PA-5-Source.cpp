@@ -182,6 +182,7 @@ int dynamic(std::vector<Task> tasks) {
         }
         // how to catch subsequent routes just containing the pre?
         if (sum == maxPayout) {
+            std::cout << "\t";
             for (int j = 0; j < allRoutes[outer].size(); j++) {
                 std::cout << "Task #" << allRoutes[outer][j].id << ((j == allRoutes[outer].size() - 1) ? "\n" : "->");
             }
@@ -267,8 +268,9 @@ void visualization(std::vector<Task> set) {
 
 int printRoute(std::vector<Task> v) {
     int value = 0;
+    std::cout << "\t";
     for (int i = 0; i < v.size(); i++) {
-        std::cout << "\t\tTask #" << v[i].id << ((i + 1 < v.size()) ? ", " : "\n");
+        std::cout << "Task #" << v[i].id << ((i + 1 < v.size()) ? "->" : "\n");
         value += v[i].pay;
     }
     return value;
