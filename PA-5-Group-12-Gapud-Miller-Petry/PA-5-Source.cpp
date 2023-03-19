@@ -195,7 +195,7 @@ int printRoute(std::vector<Task> v) {
 }
 
 int main() {
-    int numTasks = 10;
+    int numTasks = 0;
     std::vector<Task> tasks;
     std::string inputString;
     std::string divider = "     =============================================================================\n";
@@ -313,9 +313,9 @@ int main() {
         auto cringe = bruteForce(tasks);
         auto bruteStop = Clock::now();
         std::cout << "\tTime elapsed in bruteforce algorithm: " << std::chrono::duration_cast<std::chrono::milliseconds>(bruteStop - bruteStart).count() << " milliseconds." << std::endl;
+        int value = 0;
 
         std::cout << "\tOptimal route according to the brute force algorithm:\n";
-        int value = 0;
         if (cringe.first.size() == 1)
             value = printRoute(cringe.first[0]);
         else {
