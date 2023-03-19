@@ -471,6 +471,7 @@ int main() {
         
         if (cringe.second.size() == 1){
             std::cout << "\n\tThere is 1 set of tasks\n";
+            std::cout << "\tOption 1: " ;
             printRoute(cringe.second[0]);
         }
         else {
