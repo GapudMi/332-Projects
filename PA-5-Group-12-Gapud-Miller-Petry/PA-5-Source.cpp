@@ -80,16 +80,19 @@ std::pair<std::vector<std::vector<Task>>, std::vector<std::vector<Task>>> bruteF
         if (maxRouteList.size() == 0) {
             maxRouteList.push_back(route);
         }
-        else if (route.size() > maxRouteList[0].size()) {
+        else {
+            if (not vectorContainsRoute(maxRouteList, route)) {
+                maxRouteList.push_back(route);
+            }
+        }
+        /*else if (route.size() > maxRouteList[0].size()) {
             maxRouteList.clear();
             maxRouteList.push_back(route);
         }
         else if (route.size() == maxRouteList[0].size()) {
-            if (not vectorContainsRoute(maxRouteList, route)) {
-                maxRouteList.push_back(route);
-            }
 
-        }
+
+        }*/
         if (value > maxValue) {
             bestRoute = route;
             bestRouteList.clear();
