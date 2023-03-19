@@ -170,7 +170,7 @@ int dynamic(std::vector<Task> tasks) {
             }
         }
     }
-
+    /* outputting unneeded
     // Find which routes have the max payout and print them
     int maxPayout = trueMax[trueMax.size() - 1];
     for (int outer = 0; outer < allRoutes.size(); outer++) {
@@ -189,9 +189,10 @@ int dynamic(std::vector<Task> tasks) {
         }
 
     }
-    return maxPayout;
+    */
+    return trueMax[trueMax.size() - 1];
 }
-
+/*
 // recursively find every unique set of tasks
 std::vector<std::vector<Task>> recursiveTasks(std::vector<Task> set) {
     std::sort(set.begin(), set.end(), compareTasks);
@@ -238,6 +239,7 @@ std::vector<std::vector<Task>> taskListRecursive(std::vector<Task> set, Task* cu
         return newSet;
     }
 }
+*/
 
 void numberLine(std::vector<Task> set, int interval) {
     for (int i = 0; i < set.at(set.size() - 1).endTime + 4; i += interval) {
@@ -313,14 +315,21 @@ void visualization(std::vector<Task> set) {
     numberLine(set, 5);
 }
 
-int printRoute(std::vector<Task> v) {
-    int value = 0;
-    std::cout << "\t\t";
+void printMaxRoute(std::vector<Task> v, int payout) {
+    std::cout << "\t";
     for (int i = 0; i < v.size(); i++) {
-        std::cout << "Task #" << v[i].id << ((i + 1 < v.size()) ? "->" : "\n");
+        std::cout << "Task_" << v[i].id << ((i + 1 < v.size()) ? "->" : ", ");
+    }
+    std::cout << "with a total earning of " << payout << ".\n";
+}
+
+void printRoute(std::vector<Task> v) {
+    int value = 0;
+    for (int i = 0; i < v.size(); i++) {
+        std::cout << "Task_" << v[i].id << ((i + 1 < v.size()) ? "->" : "");
         value += v[i].pay;
     }
-    return value;
+    std::cout << "with a total earning of " << value << ".\n";
 }
 
 int main() {
@@ -443,32 +452,34 @@ int main() {
         auto bruteStop = Clock::now();
 
         int value = 0;
+        value = dynamic(tasks);
+        auto dynStart = Clock::now();
+        dynamic(tasks);
+        auto dynStop = Clock::now();
+        std::cout << "\n\tThe time elapsed in bruteforce algorithm is " << std::chrono::duration_cast<std::chrono::milliseconds>(bruteStop - bruteStart).count() << " milliseconds." << std::endl;
+        std::cout << "\tThe elapsed in the non-recursive DP algorithm is " << std::chrono::duration_cast<std::chrono::milliseconds>(dynStop - dynStart).count() << " milliseconds." << std::endl;
 
-        std::cout << "\tOptimal route according to the brute force algorithm:\n";
+        std::cout << std::endl;
         if (cringe.first.size() == 1)
-            value = printRoute(cringe.first[0]);
+            printMaxRoute(cringe.first[0], value);
         else {
             for (std::vector<Task> r : cringe.first) {
-                value = printRoute(r);
+                printMaxRoute(r, value);
             }
         }
-        std::cout << "\t\tTotal pay Brute: " << value << std::endl << std::endl;
-        //dynamo!
-        auto dynStart = Clock::now();
-        value = dynamic(tasks);
-        auto dynStop = Clock::now();
-        std::cout << "\t\tTotal pay Dynamic: " << value << std::endl;
-        std::cout << "\n\tTime elapsed in bruteforce algorithm: " << std::chrono::duration_cast<std::chrono::milliseconds>(bruteStop - bruteStart).count() << " milliseconds." << std::endl;
-        std::cout << "\tTime elapsed in dynamic algorithm: " << std::chrono::duration_cast<std::chrono::milliseconds>(dynStop - dynStart).count() << " milliseconds." << std::endl;
-
-        std::cout << "\n\tLongest route(s) found:\n";
-        if (cringe.second.size() == 1)
+        
+        
+        if (cringe.second.size() == 1){
+            std::cout << "\n\tThere is 1 set of tasks\n";
             printRoute(cringe.second[0]);
+        }
         else {
+            std::cout << "\n\tThere are " << cringe.second.size() << " different sets of tasks\n";
+            int i = 1;
             for (std::vector<Task> r : cringe.second) {
-                std::cout << "\tRoute:\n";
-                value = printRoute(r);
-                std::cout << "\t\tTotal pay: " << value << std::endl;
+                std::cout << "\tOption " << i << ": " ;
+                printRoute(r);
+                i++;
             }
         }
     }
