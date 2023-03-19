@@ -207,7 +207,7 @@ int main() {
             << "\tor type \"exit\" and press enter to quit at any time.\n" << divider;
         while (true) {
             try {
-                std::getline(std::cin, inputString);
+                std::cin >> inputString;
                 std::transform(inputString.begin(), inputString.end(), inputString.begin(),
                     ::tolower); // Convert input to lower case for case-nonsensitive input
                 if (inputString == "exit") {
@@ -334,7 +334,5 @@ int main() {
                 std::cout << "\tTotal pay: " << value << std::endl;
             }
         }
-        //std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        // ^ sometimes this line makes it require an extra enter input and idk why
     }
 }
