@@ -305,7 +305,7 @@ int main() {
                 if (i > 100)
                     std::cout << "oopsie doopsie";
                 for (int j = 0; j < cringe[i].size(); j++) {
-                    std::cout << "\t\t\tTask #" << cringe[i][j].id << ((i + 1 < cringe[i].size()) ? ", " : "\n");
+                    std::cout << "\t\t\tTask #" << cringe[i][j].id << ((i + 1 < cringe[i].size()-1) ? "->" : "\n");
                     if (i==0)
                         value += cringe[i][j].pay;
                 }
