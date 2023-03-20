@@ -553,7 +553,7 @@ int main() {
         dynamic(tasks);
         auto dynStop = Clock::now();
         std::cout << "\n\tThe time elapsed in bruteforce algorithm is " << std::chrono::duration_cast<std::chrono::milliseconds>(bruteStop - bruteStart).count() << " milliseconds." << std::endl;
-        std::cout << "\tThe elapsed in the non-recursive DP algorithm is " << std::chrono::duration_cast<std::chrono::microseconds>(dynStop - dynStart).count() << " microseconds." << std::endl;
+        std::cout << "\tThe time elapsed in the non-recursive DP algorithm is " << std::chrono::duration_cast<std::chrono::microseconds>(dynStop - dynStart).count() << " microseconds." << std::endl;
 
         std::cout << std::endl;
         if (cringe.size() == 1)
