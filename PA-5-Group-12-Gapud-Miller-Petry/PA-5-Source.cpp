@@ -69,6 +69,7 @@ bool isRouteSubset(const std::vector<std::vector<Task>> a, const std::vector<Tas
     return false;
 }
 
+
 // Brute force algorithms utilizing permutations
 std::vector<std::vector<Task>> bruteForce(std::vector<Task> tasks) {
     int routesCompleted = 0;
@@ -82,7 +83,6 @@ std::vector<std::vector<Task>> bruteForce(std::vector<Task> tasks) {
     do {
         if (p[0] > routesCompleted) {
             routesCompleted++;
-            p.erase(p.begin() + 1);
         }
 
         std::vector<Task> route;
@@ -148,12 +148,12 @@ std::vector<std::vector<Task>> maxRouteFinder(std::vector<Task>& penis) {
             else if (previousTask.endTime <= currentTask.startTime) {
                 route.push_back(currentTask);
                 previousTask = currentTask;
-                std::cout << route[route.size()-1].endTime << " " << currentTask.startTime << std::endl;
+                //std::cout << route[route.size()-1].endTime << " " << currentTask.startTime << std::endl;
             }
 
         }
         if (maxRouteList.size() == 0) {
-            maxRouteList.push_back(penis);
+            maxRouteList.push_back(route);
         }
         else {
             if (not vectorContainsRoute(maxRouteList, route))
