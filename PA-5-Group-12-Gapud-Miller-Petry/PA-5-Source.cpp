@@ -120,26 +120,37 @@ std::vector<std::vector<Task>> bruteForce(std::vector<Task> tasks) {
     return bestRouteList;
 }
 
-std::vector<std::vector<Task>> maxRouteFinder(std::vector<Task> penis) {
+std::vector<std::vector<Task>> maxRouteFinder(std::vector<Task>& penis) {
     std::vector<std::vector<Task>> maxRouteList;
     std::vector<int> p;
     std::sort(penis.begin(), penis.end(), compareTasks);
     int routesCompleted = 0;
+    Task previousTask;
     for (int i = 0; i < penis.size(); i++)
         p.push_back(i);
     do {
+        bool firstTask = true;
         std::vector<Task> route;
-        for (int i = 0; i < p.size(); i++) {
+        for (int i : p) {
+            Task currentTask = penis[i];
             if (p[0] > routesCompleted) {
                 routesCompleted++;
             }
-            if (route.size() == 0) {
-                route.push_back(penis[p[i]]);
+            if (firstTask) {
+                route.push_back(currentTask);
+                previousTask = currentTask;
+                firstTask = false;
                 continue;
             }
-            if (route.back().endTime > penis[p[i]].startTime)
+            else if (previousTask.endTime > currentTask.startTime) {
                 continue;
-            route.push_back(penis[p[i]]);
+            }
+            else if (previousTask.endTime <= currentTask.startTime) {
+                route.push_back(currentTask);
+                previousTask = currentTask;
+                std::cout << route[route.size()-1].endTime << " " << currentTask.startTime << std::endl;
+            }
+
         }
         if (maxRouteList.size() == 0) {
             maxRouteList.push_back(penis);
