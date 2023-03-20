@@ -50,26 +50,6 @@ bool vectorContainsRoute(const std::vector<std::vector<Task>> a, const std::vect
     return false;
 }
 
-bool isRouteSubset(const std::vector<std::vector<Task>> a, const std::vector<Task> b) {
-    for (int f = 1; f < a.size(); f++) {
-        int matches = 0;
-        int i = 0;
-        while (matches < b.size()) {
-            if (i > a[f].size())
-                break;
-            if (a[f][i] == b[matches]) {
-                matches++;
-            }
-            if (matches == b.size() - 1) {
-                return true;
-            }
-            i++;
-        }
-    }
-    return false;
-}
-
-
 // Brute force algorithms utilizing permutations
 std::vector<std::vector<Task>> bruteForce(std::vector<Task> tasks) {
     int routesCompleted = 0;
@@ -110,9 +90,6 @@ std::vector<std::vector<Task>> bruteForce(std::vector<Task> tasks) {
         else if (value == maxValue) {
             if (not vectorContainsRoute(bestRouteList, route)) {
                 bestRouteList.push_back(route);
-                if (bestRouteList.size() > 10) {
-                    std::cout << "hell";
-                }
             }
 
         }
@@ -120,26 +97,24 @@ std::vector<std::vector<Task>> bruteForce(std::vector<Task> tasks) {
     return bestRouteList;
 }
 
-std::vector<std::vector<Task>> maxRouteFinder(std::vector<Task>& penis) {
+std::vector<std::vector<Task>> maxRouteFinder(std::vector<Task> tasks) {
     std::vector<std::vector<Task>> maxRouteList;
     std::vector<int> p;
-    std::sort(penis.begin(), penis.end(), compareTasks);
+    std::sort(tasks.begin(), tasks.end(), compareTasks);
     int routesCompleted = 0;
     Task previousTask;
-    for (int i = 0; i < penis.size(); i++)
+    for (int i = 0; i < tasks.size(); i++)
         p.push_back(i);
     do {
-        bool firstTask = true;
         std::vector<Task> route;
         for (int i : p) {
-            Task currentTask = penis[i];
+            Task currentTask = tasks[i];
             if (p[0] > routesCompleted) {
                 routesCompleted++;
             }
-            if (firstTask) {
+            if (route.size() == 0) {
                 route.push_back(currentTask);
                 previousTask = currentTask;
-                firstTask = false;
                 continue;
             }
             else if (previousTask.endTime > currentTask.startTime) {
@@ -148,7 +123,6 @@ std::vector<std::vector<Task>> maxRouteFinder(std::vector<Task>& penis) {
             else if (previousTask.endTime <= currentTask.startTime) {
                 route.push_back(currentTask);
                 previousTask = currentTask;
-                //std::cout << route[route.size()-1].endTime << " " << currentTask.startTime << std::endl;
             }
 
         }
@@ -471,8 +445,6 @@ int main() {
             std::cout << "\tTask " << i + 1 << std::endl;
             std::cout << "\tWhat is this task's payment?\n";
             std::cin >> pay;
-            // debug
-            //pay = "randomtasks";
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             if (pay == "randomtasks") {                                                  // For debugging purposes, remove later
                 srand((unsigned)time(NULL));
@@ -518,6 +490,10 @@ int main() {
                     task.endTime = std::stoi(end);
                     if (task.endTime < 0)
                         throw std::invalid_argument("");
+                    if (task.endTime < task.startTime) {
+                        std::cout << "\tEnd time must be after start time.\n";
+                        continue;
+                    }
                     break;
                 }
                 catch (std::invalid_argument) {
@@ -526,20 +502,12 @@ int main() {
             }
             task.pay = std::stoi(pay);
 
-            /*if (task.endTime < task.startTime) {
-                std::cout << "\tEnd time must be after start time.\n";
-            }*/
-
             std::cout << divider;
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             tasks.push_back(task);
         }
         // Sort tasks by their END time, least to greatest
         std::sort(tasks.begin(), tasks.end(), compareTasks);
-        /*
-        for (int i = 0; i < tasks.size(); i++) {
-            tasks.at(i).print();
-        }*/
 
         visualization(tasks);
         typedef std::chrono::high_resolution_clock Clock;
@@ -552,8 +520,8 @@ int main() {
         auto dynStart = Clock::now();
         dynamic(tasks);
         auto dynStop = Clock::now();
-        std::cout << "\n\tThe time elapsed in bruteforce algorithm is " << std::chrono::duration_cast<std::chrono::milliseconds>(bruteStop - bruteStart).count() << " milliseconds." << std::endl;
-        std::cout << "\tThe elapsed in the non-recursive DP algorithm is " << std::chrono::duration_cast<std::chrono::microseconds>(dynStop - dynStart).count() << " microseconds." << std::endl;
+        std::cout << "\n\tThe time elapsed in bruteforce algorithm is " << std::chrono::duration_cast<std::chrono::microseconds>(bruteStop - bruteStart).count() << " microseconds." << std::endl;
+        std::cout << "\tThe time elapsed in the non-recursive DP algorithm is " << std::chrono::duration_cast<std::chrono::microseconds>(dynStop - dynStart).count() << " microseconds." << std::endl;
 
         std::cout << std::endl;
         if (cringe.size() == 1)
