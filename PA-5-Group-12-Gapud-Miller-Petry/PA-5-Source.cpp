@@ -132,7 +132,6 @@ std::vector<std::vector<Task>> maxRouteFinder(std::vector<Task> penis) {
         for (int i = 0; i < p.size(); i++) {
             if (p[0] > routesCompleted) {
                 routesCompleted++;
-                p.erase(p.begin() + 1);
             }
             if (route.size() == 0) {
                 route.push_back(penis[p[i]]);
@@ -150,7 +149,6 @@ std::vector<std::vector<Task>> maxRouteFinder(std::vector<Task> penis) {
                 maxRouteList.push_back(route);
         }
     } while (std::next_permutation(p.begin(), p.end()));
-    maxRouteList.erase(maxRouteList.begin());
     return maxRouteList;
 }
 
