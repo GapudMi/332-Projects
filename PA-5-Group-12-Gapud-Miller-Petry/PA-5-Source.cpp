@@ -512,7 +512,7 @@ int main() {
         visualization(tasks);
         typedef std::chrono::high_resolution_clock Clock;
         auto bruteStart = Clock::now();
-        auto cringe = bruteForce(tasks);
+        auto bfResult = bruteForce(tasks);
         auto bruteStop = Clock::now();
 
         int value = 0;
@@ -524,10 +524,10 @@ int main() {
         std::cout << "\tThe time elapsed in the non-recursive DP algorithm is " << std::chrono::duration_cast<std::chrono::microseconds>(dynStop - dynStart).count() << " microseconds." << std::endl;
 
         std::cout << std::endl;
-        if (cringe.size() == 1)
-            printMaxRoute(cringe[0], value);
+        if (bfResult.size() == 1)
+            printMaxRoute(bfResult[0], value);
         else {
-            for (std::vector<Task> r : cringe) {
+            for (std::vector<Task> r : bfResult) {
                 printMaxRoute(r, value);
             }
         }
