@@ -24,7 +24,7 @@ bool compareTasks(const Task a, const Task b) {
 }
 
 // Returns true if a is bigger than b
-bool compareLength(const std::vector<Task> a, const std::vector<Task> b) {
+bool compareLength(const std::vector<Task>& a, const std::vector<Task>& b) {
     return (a.size() > b.size());
 }
 
@@ -32,7 +32,7 @@ bool operator== (const Task& a, const Task& b) {
     return a.id == b.id;
 }
 
-bool routesEqual(const std::vector<Task> a, const std::vector<Task> b) {
+bool routesEqual(const std::vector<Task>& a, const std::vector<Task>& b) {
     if (a.size() != b.size())
         return false;
     for (int i = 0; i < a.size(); i++) {
@@ -42,7 +42,7 @@ bool routesEqual(const std::vector<Task> a, const std::vector<Task> b) {
     return true;
 }
 
-bool vectorContainsRoute(const std::vector<std::vector<Task>> a, const std::vector<Task> b) {
+bool vectorContainsRoute(const std::vector<std::vector<Task>>& a, const std::vector<Task>& b) {
     for (std::vector<Task> r : a) {
         if (routesEqual(r, b))
             return true;
@@ -66,13 +66,11 @@ std::vector<std::vector<Task>> bruteForce(std::vector<Task> tasks) {
         }
 
         std::vector<Task> route;
-        int bottom = -1;
         int value = 0;
         for (int i = 0; i < p.size(); i++) {
-            if (route.size() == 0) {
+            if (route.empty()) {
                 route.push_back(tasks[p[i]]);
                 value += tasks[p[i]].pay;
-                bottom = p[i];
                 continue;
             }
             if (route.back().endTime > tasks[p[i]].startTime)
@@ -112,7 +110,7 @@ std::vector<std::vector<Task>> maxRouteFinder(std::vector<Task> tasks) {
             if (p[0] > routesCompleted) {
                 routesCompleted++;
             }
-            if (route.size() == 0) {
+            if (route.empty()) {
                 route.push_back(currentTask);
                 previousTask = currentTask;
                 continue;
@@ -126,7 +124,7 @@ std::vector<std::vector<Task>> maxRouteFinder(std::vector<Task> tasks) {
             }
 
         }
-        if (maxRouteList.size() == 0) {
+        if (maxRouteList.empty()) {
             maxRouteList.push_back(route);
         }
         else {
@@ -302,7 +300,7 @@ std::vector<std::vector<Task>> taskListRecursive(std::vector<Task> set, Task* cu
             auto tempSet = taskListRecursive(nextSet, &nextSet[i]);
 
             for (int j = 0; j < tempSet.size(); j++) {
-                tempSet[j].insert(tempSet[j].begin(), nextSet[i]); //inserts the current Task at the bigenning of the set
+                tempSet[j].insert(tempSet[j].begin(), nextSet[i]); //inserts the current Task at the beginning of the set
                 newSet.push_back(tempSet[j]);
             }
         }
@@ -424,7 +422,7 @@ int main() {
                 numTasks = std::stoi(inputString);
                 break;
             }
-            catch (std::invalid_argument e) {
+            catch (std::invalid_argument& e) {
                 std::cout << "\tInvalid input, please try again.\n";
             }
         }
@@ -457,14 +455,14 @@ int main() {
                 std::cin >> len;
                 */
 
-                for (int i = 0; i < numTasks; i++) {
+                for (int j = 0; j < numTasks; j++) {
                     int randomStart = (rand() % (randmax - len));
                     task.startTime = randomStart;
                     int randomEnd = 1 + randomStart + (rand() % (len));
                     task.endTime = randomEnd;
                     int randomPay = rand() % 50 + 1;
                     task.pay = randomPay;
-                    task.id = i + 1;
+                    task.id = j + 1;
                     tasks.push_back(task);
                 }
                 break;
@@ -531,7 +529,7 @@ int main() {
         if (bfResult.size() == 1)
             printMaxRoute(bfResult[0], value);
         else {
-            for (std::vector<Task> r : bfResult) {
+            for (const std::vector<Task>& r : bfResult) {
                 printMaxRoute(r, value);
             }
         }
@@ -547,7 +545,7 @@ int main() {
         else {
             std::cout << "\n\tThere are " << maxRoutes.size() << " different sets of tasks\n";
             int i = 1;
-            for (std::vector<Task> r : maxRoutes) {
+            for (const std::vector<Task>& r : maxRoutes) {
                 std::cout << "\tOption " << i << ": ";
                 printRoute(r);
                 i++;
@@ -565,7 +563,7 @@ int main() {
         else {
             std::cout << "\n\tThere are " << uniqueRoutes.size() << " different sets of tasks\n";
             int i = 1;
-            for (std::vector<Task> r : uniqueRoutes) {
+            for (const std::vector<Task>& r : uniqueRoutes) {
                 std::cout << "\tOption " << i << ": ";
                 printRoute(r);
                 i++;
