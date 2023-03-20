@@ -520,7 +520,11 @@ int main() {
         auto dynStart = Clock::now();
         dynamic(tasks);
         auto dynStop = Clock::now();
-        std::cout << "\n\tThe time elapsed in bruteforce algorithm is " << std::chrono::duration_cast<std::chrono::microseconds>(bruteStop - bruteStart).count() << " microseconds." << std::endl;
+        auto bfTime = std::chrono::duration_cast<std::chrono::microseconds>(bruteStop - bruteStart).count();
+        if (bfTime < 10000)
+            std::cout << "\n\tThe time elapsed in bruteforce algorithm is " << bfTime << " microseconds." << std::endl;
+        else
+            std::cout << "\n\tThe time elapsed in bruteforce algorithm is " << bfTime / 1000 << " milliseconds." << std::endl;
         std::cout << "\tThe time elapsed in the non-recursive DP algorithm is " << std::chrono::duration_cast<std::chrono::microseconds>(dynStop - dynStart).count() << " microseconds." << std::endl;
 
         std::cout << std::endl;
