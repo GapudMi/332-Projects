@@ -23,6 +23,11 @@ bool compareTasks(const Task a, const Task b) {
     return (a.endTime < b.endTime);
 }
 
+// Returns true if a is bigger than b
+bool compareLength(const std::vector<Task> a, const std::vector<Task> b) {
+    return (a.size() > b.size());
+}
+
 bool operator== (const Task& a, const Task& b) {
     return a.id == b.id;
 }
@@ -55,7 +60,7 @@ bool isRouteSubset(const std::vector<std::vector<Task>> a, const std::vector<Tas
             if (a[f][i] == b[matches]) {
                 matches++;
             }
-            if (matches == b.size()-1) {
+            if (matches == b.size() - 1) {
                 return true;
             }
             i++;
@@ -139,15 +144,59 @@ std::vector<std::vector<Task>> maxRouteFinder(std::vector<Task> penis) {
         }
         if (maxRouteList.size() == 0) {
             maxRouteList.push_back(penis);
-        } else {
+        }
+        else {
             maxRouteList.push_back(route);
             //if (not isRouteSubset(maxRouteList, route)) {
                 //maxRouteList.push_back(route);
            // }
         }
-    }while (std::next_permutation(p.begin(), p.end()));
+    } while (std::next_permutation(p.begin(), p.end()));
     maxRouteList.erase(maxRouteList.begin());
     return maxRouteList;
+}
+
+std::vector<std::vector<Task>> uniqueRouteFinder(std::vector<std::vector<Task>> allRoutes) {
+    std::vector<std::vector<Task>> uniqueRoute;
+    int lastAddedIndex = 0;
+    uniqueRoute.push_back(allRoutes[0]);
+    for (int i = 1; i < allRoutes.size(); i++) {
+        if (uniqueRoute[lastAddedIndex] != allRoutes[i]) {
+            uniqueRoute.push_back(allRoutes[i]);
+            lastAddedIndex++;
+        }
+    }
+    std::vector<std::vector<Task>> noSubsets;
+    lastAddedIndex = 0;
+    std::sort(uniqueRoute.begin(), uniqueRoute.end(), compareLength);
+    noSubsets.push_back(uniqueRoute[0]);
+    for (int i = 1; i < uniqueRoute.size(); i++) {
+
+        bool subset = false;
+        for (int outer = 0; outer < noSubsets.size(); outer++) {
+            int matches = 0;
+            int subsetIndex = 0;
+            if (noSubsets[outer] == uniqueRoute[i]) {
+                subset = true; break;
+            }
+            for (int inner = 0; inner < noSubsets[outer].size(); inner++) {
+                if (noSubsets[outer][inner].id == uniqueRoute[i][subsetIndex].id) {
+                    matches++;
+                    subsetIndex++;
+                }
+            }
+            if (matches >= uniqueRoute[i].size()) { // this is a subset of another route
+                subset = true;
+                break;
+            }
+        }
+        if (!subset) {
+            noSubsets.push_back(uniqueRoute[i]);
+            lastAddedIndex++;
+        }
+    }
+
+    return noSubsets;
 }
 
 int dynamic(std::vector<Task> tasks) {
@@ -507,18 +556,38 @@ int main() {
                 printMaxRoute(r, value);
             }
         }
+
+        std::vector<std::vector<Task>> maxRoutes = maxRouteFinder(tasks);
+
         
-        auto maxRoutes = maxRouteFinder(tasks);
-        if (maxRoutes.size() == 1){
+        if (maxRoutes.size() == 1) {
             std::cout << "\n\tThere is 1 set of tasks\n";
-            std::cout << "\tOption 1: " ;
+            std::cout << "\tOption 1: ";
             printRoute(maxRoutes[0]);
         }
         else {
             std::cout << "\n\tThere are " << maxRoutes.size() << " different sets of tasks\n";
             int i = 1;
             for (std::vector<Task> r : maxRoutes) {
-                std::cout << "\tOption " << i << ": " ;
+                std::cout << "\tOption " << i << ": ";
+                printRoute(r);
+                i++;
+            }
+        }
+        std::cout << "\nNOSUBSETS\n";
+        
+        std::vector<std::vector<Task>> uniqueRoutes = uniqueRouteFinder(maxRoutes);
+
+        if (uniqueRoutes.size() == 1) {
+            std::cout << "\n\tThere is 1 set of tasks\n";
+            std::cout << "\tOption 1: ";
+            printRoute(uniqueRoutes[0]);
+        }
+        else {
+            std::cout << "\n\tThere are " << uniqueRoutes.size() << " different sets of tasks\n";
+            int i = 1;
+            for (std::vector<Task> r : uniqueRoutes) {
+                std::cout << "\tOption " << i << ": ";
                 printRoute(r);
                 i++;
             }
