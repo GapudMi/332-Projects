@@ -400,6 +400,12 @@ void printRoute(std::vector<Task> v) {
     std::cout << "with a total earning of " << value << ".\n";
 }
 
+void checkforExit(std::string input) {
+    std::transform(input.begin(), input.end(), input.begin(),
+        ::tolower); // Convert input to lower case for case-nonsensitive input
+    if (input == "exit") exit(0);
+}
+
 int main() {
     int numTasks = 0;
     std::vector<Task> tasks;
@@ -414,11 +420,7 @@ int main() {
         while (true) {
             try {
                 std::cin >> inputString;
-                std::transform(inputString.begin(), inputString.end(), inputString.begin(),
-                    ::tolower); // Convert input to lower case for case-nonsensitive input
-                if (inputString == "exit") {
-                    return 0;
-                }
+                checkforExit(inputString);
                 numTasks = std::stoi(inputString);
                 break;
             }
@@ -442,36 +444,24 @@ int main() {
             task.id = i + 1;
             std::cout << "\tTask " << i + 1 << std::endl;
             std::cout << "\tWhat is this task's payment?\n";
-            std::cin >> pay;
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            if (pay == "randomtasks") {                                                  // For debugging purposes, remove later
-                srand((unsigned)time(NULL));
-                int randmax = 200;
-                int len = randmax / 4;
-                /*// remove comment to test different things
-                std::cout << "\t Last possible endtime?\n";     //(total length of graph)
-                std::cin >> randmax;
-                std::cout << "\t Max length?\n";                //(shorter means more possible paths)
-                std::cin >> len;
-                */
-
-                for (int j = 0; j < numTasks; j++) {
-                    int randomStart = (rand() % (randmax - len));
-                    task.startTime = randomStart;
-                    int randomEnd = 1 + randomStart + (rand() % (len));
-                    task.endTime = randomEnd;
-                    int randomPay = rand() % 50 + 1;
-                    task.pay = randomPay;
-                    task.id = j + 1;
-                    tasks.push_back(task);
+            while (true) {
+                std::cin >> pay;
+                try {
+                    checkforExit(pay);
+                    task.pay = std::stoi(pay);
+                    if (task.pay < 0)
+                        throw std::invalid_argument("");
+                    break;
                 }
-                break;
+                catch (std::invalid_argument) {
+                    std::cout << "\tInvalid value, please try again.\n";
+                }
             }
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             std::cout << "\tWhat time does this task start?\n";
             while (true) {
                 std::cin >> start;
                 try {
+                    checkforExit(start);
                     task.startTime = std::stoi(start);
                     if (task.startTime < 0)
                         throw std::invalid_argument("");
@@ -485,6 +475,7 @@ int main() {
             while (true) {
                 std::cin >> end;
                 try {
+                    checkforExit(end);
                     task.endTime = std::stoi(end);
                     if (task.endTime < 0)
                         throw std::invalid_argument("");
@@ -498,8 +489,6 @@ int main() {
                     std::cout << "\tInvalid value, please try again.\n";
                 }
             }
-            task.pay = std::stoi(pay);
-
             std::cout << divider;
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             tasks.push_back(task);
@@ -536,23 +525,6 @@ int main() {
 
         std::vector<std::vector<Task>> maxRoutes = maxRouteFinder(tasks);
 
-        
-        if (maxRoutes.size() == 1) {
-            std::cout << "\n\tThere is 1 set of tasks\n";
-            std::cout << "\tOption 1: ";
-            printRoute(maxRoutes[0]);
-        }
-        else {
-            std::cout << "\n\tThere are " << maxRoutes.size() << " different sets of tasks\n";
-            int i = 1;
-            for (const std::vector<Task>& r : maxRoutes) {
-                std::cout << "\tOption " << i << ": ";
-                printRoute(r);
-                i++;
-            }
-        }
-        std::cout << "\nNOSUBSETS\n";
-        
         std::vector<std::vector<Task>> uniqueRoutes = uniqueRouteFinder(maxRoutes);
 
         if (uniqueRoutes.size() == 1) {
