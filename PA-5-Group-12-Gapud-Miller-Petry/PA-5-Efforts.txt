@@ -1,12 +1,13 @@
 How to run the program?
-Opening the PA-4-Executable.exe file will bring you to a Repl page. To run the program, press the green run button or the white triangle.
+Opening the PA-5-Executable.exe file will bring you to a Repl page. To run the program, press the green run button or the white triangle.
 Once the program runs, you will be prompted to type how many tasks you wish to enter. Type the number of tasks, then press enter.
 You will then be prompted to type the payment for the first task. Type the value of this task, then press enter.
 Repeat these steps when prompted for the start time and end time of each task you wish to enter.
 The program will then show you the elapsed time of bruteforce, recursive, and dynamic approaches, as well as every valid path.
 At any time you are prompted for input, you can type "exit" to close the program.
+Warning: the time taken for the program to print every valid path might be very long. It has not crashed, it is just doing time intensive code.
 
 Group member contribution
-Miguel Gapud 1: x% (type full name here to acknowledge the agreement of your contribution)
-Justin Petry 2: x% (type full name here to acknowledge the agreement of your contribution)
-Abram Miller 3: x% (type full name here to acknowledge the agreement of your contribution)
+Miguel Gapud 1: 100% Miguel Gapud
+Justin Petry 2: 100% Justin Petry
+Abram Miller 3: 100% Abram Miller
