@@ -510,7 +510,6 @@ int main() {
         dynamic(tasks);
         auto dynStop = Clock::now();
         
-        value = recursive(tasks);
         auto recStart = Clock::now();
         recursive(tasks);
         auto recStop = Clock::now();
