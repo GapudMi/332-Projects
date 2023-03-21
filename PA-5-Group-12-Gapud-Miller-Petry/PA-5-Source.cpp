@@ -260,54 +260,56 @@ int dynamic(std::vector<Task> tasks) {
     */
     return trueMax[trueMax.size() - 1];
 }
-/*
-// recursively find every unique set of tasks
-std::vector<std::vector<Task>> recursiveTasks(std::vector<Task> set) {
-    std::sort(set.begin(), set.end(), compareTasks);
-    auto routeList = taskListRecursive(set, nullptr);
-    //will add checks to get rid of non-unique sets
-    //compare every set to every other and remove them from routeList
-    //routeList.erase(routeList.begin());
-    return routeList;
-}
-
 // recursively finds *every* set of tasks
-std::vector<std::vector<Task>> taskListRecursive(std::vector<Task> set, Task* currTask) {
+std::vector<std::vector<Task>> taskListRecursive(std::vector<Task> set, Task currTask) {
     std::vector<std::vector<Task>> newSet;
     std::vector<Task> nextSet;
 
-    //create vector of tasks that start after this one
-    if (currTask) {
-        for (int i = 0; i < set.size(); i++) {
-            if (set[i].startTime >= currTask->endTime &&
-                set[i].startTime != set[i].endTime) { //being cautious
-                nextSet.push_back(set[i]);
-            }
-        }
-    }
-    else {
-        nextSet = set;
+    // create vector of tasks that start after this one
+    for (int i = 0; i < set.size(); i++) {
+        if (set[i].startTime >= currTask.endTime)
+            nextSet.push_back(set[i]);
     }
 
-    //base case
-    if (nextSet.size() == 0) {
-        newSet.push_back(nextSet);
-        return newSet;
-    }
-    //recursive case
-    else {
-        for (int i = 0; i < nextSet.size(); i++) {
-            auto tempSet = taskListRecursive(nextSet, &nextSet[i]);
+    // recursion
+    for (int i = 0; i < nextSet.size(); i++) {
+        auto tempSet = taskListRecursive(nextSet, nextSet[i]);
 
-            for (int j = 0; j < tempSet.size(); j++) {
-                tempSet[j].insert(tempSet[j].begin(), nextSet[i]); //inserts the current Task at the beginning of the set
-                newSet.push_back(tempSet[j]);
-            }
+        for (int j = 0; j < tempSet.size(); j++) {
+            tempSet[j].insert(tempSet[j].begin(), nextSet[i]); //inserts the current Task at the beginning of the set
+            newSet.push_back(tempSet[j]);
         }
-        return newSet;
     }
+
+    return newSet;
 }
-*/
+
+// recursively find every unique set of tasks
+int recursive(std::vector<Task> set) {
+    std::sort(set.begin(), set.end(), compareTasks);
+
+    std::vector<std::vector<Task>> routeList;
+
+    // start chain of recursion
+    for (int i = 0; i < set.size(); i++) {
+        for (int k = 0; k < set.size(); k++) {
+            if (!(set[i] == set[k]) && set[k].startTime <= set[i].endTime) {
+
+               auto tempSet = taskListRecursive(set, set[i]);
+
+               for (int j = 0; j < tempSet.size(); j++) {
+                   tempSet[j].insert(tempSet[j].begin(), set[i]); //inserts the current Task at the beginning of the set
+                   routeList.push_back(tempSet[j]);
+               }
+            }
+        }
+
+
+        
+    }
+
+    return routeList.size();
+}
 
 void numberLine(std::vector<Task> set, int interval) {
     for (int i = 0; i < set.at(set.size() - 1).endTime + 4; i += interval) {
@@ -507,12 +509,19 @@ int main() {
         auto dynStart = Clock::now();
         dynamic(tasks);
         auto dynStop = Clock::now();
+        
+        value = recursive(tasks);
+        auto recStart = Clock::now();
+        recursive(tasks);
+        auto recStop = Clock::now();
+        
         auto bfTime = std::chrono::duration_cast<std::chrono::microseconds>(bruteStop - bruteStart).count();
         if (bfTime < 10000)
             std::cout << "\n\tThe time elapsed in bruteforce algorithm is " << bfTime << " microseconds." << std::endl;
         else
             std::cout << "\n\tThe time elapsed in bruteforce algorithm is " << bfTime / 1000 << " milliseconds." << std::endl;
         std::cout << "\tThe time elapsed in the non-recursive DP algorithm is " << std::chrono::duration_cast<std::chrono::microseconds>(dynStop - dynStart).count() << " microseconds." << std::endl;
+        std::cout << "\tThe time elapsed in the recursive DP algorithm is " << std::chrono::duration_cast<std::chrono::microseconds>(recStop - recStart).count() << " microseconds." << std::endl;
 
         std::cout << std::endl;
         if (bfResult.size() == 1)
