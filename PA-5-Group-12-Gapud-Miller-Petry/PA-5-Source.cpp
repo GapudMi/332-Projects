@@ -260,55 +260,30 @@ int dynamic(std::vector<Task> tasks) {
     */
     return trueMax[trueMax.size() - 1];
 }
-// recursively finds *every* set of tasks
-std::vector<std::vector<Task>> taskListRecursive(std::vector<Task> set, Task currTask) {
-    std::vector<std::vector<Task>> newSet;
-    std::vector<Task> nextSet;
 
-    // create vector of tasks that start after this one
-    for (int i = 0; i < set.size(); i++) {
-        if (set[i].startTime >= currTask.endTime)
-            nextSet.push_back(set[i]);
+// recursively picks the most profitable path
+int recursive(std::vector<Task> set, int startTime) {
+    std::vector<Task> nextSet;
+    int maxBranch = 0;
+    int max;
+    //debug
+
+    /// create vector of tasks that start after this one
+    for (auto x : set) {
+        if (x.startTime >= startTime)
+            nextSet.push_back(x);
     }
 
     // recursion
-    for (int i = 0; i < nextSet.size(); i++) {
-        auto tempSet = taskListRecursive(nextSet, nextSet[i]);
+    for (auto i : nextSet) {
+        int branch = i.pay + recursive(nextSet, i.endTime);
 
-        for (int j = 0; j < tempSet.size(); j++) {
-            tempSet[j].insert(tempSet[j].begin(), nextSet[i]); //inserts the current Task at the beginning of the set
-            newSet.push_back(tempSet[j]);
+        if (branch > maxBranch) {
+            maxBranch = branch;
         }
     }
-
-    return newSet;
-}
-
-// recursively find every unique set of tasks
-int recursive(std::vector<Task> set) {
-    std::sort(set.begin(), set.end(), compareTasks);
-
-    std::vector<std::vector<Task>> routeList;
-
-    // start chain of recursion
-    for (int i = 0; i < set.size(); i++) {
-        for (int k = 0; k < set.size(); k++) {
-            if (!(set[i] == set[k]) && set[k].startTime <= set[i].endTime) {
-
-               auto tempSet = taskListRecursive(set, set[i]);
-
-               for (int j = 0; j < tempSet.size(); j++) {
-                   tempSet[j].insert(tempSet[j].begin(), set[i]); //inserts the current Task at the beginning of the set
-                   routeList.push_back(tempSet[j]);
-               }
-            }
-        }
-
-
-        
-    }
-
-    return routeList.size();
+    
+    return maxBranch;
 }
 
 void numberLine(std::vector<Task> set, int interval) {
@@ -511,7 +486,7 @@ int main() {
         auto dynStop = Clock::now();
         
         auto recStart = Clock::now();
-        recursive(tasks);
+        recursive(tasks, 0);
         auto recStop = Clock::now();
         
         auto bfTime = std::chrono::duration_cast<std::chrono::microseconds>(bruteStop - bruteStart).count();
