@@ -27,7 +27,17 @@ void printMatrix(cell** mat, int rows, int cols) {
             if (mat[i][j] == cell{{}})  {
                 continue;
             }
-            else std::cout << mat[i][j].value << "     ";
+            else {
+                // std::cout << mat[i][j].value << "     ";
+                int number = mat[i][j].value;
+                std::string strNumber = std::to_string(number);
+                int spaceLength = 5;
+                
+                for (int i = 0; i < spaceLength-strNumber.length(); i++) {
+                    std::cout << ' ';
+                }
+                std::cout << number;
+            }
         }
         std::cout << "\n\n";
     }
