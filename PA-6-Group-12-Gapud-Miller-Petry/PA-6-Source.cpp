@@ -5,7 +5,7 @@
 
 struct cell {
     int value;
-    std::pair<int, int> location; // x, y pair denotes location in matrix
+    std::pair<int, int> location; // row, col pair denotes location in matrix
     int previous[3]; // A cell can have up to 3 cells leading into it.
 };
 
@@ -31,12 +31,17 @@ int main() {
         checkForExit(sequenceTwo);
 
         // initialize 2D array :3
-        int rowSize = sequenceOne.length();
-        int colSize = sequenceTwo.length();
-        cell **matrix;
-        matrix = new cell*[rowSize];
-        for (int i = 0; i < rowSize; i++) {
-            matrix[i] = new cell[colSize];
+        int colCount = sequenceOne.length();
+        int rowCount = sequenceTwo.length();
+
+        // create matrix cell[rowCount][colCount]
+        cell** matrix = new cell*[rowCount];
+        for(int row = 0; row < rowCount; row++) {
+            matrix[row] = new cell[colCount];
+            matrix[row][0] = cell{row*-1, std::make_pair(row, 0), NULL};
+        }
+        for (int col = 0; col < colCount; col++) {
+            matrix[0][col] = cell{col*-1, std::make_pair(0, col), NULL};
         }
     }
 }
