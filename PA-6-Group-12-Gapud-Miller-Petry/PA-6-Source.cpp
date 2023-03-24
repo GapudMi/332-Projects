@@ -8,14 +8,14 @@ struct cell {
     std::pair<int, int> location = std::make_pair(-1, -1); // row, col pair denotes location in matrix
     cell* previous[3]; // A cell can have up to 3 cells leading into it.
     int change = 0; // ignore this lol
-    bool arrow[3] = {false, false, false}; // Boolean values corresponding to where arrows go in order (↘ ↓ →) but pointing other way (M D R)
+    bool arrow[3] = { false, false, false }; // Boolean values corresponding to where arrows go in order (↓ ↘ →) but pointing other way (D M R)
 };
 
 bool operator== (const cell& a, const cell& b) {
     return ((a.location.first == b.location.first) && (a.location.second == b.location.second));
 }
 
-bool cellGreater(cell* &a, cell* &b) {
+bool cellGreater(cell*& a, cell*& b) {
     return (a->value > b->value);
 }
 
@@ -30,16 +30,22 @@ void printMatrix(cell** mat, int rows, int cols) {
     for (int i = 0; i < rows; i++) {
         if (i != 0) {
             std::cout << "\n       ";
-            for (int j = 1; j < cols; j++) {
-
-                if (mat[i - 1][j - 1].arrow[1]) {
-                    std::cout << "|   ";
+            for (int j = 0; j < cols; j++) {
+                if (j == 0) {
+                    std::cout << "|   " ; continue;
                 }
-                else std::cout << "    ";
-                if (mat[i - 1][j - 1].arrow[0]) {
+                if (mat[i][j].arrow[1]) {
                     std::cout << "\\   ";
                 }
-                else std::cout << "    ";
+                else {
+                    std::cout << "    ";
+                }
+                if (mat[i][j].arrow[0]) {
+                    std::cout << "|   ";
+                }
+                else {
+                    std::cout << "    ";
+                }
             }
         }
         std::cout << "\n";
@@ -52,10 +58,11 @@ void printMatrix(cell** mat, int rows, int cols) {
                 int number = mat[i][j].value;
                 std::string strNumber = std::to_string(number);
                 int spaceLength = 4;
-                
+
                 if (mat[i][j].arrow[2]) {
                     std::cout << "  ->";
-                } else { std::cout << "    "; }
+                }
+                else { std::cout << "    "; }
                 for (int i = 0; i < spaceLength - strNumber.length(); i++) {
                     std::cout << ' ';
                 }
@@ -66,6 +73,40 @@ void printMatrix(cell** mat, int rows, int cols) {
     }
 
     std::cout << "\n\n";
+    /*
+    // DEBUGGING HELL
+    for (int i = 0; i < rows; i++) { 
+        for (int j = 0; j < cols; j++) {
+            if (mat[i][j] == cell{ {} }) {
+                continue;
+            }
+            else {
+                // std::cout << mat[i][j].value << "     ";
+                int number = mat[i][j].value;
+                std::string strNumber = std::to_string(number);
+                int spaceLength = 5;
+                for (int i = 0; i < spaceLength - strNumber.length(); i++) {
+                    std::cout << ' ';
+                }
+                std::cout << strNumber;
+                if (mat[i][j].arrow[2]) {
+                    std::cout << 'R';
+                }
+                else std::cout << 'X';
+                if (mat[i][j].arrow[1]) {
+                    std::cout << 'M';
+                }
+                else std::cout << 'X';
+                if (mat[i][j].arrow[0]) {
+                    std::cout << 'U';
+                }
+                else std::cout << 'X';
+            }
+        }
+        std::cout << "\n";
+    }
+    std::cout << "\n\n";
+    */
 }
 
 int main() {
@@ -93,33 +134,35 @@ int main() {
         for (int row = 0; row < rows; row++) {
             matrix[row] = new cell[cols];
             matrix[row][0] = cell{ row * -1, std::make_pair(row, 0), NULL };
+            matrix[row][0].arrow[0] = true;
         }
         for (int col = 0; col < cols; col++) {
             matrix[0][col] = cell{ col * -1, std::make_pair(0, col), NULL };
+            if (col != 0) matrix[0][col].arrow[2] = true;
         }
 
         for (int row = 1; row < rows; row++) {
             for (int col = 1; col < cols; col++) {
                 cell c = {};
-                int ptr = 0;
-                int bestScore = 0;
-                cell* diag = &matrix[row-1][col-1];
-                cell* left = &matrix[row][col-1];
-                cell* up = &matrix[row-1][col];
-                int diagScore = (sequenceOne[col-1] == sequenceTwo[row-1]) ? diag->value + 5 : diag->value - 2;
-                diag->change = (sequenceOne[col-1] == sequenceTwo[row-1]) ? 5 : -2;
+                int bestscore;
+                cell* diag = &matrix[row - 1][col - 1];
+                cell* left = &matrix[row][col - 1];
+                cell* up = &matrix[row - 1][col];
+                int diagScore = (sequenceOne[col - 1] == sequenceTwo[row - 1]) ? diag->value + 5 : diag->value - 2;
+                diag->change = (sequenceOne[col - 1] == sequenceTwo[row - 1]) ? 5 : -2;
                 int leftScore = left->value - 1;
                 left->change = -1;
                 int upScore = up->value - 1;
                 up->change = -1;
                 if (diagScore == leftScore && leftScore == upScore) {
                     c.value = diagScore;
-                    c.previous[0] = diag;
-                    c.previous[1] = left;
-                    c.previous[2] = up;
+                    c.previous[0] = diag;   c.arrow[1] = true;
+                    c.previous[1] = left;   c.arrow[2] = true;
+                    c.previous[2] = up;     c.arrow[0] = true;
                 }
                 else {
-                    cell* a[3] = {diag, left, up};
+                    // values
+                    cell* a[3] = { diag, left, up };
                     std::sort(std::begin(a), std::end(a), cellGreater);
                     c.value = a[0]->value + a[0]->change;
                     if (a[0]->value + a[0]->change == a[1]->value + a[1]->change) {
@@ -129,37 +172,18 @@ int main() {
                     else {
                         c.previous[0] = a[0];
                     }
+
+                    // arrows
+                    c.arrow[0] = (upScore == c.value);
+                    c.arrow[1] = (diagScore == c.value);
+                    c.arrow[2] = (leftScore == c.value);
+
                 }
                 diag->change = 0;
                 up->change = 0;
                 left->change = 0;
-                /*if (sequenceOne[col-1] == sequenceTwo[row-1]) {
-                    c.previous[0] = &matrix[row-1][col-1];
-                    ptr++;
-                    bestScore = matrix[row-1][col-1].value + 5;
-                }
-                else {
-                    c.previous[0] = &matrix[row-1][col-1];
-                    ptr++;
-                    bestScore = matrix[row-1][col-1].value + 5;
-                }
-                if (left->value == up->value) {
-                    if (matrix[row][col-1].value >= bestScore) {
-                        bestScore = left->value-1;
-                        c.previous[ptr] = left;
-                        c.previous[ptr+1] = up;
-                    }
-                }
-                else {
-                    cell* prev = (left->value > up->value) ? left : up;
-                    if (prev->value >= bestScore) {
-                        //c.value = prev->value - 1;
-                        bestScore = prev->value - 1;
-                        c.previous[ptr] = prev;
-                    }
 
-                }
-                c.value = bestScore;*/
+
                 c.location = std::make_pair(row, col);
                 matrix[row][col] = c;
             }
