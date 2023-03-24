@@ -25,14 +25,15 @@ void checkForExit(std::string input) {
     if (input == "exit") exit(0);
 }
 
-void printMatrix(cell** mat, int rows, int cols) {
+
+void printMatrix(cell** mat, int rows, int cols, std::string across, std::string down) {
     // in future this will also print arrows and shit idk
     for (int i = 0; i < rows; i++) {
         if (i != 0) {
-            std::cout << "\n       ";
+            std::cout << "\n        ";
             for (int j = 0; j < cols; j++) {
                 if (j == 0) {
-                    std::cout << "|   " ; continue;
+                    std::cout << "|   "; continue;
                 }
                 if (mat[i][j].arrow[1]) {
                     std::cout << "\\   ";
@@ -48,8 +49,15 @@ void printMatrix(cell** mat, int rows, int cols) {
                 }
             }
         }
+        else {
+            std::cout << "                ";
+            for (int j = 0; j < cols; j++) {
+                std::cout << across[j] << "       ";
+            }
+        }
         std::cout << "\n";
         for (int j = 0; j < cols; j++) {
+            if (j == 0) std::cout << ((i > 0) ? down[i - 1] : ' ');
             if (mat[i][j] == cell{ {} }) {
                 continue;
             }
@@ -75,7 +83,7 @@ void printMatrix(cell** mat, int rows, int cols) {
     std::cout << "\n\n";
     /*
     // DEBUGGING HELL
-    for (int i = 0; i < rows; i++) { 
+    for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
             if (mat[i][j] == cell{ {} }) {
                 continue;
@@ -117,11 +125,11 @@ int main() {
             << "\tA sequence is a combination of letters and gaps (denoted by an underscore).\n"
             << "\tAlternatively, type \"exit\" and press enter to quit at any time.\n" << divider;
         std::string sequenceOne;
-        std::cin >> sequenceOne;
+        std::getline(std::cin, sequenceOne);
         checkForExit(sequenceOne);
         std::cout << "\tEnter your second sequence.\n";
         std::string sequenceTwo;
-        std::cin >> sequenceTwo;
+        std::getline(std::cin, sequenceTwo);
         checkForExit(sequenceTwo);
 
         // initialize 2D array :3
@@ -188,6 +196,6 @@ int main() {
                 matrix[row][col] = c;
             }
         }
-        printMatrix(matrix, rows, cols);
+        printMatrix(matrix, rows, cols, sequenceOne, sequenceTwo);
     }
 }
