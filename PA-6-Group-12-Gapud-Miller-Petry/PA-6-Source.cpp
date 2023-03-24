@@ -7,10 +7,15 @@ struct cell {
     int value = -1;
     std::pair<int, int> location = std::make_pair(-1, -1); // row, col pair denotes location in matrix
     cell* previous[3]; // A cell can have up to 3 cells leading into it.
+    int change = 0; // ignore this lol
 };
 
 bool operator== (const cell& a, const cell& b) {
     return ((a.location.first == b.location.first) && (a.location.second == b.location.second));
+}
+
+bool cellGreater(cell* &a, cell* &b) {
+    return (a->value > b->value);
 }
 
 void checkForExit(std::string input) {
@@ -77,13 +82,46 @@ int main() {
                 cell c = {};
                 int ptr = 0;
                 int bestScore = 0;
-                if (sequenceOne[col-1] == sequenceTwo[row-1]) {
+                cell* diag = &matrix[row-1][col-1];
+                cell* left = &matrix[row][col-1];
+                cell* up = &matrix[row-1][col];
+                int diagScore = (sequenceOne[col-1] == sequenceTwo[row-1]) ? diag->value + 5 : diag->value - 2;
+                diag->change = (sequenceOne[col-1] == sequenceTwo[row-1]) ? 5 : -2;
+                int leftScore = left->value - 1;
+                left->change = -1;
+                int upScore = up->value - 1;
+                up->change = -1;
+                if (diagScore == leftScore && leftScore == upScore) {
+                    c.value = diagScore;
+                    c.previous[0] = diag;
+                    c.previous[1] = left;
+                    c.previous[2] = up;
+                }
+                else {
+                    cell* a[3] = {diag, left, up};
+                    std::sort(std::begin(a), std::end(a), cellGreater);
+                    c.value = a[0]->value + a[0]->change;
+                    if (a[0]->value + a[0]->change == a[1]->value + a[1]->change) {
+                        c.previous[0] = a[0];
+                        c.previous[1] = a[1];
+                    }
+                    else {
+                        c.previous[0] = a[0];
+                    }
+                }
+                diag->change = 0;
+                up->change = 0;
+                left->change = 0;
+                /*if (sequenceOne[col-1] == sequenceTwo[row-1]) {
                     c.previous[0] = &matrix[row-1][col-1];
                     ptr++;
                     bestScore = matrix[row-1][col-1].value + 5;
                 }
-                cell* up = &matrix[row-1][col];
-                cell* left = &matrix[row][col-1];
+                else {
+                    c.previous[0] = &matrix[row-1][col-1];
+                    ptr++;
+                    bestScore = matrix[row-1][col-1].value + 5;
+                }
                 if (left->value == up->value) {
                     if (matrix[row][col-1].value >= bestScore) {
                         bestScore = left->value-1;
@@ -100,7 +138,7 @@ int main() {
                     }
 
                 }
-                c.value = bestScore;
+                c.value = bestScore;*/
                 c.location = std::make_pair(row, col);
                 matrix[row][col] = c;
             }
