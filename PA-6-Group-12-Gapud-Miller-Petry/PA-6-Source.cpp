@@ -8,6 +8,7 @@ struct cell {
     std::pair<int, int> location = std::make_pair(-1, -1); // row, col pair denotes location in matrix
     cell* previous[3]; // A cell can have up to 3 cells leading into it.
     int change = 0; // ignore this lol
+    bool arrow[3] = {false, false, false}; // Boolean values corresponding to where arrows go in order (↘ ↓ →) but pointing other way (M D R)
 };
 
 bool operator== (const cell& a, const cell& b) {
@@ -20,32 +21,51 @@ bool cellGreater(cell* &a, cell* &b) {
 
 void checkForExit(std::string input) {
     std::transform(input.begin(), input.end(), input.begin(),
-                   ::tolower); // Convert input to lower case for case-nonsensitive input
+        ::tolower); // Convert input to lower case for case-nonsensitive input
     if (input == "exit") exit(0);
 }
 
 void printMatrix(cell** mat, int rows, int cols) {
     // in future this will also print arrows and shit idk
-    std::cout << " ";
     for (int i = 0; i < rows; i++) {
+        if (i != 0) {
+            std::cout << "\n       ";
+            for (int j = 1; j < cols; j++) {
+
+                if (mat[i - 1][j - 1].arrow[1]) {
+                    std::cout << "|   ";
+                }
+                else std::cout << "    ";
+                if (mat[i - 1][j - 1].arrow[0]) {
+                    std::cout << "\\   ";
+                }
+                else std::cout << "    ";
+            }
+        }
+        std::cout << "\n";
         for (int j = 0; j < cols; j++) {
-            if (mat[i][j] == cell{{}})  {
+            if (mat[i][j] == cell{ {} }) {
                 continue;
             }
             else {
                 // std::cout << mat[i][j].value << "     ";
                 int number = mat[i][j].value;
                 std::string strNumber = std::to_string(number);
-                int spaceLength = 5;
+                int spaceLength = 4;
                 
-                for (int i = 0; i < spaceLength-strNumber.length(); i++) {
+                if (mat[i][j].arrow[2]) {
+                    std::cout << "  ->";
+                } else { std::cout << "    "; }
+                for (int i = 0; i < spaceLength - strNumber.length(); i++) {
                     std::cout << ' ';
                 }
                 std::cout << number;
             }
         }
-        std::cout << "\n\n";
+
     }
+
+    std::cout << "\n\n";
 }
 
 int main() {
@@ -53,8 +73,8 @@ int main() {
     while (true) {
         std::cout << divider;
         std::cout << "\tWelcome. Please enter your first sequence, then press enter.\n"
-                  << "\tA sequence is a combination of letters and gaps (denoted by an underscore).\n"
-                  << "\tAlternatively, type \"exit\" and press enter to quit at any time.\n" << divider;
+            << "\tA sequence is a combination of letters and gaps (denoted by an underscore).\n"
+            << "\tAlternatively, type \"exit\" and press enter to quit at any time.\n" << divider;
         std::string sequenceOne;
         std::cin >> sequenceOne;
         checkForExit(sequenceOne);
@@ -66,15 +86,16 @@ int main() {
         // initialize 2D array :3
         int cols = sequenceOne.length() + 1;
         int rows = sequenceTwo.length() + 1;
-
         // create matrix cell[rows][cols]
-        cell** matrix = new cell*[rows];
-        for(int row = 0; row < rows; row++) {
+        cell** matrix = new cell * [rows];
+
+        // Populate matrix
+        for (int row = 0; row < rows; row++) {
             matrix[row] = new cell[cols];
-            matrix[row][0] = cell{row*-1, std::make_pair(row, 0), NULL};
+            matrix[row][0] = cell{ row * -1, std::make_pair(row, 0), NULL };
         }
         for (int col = 0; col < cols; col++) {
-            matrix[0][col] = cell{col*-1, std::make_pair(0, col), NULL};
+            matrix[0][col] = cell{ col * -1, std::make_pair(0, col), NULL };
         }
 
         for (int row = 1; row < rows; row++) {
