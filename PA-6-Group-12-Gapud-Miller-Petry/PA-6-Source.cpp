@@ -15,7 +15,7 @@ bool operator== (const cell& a, const cell& b) {
     return ((a.location.first == b.location.first) && (a.location.second == b.location.second));
 }
 
-bool cellGreater(cell*& a, cell*& b) {
+bool cellGreater(cell* &a, cell* &b) {
     return (a->value > b->value);
 }
 
