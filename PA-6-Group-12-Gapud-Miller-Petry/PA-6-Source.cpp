@@ -117,6 +117,107 @@ void printMatrix(cell** mat, int rows, int cols, std::string across, std::string
     */
 }
 
+void printWords(std::vector<cell> path, std::string across, std::string down) {
+    std::vector<char> first;
+    std::vector<char> second;
+    int lastStep = path.size() - 1;
+    int lastChar = down.size() - 1;
+    int last = path[lastStep].location.first; //rows aka down
+    first.push_back(down[lastChar]); 
+    lastChar--;
+    for (int i = lastStep - 1; i > 0; i--) {
+        if (last != path[i].location.first && lastChar >= 0) { // changed
+            last = path[i].location.first; 
+            first.insert(first.begin(), down[lastChar]);
+            lastChar--;
+        }
+        else {
+            last = path[i].location.first;
+            first.insert(first.begin(), '_');
+        }
+    }
+
+    lastChar = across.size() - 1;
+    last = path[lastStep].location.second; //cols aka across
+    second.push_back(across[lastChar]);
+    lastChar--;
+    for (int i = lastStep - 1; i > 0; i--) {
+        if (last != path[i].location.second && lastChar >=0) { // changed
+            last = path[i].location.second;
+            second.insert(second.begin(), across[lastChar]);
+            lastChar--;
+        }
+        else {
+            last = path[i].location.second;
+            second.insert(second.begin(), '_');
+        }
+    }
+    for (int i = 0; i < second.size(); i++) {
+        std::cout << second[i];
+    }
+    std::cout << "\n";
+    for (int i = 0; i < first.size(); i++) {
+        std::cout << first[i];
+    }
+    std::cout << "\n";
+    std::cout << "\n";
+}
+
+std::vector<cell> getPaths(cell** matrix, int rows, int cols, std::vector<std::vector<cell>> * allpaths, std::vector<cell> path = {}) {
+    int counter = 0;
+    if (rows>-1&&cols>-1) {
+        cell current = matrix[rows][cols];
+        path.push_back(current);
+        for (bool val : current.arrow) {
+            if (val) counter++;
+        }
+        if (counter > 1) {
+            if (current.arrow[0]) { // up
+                counter--;
+                if (counter == 0) {
+                    return getPaths(matrix, rows - 1, cols, allpaths, path);
+                }
+                else {
+                    getPaths(matrix, rows - 1, cols, allpaths, path);
+                }
+            }
+            if (current.arrow[1]) { // diag
+                counter--;
+                if (counter == 0) {
+                    return getPaths(matrix, rows - 1, cols - 1, allpaths, path);
+                }
+                else {
+                    getPaths(matrix, rows - 1, cols - 1, allpaths, path);
+                }
+            }
+            if (current.arrow[2]) { // left
+                counter--;
+                if (counter == 0) {
+                    return getPaths(matrix, rows, cols - 1, allpaths, path);
+                }
+                else {
+                    getPaths(matrix, rows, cols - 1, allpaths, path);
+                }
+            }
+        }
+        else {
+            if (current.arrow[0]) { // up
+                return getPaths(matrix, rows - 1, cols, allpaths, path);
+            }
+            if (current.arrow[1]) { // diag
+                return getPaths(matrix, rows - 1, cols - 1, allpaths, path);
+            }
+            if (current.arrow[2]) { // left
+                return getPaths(matrix, rows, cols - 1, allpaths, path);
+            }
+        }
+    }
+    if (rows == 0 && cols == 0) {
+        allpaths->push_back(path);
+    }
+    return path;
+}
+
 int main() {
     std::string divider = "     =============================================================================\n";
     while (true) {
@@ -197,5 +298,10 @@ int main() {
             }
         }
         printMatrix(matrix, rows, cols, sequenceOne, sequenceTwo);
+        std::vector<std::vector<cell>> * allPaths = new std::vector<std::vector<cell>>;
+        getPaths(matrix, rows-1, cols-1, allPaths);
+        for (int i = 0; i < allPaths->size(); i++) {
+            printWords(allPaths->at(i), sequenceOne, sequenceTwo);
+        }
     }
 }
