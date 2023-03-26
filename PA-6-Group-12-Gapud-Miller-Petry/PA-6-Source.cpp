@@ -117,47 +117,39 @@ void printMatrix(cell** mat, int rows, int cols, std::string across, std::string
     */
 }
 
-void printWords(std::vector<cell> path, std::string across, std::string down) {
-    std::vector<char> first;
-    std::vector<char> second;
-    int lastStep = path.size() - 1;
-    int lastChar = down.size() - 1;
-    int last = path[lastStep].location.first; //rows aka down
-    first.push_back(down[lastChar]); 
-    lastChar--;
-    for (int i = lastStep - 1; i > 0; i--) {
-        if (last != path[i].location.first && lastChar >= 0) { // changed
-            last = path[i].location.first; 
-            first.insert(first.begin(), down[lastChar]);
-            lastChar--;
-        }
-        else {
-            last = path[i].location.first;
-            first.insert(first.begin(), '_');
-        }
-    }
 
-    lastChar = across.size() - 1;
-    last = path[lastStep].location.second; //cols aka across
-    second.push_back(across[lastChar]);
-    lastChar--;
-    for (int i = lastStep - 1; i > 0; i--) {
-        if (last != path[i].location.second && lastChar >=0) { // changed
-            last = path[i].location.second;
-            second.insert(second.begin(), across[lastChar]);
-            lastChar--;
+void printWords(std::vector<cell> path, std::string across, std::string down) {
+    std::reverse(path.begin(), path.end());
+    std::vector<char> acr; 
+    std::vector<char> dow;
+    int acLastChar = 0;
+    int doLastChar = 0;
+    std::pair<int, int> lastPair = path[0].location;
+    std::pair<int, int> thisPair;
+    for (int i = 1; i < path.size(); i++) {
+        thisPair = path[i].location;
+        if (lastPair.first == thisPair.first - 1 && doLastChar < down.size()){ // change in row
+            dow.push_back(down[doLastChar]);
+            doLastChar++;
         }
         else {
-            last = path[i].location.second;
-            second.insert(second.begin(), '_');
+            dow.push_back('_');
         }
+        if (lastPair.second == thisPair.second - 1 && acLastChar < across.size()) { // change in col
+            acr.push_back(across[acLastChar]);
+            acLastChar++;
+        }
+        else {
+            acr.push_back('_');
+        }
+        lastPair = thisPair;
     }
-    for (int i = 0; i < second.size(); i++) {
-        std::cout << second[i];
+    for (char letter : dow) {
+        std::cout << letter;
     }
     std::cout << "\n";
-    for (int i = 0; i < first.size(); i++) {
-        std::cout << first[i];
+    for (char letter : acr) {
+        std::cout << letter;
     }
     std::cout << "\n";
     std::cout << "\n";
