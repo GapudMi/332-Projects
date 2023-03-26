@@ -120,7 +120,7 @@ void printMatrix(cell** mat, int rows, int cols, std::string across, std::string
 
 void printWords(std::vector<cell> path, std::string across, std::string down) {
     std::reverse(path.begin(), path.end());
-    std::vector<char> acr; 
+    std::vector<char> acr;
     std::vector<char> dow;
     int acLastChar = 0;
     int doLastChar = 0;
@@ -128,7 +128,7 @@ void printWords(std::vector<cell> path, std::string across, std::string down) {
     std::pair<int, int> thisPair;
     for (int i = 1; i < path.size(); i++) {
         thisPair = path[i].location;
-        if (lastPair.first == thisPair.first - 1 && doLastChar < down.size()){ // change in row
+        if (lastPair.first == thisPair.first - 1 && doLastChar < down.size()) { // change in row
             dow.push_back(down[doLastChar]);
             doLastChar++;
         }
@@ -144,10 +144,11 @@ void printWords(std::vector<cell> path, std::string across, std::string down) {
         }
         lastPair = thisPair;
     }
+    std::cout << "\tAlignment value: " << path[path.size()-1].value << "\n\t";
     for (char letter : dow) {
         std::cout << letter;
     }
-    std::cout << "\n";
+    std::cout << "\n\t";
     for (char letter : acr) {
         std::cout << letter;
     }
@@ -289,9 +290,11 @@ int main() {
                 matrix[row][col] = c;
             }
         }
+        std::cout << divider << "\tAlignment chart: " << '\n';
         printMatrix(matrix, rows, cols, sequenceOne, sequenceTwo);
-        std::vector<std::vector<cell>> * allPaths = new std::vector<std::vector<cell>>;
-        getPaths(matrix, rows-1, cols-1, allPaths);
+        std::vector<std::vector<cell>>* allPaths = new std::vector<std::vector<cell>>;
+        getPaths(matrix, rows - 1, cols - 1, allPaths);
+        std::cout << divider << "\tAll optimal combinations:\n";
         for (int i = 0; i < allPaths->size(); i++) {
             printWords(allPaths->at(i), sequenceOne, sequenceTwo);
         }
