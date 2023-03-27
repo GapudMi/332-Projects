@@ -9,7 +9,7 @@ struct cell {
     std::pair<int, int> location = std::make_pair(-1, -1); // row, col pair denotes location in matrix
     cell* previous[3]; // A cell can have up to 3 cells leading into it.
     int change = 0; // ignore this lol
-    bool arrow[3] = { false, false, false }; // Boolean values corresponding to where arrows go in order (↓ ↘ →) but pointing other way (D M R)
+    bool arrow[3] = { false, false, false }; // Boolean values corresponding to where arrows go in order (down diagonal right) but pointing other way
 };
 
 bool operator== (const cell& a, const cell& b) {
@@ -62,7 +62,6 @@ void printMatrix(cell** mat, int rows, int cols, std::string across, std::string
                 continue;
             }
             else {
-                // std::cout << mat[i][j].value << "     ";
                 int number = mat[i][j].value;
                 std::string strNumber = std::to_string(number);
                 int spaceLength = 4;
@@ -81,40 +80,6 @@ void printMatrix(cell** mat, int rows, int cols, std::string across, std::string
     }
 
     std::cout << "\n\n";
-    /*
-    // DEBUGGING
-    for (int i = 0; i < rows; i++) {
-        for (int j = 0; j < cols; j++) {
-            if (mat[i][j] == cell{ {} }) {
-                continue;
-            }
-            else {
-                // std::cout << mat[i][j].value << "     ";
-                int number = mat[i][j].value;
-                std::string strNumber = std::to_string(number);
-                int spaceLength = 5;
-                for (int i = 0; i < spaceLength - strNumber.length(); i++) {
-                    std::cout << ' ';
-                }
-                std::cout << strNumber;
-                if (mat[i][j].arrow[2]) {
-                    std::cout << 'R';
-                }
-                else std::cout << 'X';
-                if (mat[i][j].arrow[1]) {
-                    std::cout << 'M';
-                }
-                else std::cout << 'X';
-                if (mat[i][j].arrow[0]) {
-                    std::cout << 'U';
-                }
-                else std::cout << 'X';
-            }
-        }
-        std::cout << "\n";
-    }
-    std::cout << "\n\n";
-    */
 }
 
 
@@ -229,7 +194,6 @@ int main() {
         // initialize 2D array :3
         int cols = sequenceOne.length() + 1;
         int rows = sequenceTwo.length() + 1;
-        // create matrix cell[rows][cols]
         cell** matrix = new cell * [rows];
 
         // Get payoff matrix
