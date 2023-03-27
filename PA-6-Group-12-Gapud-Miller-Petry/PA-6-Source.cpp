@@ -243,19 +243,65 @@ int main() {
             if (col != 0) matrix[0][col].arrow[2] = true;
         }
 
+        // Get payoff matrix
+        std::string inputString;
+        int match;
+        int mismatch;
+        int gap;
+        std::cout << divider << "\tHow many points are gained for a match?\n"
+            << "\tType your number and press enter,\n"
+            << "\tor type \"exit\" and press enter to quit at any time.\n" << divider;
+        while (true) {
+            try {
+                std::cin >> inputString;
+                checkForExit(inputString);
+                match = std::stoi(inputString);
+                break;
+            }
+            catch (std::invalid_argument& e) {
+                std::cout << "\tInvalid input, please try again.\n";
+            }
+        }
+        std::cout << divider << "\tHow many points are LOST for a mismatch?\n"
+            << "\tType your number and press enter,\n" << divider;
+        while (true) {
+            try {
+                std::cin >> inputString;
+                checkForExit(inputString);
+                mismatch = std::stoi(inputString);
+                break;
+            }
+            catch (std::invalid_argument& e) {
+                std::cout << "\tInvalid input, please try again.\n";
+            }
+        }
+        std::cout << divider << "\tHow many points are LOST for a gap?\n"
+            << "\tType your number and press enter,\n" << divider;
+        while (true) {
+            try {
+                std::cin >> inputString;
+                checkForExit(inputString);
+                gap = std::stoi(inputString);
+                break;
+            }
+            catch (std::invalid_argument& e) {
+                std::cout << "\tInvalid input, please try again.\n";
+            }
+        }
+
+        // calculate all paths
         for (int row = 1; row < rows; row++) {
             for (int col = 1; col < cols; col++) {
                 cell c = {};
-                int bestscore;
                 cell* diag = &matrix[row - 1][col - 1];
                 cell* left = &matrix[row][col - 1];
                 cell* up = &matrix[row - 1][col];
-                int diagScore = (sequenceOne[col - 1] == sequenceTwo[row - 1]) ? diag->value + 5 : diag->value - 2;
-                diag->change = (sequenceOne[col - 1] == sequenceTwo[row - 1]) ? 5 : -2;
-                int leftScore = left->value - 1;
-                left->change = -1;
-                int upScore = up->value - 1;
-                up->change = -1;
+                int diagScore = (sequenceOne[col - 1] == sequenceTwo[row - 1]) ? diag->value + match : diag->value - mismatch;
+                diag->change = (sequenceOne[col - 1] == sequenceTwo[row - 1]) ? match : -mismatch;
+                int leftScore = left->value - gap;
+                left->change = - gap;
+                int upScore = up->value - gap;
+                up->change = - gap;
                 if (diagScore == leftScore && leftScore == upScore) {
                     c.value = diagScore;
                     c.previous[0] = diag;   c.arrow[1] = true;
@@ -298,5 +344,7 @@ int main() {
         for (int i = 0; i < allPaths->size(); i++) {
             printWords(allPaths->at(i), sequenceOne, sequenceTwo);
         }
+
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     }
 }
