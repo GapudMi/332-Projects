@@ -82,7 +82,7 @@ void printMatrix(cell** mat, int rows, int cols, std::string across, std::string
 
     std::cout << "\n\n";
     /*
-    // DEBUGGING HELL
+    // DEBUGGING
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
             if (mat[i][j] == cell{ {} }) {
