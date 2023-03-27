@@ -6,6 +6,8 @@ You will then be prompted to type the number of points gained in a match. Type t
 You will then be prompted to type the number of points LOST for a mismatch. Type the point value, then press enter.
 Finally, you will be prompted to type the number of points LOST for a gap. Type the point value, then press enter.
 The program will then show you the chart of DP calculation with trace-back paths for all optimal alignments, as well as every failed path.
+When you are finished looking at the paths, you can press enter to see all of the alignments. There might be a large number of them.
+After that, you can repeat the process.
 At any time you are prompted for input, you can type "exit" to close the program.
 
 Group member contribution
