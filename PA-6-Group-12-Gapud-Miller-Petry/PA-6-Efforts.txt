@@ -2,7 +2,6 @@ How to run the program?
 Opening the PA-6-Executable.exe file will bring you to a Repl page. To run the program, press the green run button or the white triangle.
 Once the program runs, you will be prompted for your first string to align. Type the string, then press enter.
 After that, you will be prompted for your second string to align. Type the string, then press enter.
-
 You will then be prompted to type the number of points gained in a match. Type the point value, then press enter.
 You will then be prompted to type the number of points LOST for a mismatch. Type the point value, then press enter.
 Finally, you will be prompted to type the number of points LOST for a gap. Type the point value, then press enter.
