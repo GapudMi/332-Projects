@@ -320,7 +320,38 @@ int main() {
                     c.previous[2] = up;     c.arrow[0] = true;
                 }
                 else {
-                    // values
+                    // THIS CODE IS TERRIBLE
+                    if (diagScore > leftScore && diagScore > upScore) {
+                        c.value = diagScore;
+                        c.previous[0] = diag;   c.arrow[1] = true;
+                    }
+                    else if (upScore > diagScore && upScore > leftScore) {
+                        c.value = upScore;
+                        c.previous[0] = up;   c.arrow[0] = true;
+                    }
+                    else if (leftScore > upScore && leftScore > diagScore) {
+                        c.value = leftScore;
+                        c.previous[0] = left;   c.arrow[2] = true;
+                    }
+                    else if (leftScore == diagScore) {
+                        c.value = diagScore;
+                        c.previous[0] = diag;   c.arrow[1] = true;
+                        c.previous[1] = left;   c.arrow[2] = true;
+                    }
+                    else if (leftScore == upScore) {
+                        c.value = leftScore;
+                        c.previous[0] = left;   c.arrow[2] = true;
+                        c.previous[1] = up;   c.arrow[0] = true;
+                    }
+                    else if (diagScore == upScore) {
+                        c.value = upScore;
+                        c.previous[0] = diag;   c.arrow[1] = true;
+                        c.previous[1] = up;   c.arrow[0] = true;
+                    }
+                }
+
+
+                    /*// values
                     cell* a[3] = { diag, left, up };
                     std::sort(std::begin(a), std::end(a), cellGreater);
                     c.value = a[0]->value + a[0]->change;
@@ -337,7 +368,7 @@ int main() {
                     c.arrow[1] = (diagScore == c.value);
                     c.arrow[2] = (leftScore == c.value);
 
-                }
+                }*/
                 diag->change = 0;
                 up->change = 0;
                 left->change = 0;
