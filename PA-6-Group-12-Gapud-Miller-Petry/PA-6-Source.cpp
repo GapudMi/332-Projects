@@ -232,17 +232,6 @@ int main() {
         // create matrix cell[rows][cols]
         cell** matrix = new cell * [rows];
 
-        // Populate matrix
-        for (int row = 0; row < rows; row++) {
-            matrix[row] = new cell[cols];
-            matrix[row][0] = cell{ row * -1, std::make_pair(row, 0), NULL };
-            matrix[row][0].arrow[0] = true;
-        }
-        for (int col = 0; col < cols; col++) {
-            matrix[0][col] = cell{ col * -1, std::make_pair(0, col), NULL };
-            if (col != 0) matrix[0][col].arrow[2] = true;
-        }
-
         // Get payoff matrix
         std::string inputString;
         int match;
@@ -288,7 +277,28 @@ int main() {
                 std::cout << "\tInvalid input, please try again.\n";
             }
         }
-
+        // Populate matrix
+        for (int row = 0; row < rows; row++) {
+            matrix[row] = new cell[cols];
+            matrix[row][0] = cell{ row * -1, std::make_pair(row, 0), NULL };
+            matrix[row][0].arrow[0] = true;
+            if (row != 0) {
+                matrix[row][0].value = matrix[row-1][0].value - gap;
+            }
+            else {
+                matrix[row][0].value = 0;
+            }
+        }
+        for (int col = 0; col < cols; col++) {
+            matrix[0][col] = cell{ col * -1, std::make_pair(0, col), NULL };
+            if (col != 0) {
+                matrix[0][col].arrow[2] = true;
+                matrix[0][col].value = matrix[0][col-1].value - gap;
+            }
+            else {
+                matrix[0][col].value = 0;
+            }
+        }
         // calculate all paths
         for (int row = 1; row < rows; row++) {
             for (int col = 1; col < cols; col++) {
