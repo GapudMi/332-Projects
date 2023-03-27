@@ -347,6 +347,6 @@ int main() {
         std::cout << divider << "\tAll optimal combinations:\n";
         for (int i = 0; i < allPaths->size(); i++) {
             printWords(allPaths->at(i), sequenceOne, sequenceTwo);
-        }');
+        }
     }
 }
