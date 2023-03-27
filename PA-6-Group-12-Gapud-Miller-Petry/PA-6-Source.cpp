@@ -341,7 +341,6 @@ int main() {
         std::vector<std::vector<cell>>* allPaths = new std::vector<std::vector<cell>>;
         getPaths(matrix, rows - 1, cols - 1, allPaths);
         std::cout << divider << "Press enter to see all optimal alignments.";
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::getchar();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::cout << divider << "\tAll optimal combinations:\n";
