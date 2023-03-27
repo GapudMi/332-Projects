@@ -184,12 +184,24 @@ int main() {
             << "\tA sequence is a combination of letters and gaps (denoted by an underscore).\n"
             << "\tAlternatively, type \"exit\" and press enter to quit at any time.\n" << divider;
         std::string sequenceOne;
-        std::getline(std::cin, sequenceOne);
-        checkForExit(sequenceOne);
+        while (true) {
+            std::getline(std::cin, sequenceOne);
+            checkForExit(sequenceOne);
+            if (sequenceOne.find('_') != std::string::npos) {
+                std::cout << "\tDo not use '_' in your sequence, please try again.\n";
+            }
+            else break;
+        }
         std::cout << "\tEnter your second sequence.\n";
         std::string sequenceTwo;
-        std::getline(std::cin, sequenceTwo);
-        checkForExit(sequenceTwo);
+        while (true) {
+            std::getline(std::cin, sequenceTwo);
+            checkForExit(sequenceTwo);
+            if (sequenceTwo.find('_') != std::string::npos) {
+                std::cout << "\tDo not use '_' in your sequence, please try again.\n";
+            }
+            else break;
+        }
 
         // initialize 2D array :3
         int cols = sequenceOne.length() + 1;
