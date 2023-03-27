@@ -28,7 +28,6 @@ void checkForExit(std::string input) {
 
 
 void printMatrix(cell** mat, int rows, int cols, std::string across, std::string down) {
-    // in future this will also print arrows and shit idk
     for (int i = 0; i < rows; i++) {
         if (i != 0) {
             std::cout << "\n        ";
@@ -349,30 +348,9 @@ int main() {
                         c.previous[1] = up;   c.arrow[0] = true;
                     }
                 }
-
-
-                    /*// values
-                    cell* a[3] = { diag, left, up };
-                    std::sort(std::begin(a), std::end(a), cellGreater);
-                    c.value = a[0]->value + a[0]->change;
-                    if (a[0]->value + a[0]->change == a[1]->value + a[1]->change) {
-                        c.previous[0] = a[0];
-                        c.previous[1] = a[1];
-                    }
-                    else {
-                        c.previous[0] = a[0];
-                    }
-
-                    // arrows
-                    c.arrow[0] = (upScore == c.value);
-                    c.arrow[1] = (diagScore == c.value);
-                    c.arrow[2] = (leftScore == c.value);
-
-                }*/
                 diag->change = 0;
                 up->change = 0;
                 left->change = 0;
-
 
                 c.location = std::make_pair(row, col);
                 matrix[row][col] = c;
