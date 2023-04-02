@@ -9,6 +9,16 @@ struct Node {
     std::vector<Node> edges;
 };
 
+void printAdjList(Node * list, int numNodes) {
+    for (int i = 0; i < numNodes; i++) {
+        std::cout << list[i].name;
+        for (Node n : list[i].edges) {
+            std::cout << " -> " << n.name;
+        }
+        std::cout << std::endl;
+    }
+}
+
 int main() {
     std::string divider = "     =============================================================================\n";
     while (true) {
@@ -66,5 +76,6 @@ int main() {
                 }
             }
         }
+        printAdjList(nodes, numNodes);
     }
 }
