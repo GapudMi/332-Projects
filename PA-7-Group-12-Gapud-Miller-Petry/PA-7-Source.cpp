@@ -3,6 +3,7 @@
 #include <vector>
 #include <map>
 #include <algorithm>
+#include <string>
 
 enum color { white, gray, black };
 
@@ -98,28 +99,19 @@ int main() {
         Node* nodes = new Node[numNodes];
         std::map<std::string, Node> nodeNames;
         std::cout << divider;
-        std::cout << "\tNow, you'll need to provide information about the nodes.\n"
-                  << "\tType the name of each node, then press enter.\n"
-                  << divider;
+        std::cout << "Your nodes and their names:\n";
         for (int i = 0; i < numNodes; i++) {
             Node node;
-            std::string name;
-            std::cout << "\tNode " << (i + 1) << ":\n";
-            while (true) {
-                std::cin >> name;
-                std::transform(name.begin(), name.end(), name.begin(), ::toupper);
-                if (nodeNames.contains(name)) {
-                    std::cout << "\tNode names must be unique.\n";
-                }
-                else
-                    break;
-            }
-
-            node.name = name;
+            node.name = "N" + std::to_string(i+1);
             nodes[i] = node;
             nodeNames[node.name] = node;
+            std::cout << node.name << "\n";
         }
-        std::cout << divider << "\tNext, enter information about the edges.\n";
+        std::cout << divider;
+        std::cout << "\tNow, you'll need to provide information about the nodes.\n";
+            // << "\tType the name of each node, then press enter.\n"
+            // << divider;
+        std::cout << divider << "\tEnter information about the edges.\n";
         for (int i = 0; i < numNodes; i++) {
             std::cout << "\tHow many edges does node " << nodes[i].name << " have?\n";
             int numEdges;
