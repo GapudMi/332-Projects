@@ -9,11 +9,39 @@ struct Node {
     std::vector<Node> edges;
 };
 
+bool operator==(const Node& a, const Node& b)
+{
+    return a.name == b.name;
+}
+
+bool vectorContainsNode(std::vector<Node> v, Node a) {
+    for (Node n : v) {
+        if (n == a)
+            return true;
+    }
+    return false;
+}
+
 void printAdjList(Node * list, int numNodes) {
     for (int i = 0; i < numNodes; i++) {
         std::cout << list[i].name;
         for (Node n : list[i].edges) {
             std::cout << " -> " << n.name;
+        }
+        std::cout << std::endl;
+    }
+}
+
+void printAdjMatrix(Node * nodes, int numNodes) {
+    std::cout << "  ";
+    for (int i = 0; i < numNodes; i++) {
+        std::cout << nodes[i].name << " ";
+    }
+    std::cout << std::endl;
+    for (int i = 0; i < numNodes; i++) {
+        std::cout << nodes[i].name << " ";
+        for (int j = 0; j < numNodes; j++) {
+            std::cout << vectorContainsNode(nodes[i].edges, nodes[j]) << " ";
         }
         std::cout << std::endl;
     }
@@ -77,5 +105,6 @@ int main() {
             }
         }
         printAdjList(nodes, numNodes);
+        printAdjMatrix(nodes, numNodes);
     }
 }
