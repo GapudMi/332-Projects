@@ -77,7 +77,7 @@ int main() {
         std::cout << "\tNow, you'll need to provide information about the nodes.\n";
             // << "\tType the name of each node, then press enter.\n"
             // << divider;
-        std::cout << divider << "\tNext, enter information about the edges.\n";
+        std::cout << divider << "\tEnter information about the edges.\n";
         for (int i = 0; i < numNodes; i++) {
             std::cout << "\tHow many edges does node " << nodes[i].name << " have?\n";
             int numEdges;
