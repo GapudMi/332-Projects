@@ -115,7 +115,7 @@ int main() {
         for (int i = 0; i < numNodes; i++) {
             std::cout << "\tHow many edges does node " << nodes[i].name << " have?\n";
             int numEdges;
-            while(!(std::cin >> numEdges)){
+            while (!(std::cin >> numEdges) || numEdges >= numNodes) {
                 std::cout << "\tInvalid value, please try again.\n";
                 std::cin.clear();
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -127,8 +127,25 @@ int main() {
                     std::cin >> name;
                     std::transform(name.begin(), name.end(), name.begin(), ::toupper);
                     if (nodeNames.contains(name)) { // requires C++20
-                        nodes[i].edges.push_back(&nodeNames[name]);
-                        break;
+                        if (name == nodes[i].name) {
+                            std::cout << "\tNodes can't connect to themselves, please try again.\n";
+                            continue;
+                        }
+                        bool redundant = false; // i hate doing this it makes me feel so inelegant
+                        for (int iter = 0; iter < j; iter++) {
+                            //std::cout << "\nEdge list name " << nodes[i].edges[iter]->name << " user inputted name: " << name; Debug
+                            if (nodes[i].edges[iter]->name == name) {
+                                std::cout << "\tThis edge already exists, please try again.\n"; redundant = true;
+                                break;
+                            }
+                        }
+                        if (!redundant) {
+                            nodes[i].edges.push_back(&nodeNames[name]);
+                            break;
+                        }
+                        else {
+                            continue;
+                        }
                     }
                     else {
                         std::cout << "\tThat node does not exist, please try again.\n";
@@ -142,6 +159,7 @@ int main() {
 
         std::cout << divider << "\tWhat is the source node of your graph?\n";
         std::string name;
+        std::transform(name.begin(), name.end(), name.begin(), ::toupper);
         Node source;
         while (true) {
             std::cin >> name;
