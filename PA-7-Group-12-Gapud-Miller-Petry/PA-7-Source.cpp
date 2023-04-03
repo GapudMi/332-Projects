@@ -221,10 +221,15 @@ int main() {
         std::cout << divider << "\tEnter information about the edges.\n\tYou only need to specify each edge once.\n";
         for (int i = 0; i < numNodes; i++) {
             std::string n;
-            int numEdges;
+            int numEdges = 0;
             int size = (nodes[i].edges.size());
-            if (size == 1) std::cout << "\tNode " << nodes[i].name << " has " << size << " edge already. How many more do you want to add?\n";
-            else std::cout << "\tHow many edges does node N" << (i + 1) << " have?\n";
+            if (size == 0) std::cout << "\tHow many edges does node N" << (i + 1) << " have?\n";
+            else if (size == 1) std::cout << "\tNode " << nodes[i].name << " has " << size << " edge already. How many more do you want to add?\n";
+            else if (size+1 < numNodes) std::cout << "\tNode " << nodes[i].name << " has " << size << " edges already. How many more do you want to add?\n";
+            else {
+                std::cout << "\tNode " << nodes[i].name << " has the maximum number of edges already. Moving on.\n";
+                continue;
+            }
             while (true) {
                 std::cin >> n;
                 numEdges = parseInt(n);
