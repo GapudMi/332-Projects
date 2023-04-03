@@ -28,7 +28,7 @@ bool vectorContainsNode(std::vector<Node*> v, Node a) {
     return false;
 }
 
-void printAdjList(Node* list, int numNodes) {
+void printAdjList(Node * & list, int numNodes) {
     for (int i = 0; i < numNodes; i++) {
         std::cout << list[i].name;
         for (Node* n : list[i].edges) {
@@ -38,7 +38,7 @@ void printAdjList(Node* list, int numNodes) {
     }
 }
 
-void printAdjMatrix(Node* nodes, int numNodes) {
+void printAdjMatrix(Node * & nodes, int numNodes) {
     std::cout << "\t";
     for (int i = 0; i < numNodes; i++) {
         std::cout << nodes[i].name << "\t";
@@ -61,7 +61,7 @@ void printQueue(std::vector<Node*> q) {
     std::cout << "\n";
 }
 
-void printTable(Node* nodes, int numNodes) {
+void printTable(Node* & nodes, int numNodes) {
     std::cout << "\n\t\t\t";
     for (int i = 0; i < numNodes; i++) {
         std::cout << nodes[i].name << '\t';
@@ -93,21 +93,23 @@ void breadthFirst(Node* nodes, std::string sourceName, int numNodes) {
     }
     nodes[s].col = gray;
     nodes[s].distance = 0;
+
     queue.push_back(&nodes[s]);
+
     while (!queue.empty()) {
         s = queue.size() - 1;
         Node* head = queue[s];
         std::cout << "\n\thead name: " << head->name;//debug
-        for (Node* n : head->edges) {
-            std::cout << "\nn->col: " << n->col;//debug
-            if (n->col == white) {
-                n->col = gray;
-                std::cout << "\nn->col: " << n->col;//debug
-                n->distance = head->distance + 1;
-                std::cout << "\nn->distance: " << n->distance;//debug
-                n->predecessor = head;
-                std::cout << "\nn->predecessor: " << n->predecessor->name;//debug
-                queue.push_back(n);
+        for (int i = 0; i < head->edges.size(); i++) {
+            std::cout << "\nn->col: " << head->edges[i]->col;//debug
+            if (head->edges[i]->col == white) {
+                head->edges[i]->col = gray;
+                std::cout << "\nn->col: " << head->edges[i]->col;//debug
+                head->edges[i]->distance = head->distance + 1;
+                std::cout << "\nn->distance: " << head->edges[i]->distance;//debug
+                head->edges[i]->predecessor = head;
+                std::cout << "\nn->predecessor: " << head->edges[i]->predecessor->name;//debug
+                queue.push_back(head->edges[i]);
             }
         }
         head->col = black;
@@ -133,14 +135,15 @@ int main() {
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         }
         Node* nodes = new Node[numNodes];
-        std::map<std::string, Node> nodeNames;
+        std::map<std::string, int> nodeNames;
         std::cout << divider;
         std::cout << "Your nodes and their names:\n";
         for (int i = 0; i < numNodes; i++) {
             Node node;
-            node.name = "N" + std::to_string(i + 1);
+            std::string ARGH = "N" + std::to_string(i+1);
+            node.name = ARGH;
             nodes[i] = node;
-            nodeNames[node.name] = node;
+            nodeNames[ARGH] = i;
             std::cout << node.name << "\n";
         }
         std::cout << divider;
@@ -177,8 +180,8 @@ int main() {
                             }
                         }
                         if (!redundant) {
-                            nodes[i].edges.push_back(&nodeNames[name]); // add named edge
-                            nodes[std::stoi(name.substr(1))-1].edges.push_back(&nodeNames[nodes[i].name]); // add that edge to the other end
+                            nodes[i].edges.push_back(&nodes[nodeNames[name]]); // add named edge
+                            nodes[std::stoi(name.substr(1))-1].edges.push_back(&nodes[nodeNames[nodes[i].name]]); // add that edge to the other end
                             printAdjList(nodes, numNodes); //debugging
                             break;
                         }
