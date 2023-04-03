@@ -28,7 +28,7 @@ bool operator==(const Node& a, const Node& b)
 }
 
 
-bool vectorContainsNode(std::vector<Node*> v, Node a) {
+bool vectorContainsNode(std::vector<Node*> v, Node &a) {
     for (int i = 0; i < v.size(); i++) {
         if (v[i]->name == a.name)
             return true;
@@ -91,7 +91,7 @@ void printTable(Node*& nodes, int numNodes) {
 
 }
 
-void breadthFirst(Node* nodes, std::string sourceName, int numNodes) {
+void breadthFirst(Node* nodes, const std::string &sourceName, int numNodes) {
     std::vector<Node*> queue;
     int s;
     for (int i = 0; i < numNodes; i++) {
@@ -114,7 +114,7 @@ void breadthFirst(Node* nodes, std::string sourceName, int numNodes) {
             printQueue(queue);
         }
         while (!queue.empty()) {
-            s = queue.size() - 1;
+            s = static_cast<int>(queue.size()) - 1;
             Node* head = queue[s];
             for (int i = 0; i < head->edges.size(); i++) {
                 if (head->edges[i]->col == white) {
@@ -208,7 +208,7 @@ int main() {
             std::cout << "\tHow many edges does node N" << (i + 1) << " have?\n";
             std::string n;
             int numEdges;
-            int size = nodes[i].edges.size();
+            int size = static_cast<int>(nodes[i].edges.size());
             if (size == 0) {
                 while (true) {
                     std::cin >> n;
@@ -251,7 +251,7 @@ int main() {
             for (int j = size; j < numEdges + size; j++) {
                 std::cout << "\tEnter the name of the node that " << nodes[i].name << "'s edge number " << j + 1 << " connects to.\n";
                 std::string name;
-                while (1) {
+                while (true) {
                     std::cin >> name;
                     chexit(name);
                     std::transform(name.begin(), name.end(), name.begin(), ::toupper);
@@ -260,7 +260,7 @@ int main() {
                             std::cout << "\tNodes can't connect to themselves, please try again.\n";
                             continue;
                         }
-                        bool redundant = false; // i hate doing this it makes me feel so inelegant
+                        bool redundant = false;
                         for (int iter = 0; iter < nodes[i].edges.size(); iter++) {
                             if (nodes[i].edges[iter]->name == name) {
                                 std::cout << "\tThis edge already exists, please try again.\n"; redundant = true;
