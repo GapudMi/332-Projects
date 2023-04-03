@@ -100,28 +100,36 @@ void breadthFirst(Node* nodes, std::string sourceName, int numNodes) {
     nodes[s].distance = 0;
 
     queue.push_back(&nodes[s]);
-
-    while (!queue.empty()) {
-        s = queue.size() - 1;
-        Node* head = queue[s];
-        //std::cout << "\n\thead name: " << head->name;//debug
-        for (int i = 0; i < head->edges.size(); i++) {
-            //std::cout << "\nn->col: " << head->edges[i]->col;//debug
-            if (head->edges[i]->col == white) {
-                head->edges[i]->col = gray;
-                //std::cout << "\nn->col: " << head->edges[i]->col;//debug
-                head->edges[i]->distance = head->distance + 1;
-                //std::cout << "\nn->distance: " << head->edges[i]->distance;//debug
-                head->edges[i]->predecessor = head;
-                //std::cout << "\nn->predecessor: " << head->edges[i]->predecessor->name;//debug
-                queue.push_back(head->edges[i]);
-            }
+    for (int outer = 0; outer < numNodes; outer++) {
+        if (nodes[outer].col == white) {
+            nodes[outer].col = gray;
+            nodes[outer].distance = 0;
+            queue.insert(queue.begin(), &nodes[outer]);
         }
-        head->col = black;
-        queue.erase(queue.begin() + s);
-        //queue.push_back(newHead);
-        printTable(nodes, numNodes);
-        printQueue(queue);
+        while (!queue.empty()) {
+            s = queue.size() - 1;
+            Node* head = queue[s];
+            printTable(nodes, numNodes);
+            printQueue(queue);
+            //std::cout << "\n\thead name: " << head->name;//debug
+            for (int i = 0; i < head->edges.size(); i++) {
+                //std::cout << "\nn->col: " << head->edges[i]->col;//debug
+                if (head->edges[i]->col == white) {
+                    head->edges[i]->col = gray;
+                    //std::cout << "\nn->col: " << head->edges[i]->col;//debug
+                    head->edges[i]->distance = head->distance + 1;
+                    //std::cout << "\nn->distance: " << head->edges[i]->distance;//debug
+                    head->edges[i]->predecessor = head;
+                    //std::cout << "\nn->predecessor: " << head->edges[i]->predecessor->name;//debug
+                    queue.push_back(head->edges[i]);
+                }
+            }
+            head->col = black;
+            queue.erase(queue.begin() + s);
+            //queue.push_back(newHead);
+            printTable(nodes, numNodes);
+            printQueue(queue);
+        }
     }
 }
 
