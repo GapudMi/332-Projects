@@ -25,6 +25,8 @@ bool operator==(const Node& a, const Node& b)
     return a.name == b.name;
 }
 
+
+
 bool vectorContainsNode(std::vector<Node*> v, Node a) {
     for (int i = 0; i < v.size(); i++) {
         if (v[i]->name == a.name)
@@ -135,19 +137,53 @@ void breadthFirst(Node* nodes, std::string sourceName, int numNodes) {
     }
 }
 
+int parseInt(std::string i) {
+    int out;
+    try {
+        out = std::stoi(i);
+        if (out < 0)
+            return -1;
+        else
+            return out;
+    }
+    catch (std::invalid_argument & e){
+        std::transform(i.begin(), i.end(), i.begin(),
+                       ::tolower); // Convert input to lower case for case-nonsensitive input
+        if (i == "exit") exit(0);
+        else
+            return -1;
+    }
+    catch (const std::exception& unknown) {
+        return -1;
+    }
+}
+
+void chexit(std::string s) {
+    std::transform(s.begin(), s.end(), s.begin(),
+                   ::tolower); // Convert input to lower case for case-nonsensitive input
+    if (s == "exit") exit(0);
+}
+
 int main() {
     std::string divider = "     =============================================================================\n";
     while (true) {
         std::cout << divider;
-        std::cout << "\n\tWelcome. How many nodes does this graph have?\n"
+        std::cout << "\tWelcome. How many nodes does this graph have?\n"
             << "\tEnter the number, then press enter.\n"
             << "\tAlternatively, type \"exit\" and press enter to quit at any time.\n"
             << divider;
+        std::string num;
         int numNodes;
-        while (!(std::cin >> numNodes) || numNodes <= 0) {
-            std::cout << "\tInvalid value, please try again.\n";
-            std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        while (true) {
+            std::cin >> num;
+            numNodes = parseInt(num);
+            if (numNodes < 0) {
+                std::cout << "\tInvalid value, please try again.\n";
+                std::cin.clear();
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            }
+            else
+                break;
         }
         Node* nodes = new Node[numNodes];
         std::map<std::string, int> nodeNames;
@@ -155,19 +191,60 @@ int main() {
         std::cout << "\tYour nodes and their names:\n";
         for (int i = 0; i < numNodes; i++) {
             Node node;
-            std::string ARGH = "N" + std::to_string(i + 1);
-            node.name = ARGH;
+            std::string n= "N" + std::to_string(i + 1);
+            node.name = n;
             nodes[i] = node;
-            nodeNames[ARGH] = i;
+            nodeNames[n] = i;
             std::cout << '\t' << node.name << "\n";
         }
         std::cout << divider;
         std::cout << "\tNow, you'll need to provide information about the nodes.\n";
         std::cout << divider << "\tEnter information about the edges.\n\tYou only need to specify each edge once.\n";
         for (int i = 0; i < numNodes; i++) {
+            std::cout << "\tHow many edges does node N" << (i + 1) << " have?\n";
+            std::string n;
             int numEdges;
             int size = nodes[i].edges.size();
-
+            if (size == 0) {
+                while (true) {
+                    std::cin >> n;
+                    numEdges = parseInt(n);
+                    if (numEdges < 0) {
+                        std::cout << "\tInvalid value, please try again.\n";
+                        std::cin.clear();
+                        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    }
+                    else if (numEdges >= numNodes) {
+                        std::cout << "\tYou cannot have more edges than nodes.\n";
+                        std::cin.clear();
+                        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    }
+                    else
+                        break;
+                }
+            }
+            else {
+                if (size == 1) std::cout << "\tNode " << nodes[i].name << " has " << size << " edge already. How many more do you want to add?\n";
+                else std::cout << "\tNode " << nodes[i].name << " has " << size << " edges already. How many more do you want to add?\n";
+                while (true) {
+                    std::cin >> n;
+                    numEdges = parseInt(n);
+                    if (numEdges < 0) {
+                        std::cout << "\tInvalid value, please try again.\n";
+                        std::cin.clear();
+                        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    }
+                    else if (numEdges + size >= numNodes) {
+                        std::cout << "\tEdges must be less than nodes.\n";
+                        std::cin.clear();
+                        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    }
+                    else
+                        break;
+                }
+            }
+            /*
+            std::cin >> n;
             if (size == 0) {
                 std::cout << "\tHow many edges does node " << nodes[i].name << " have?\n";
                 while (!(std::cin >> numEdges) || numEdges >= numNodes) {
@@ -177,20 +254,14 @@ int main() {
                 }
             }
             else {
-                if (size == 1) std::cout << "\tNode " << nodes[i].name << " has " << size << " edge already. How many more do you want to add?\n";
-                else std::cout << "\tNode " << nodes[i].name << " has " << size << " edges already. How many more do you want to add?\n";
-                while (!(std::cin >> numEdges) || numEdges + size >= numNodes) {
-                    std::cout << "\tInvalid value, please try again.\n";
-                    std::cin.clear();
-                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                }
-            }
-            
+
+            }*/
             for (int j = size; j < numEdges + size; j++) {
                 std::cout << "\tEnter the name of the node that " << nodes[i].name << "'s edge number " << j + 1 << " connects to.\n";
                 std::string name;
                 while (1) {
                     std::cin >> name;
+                    chexit(name);
                     std::transform(name.begin(), name.end(), name.begin(), ::toupper);
                     if (nodeNames.contains(name)) { // requires C++20
                         if (name == nodes[i].name) {
@@ -235,6 +306,7 @@ int main() {
         Node source;
         while (true) {
             std::cin >> name;
+            chexit(name);
             std::transform(name.begin(), name.end(), name.begin(), ::toupper);
             if (!nodeNames.contains(name)) {
                 std::cout << "\tThat node does not exist, please try again.\n";
