@@ -9,6 +9,7 @@ const int NODE_LIMIT = 25;
 
 enum color { white, gray, black };
 
+// set up possible colors
 std::string getColorName(color c) {
     std::string a[3] = { "white", "gray", "black" };
     return a[c];
@@ -22,12 +23,13 @@ struct Node {
     Node* predecessor = nullptr;
 };
 
+// operator overload for Node class
 bool operator==(const Node& a, const Node& b)
 {
     return a.name == b.name;
 }
 
-
+// check if the vector contains a given node
 bool vectorContainsNode(std::vector<Node*> v, Node &a) {
     for (int i = 0; i < v.size(); i++) {
         if (v[i]->name == a.name)
@@ -36,6 +38,7 @@ bool vectorContainsNode(std::vector<Node*> v, Node &a) {
     return false;
 }
 
+// print the adjacency list
 void printAdjList(Node*& list, int numNodes) {
     for (int i = 0; i < numNodes; i++) {
         std::cout << '\t' << list[i].name;
@@ -46,6 +49,7 @@ void printAdjList(Node*& list, int numNodes) {
     }
 }
 
+// print the adjacency matrix
 void printAdjMatrix(Node*& nodes, int numNodes) {
     std::cout << "\t\t";
     for (int i = 0; i < numNodes; i++) {
@@ -61,6 +65,7 @@ void printAdjMatrix(Node*& nodes, int numNodes) {
     }
 }
 
+// print the current queue
 void printQueue(std::vector<Node*> q) {
     std::cout << "\n\n\tQueue: ";
     for (int i = 0; i < q.size(); i++) {
@@ -69,6 +74,7 @@ void printQueue(std::vector<Node*> q) {
     std::cout << "\n";
 }
 
+// print every node and its attributes in a table
 void printTable(Node*& nodes, int numNodes) {
     std::cout << "\n     =============================================================================\n";
     std::cout << "\n\t\t\t";
@@ -91,9 +97,11 @@ void printTable(Node*& nodes, int numNodes) {
 
 }
 
+// perform the breadth-first search 
 void breadthFirst(Node* nodes, const std::string &sourceName, int numNodes) {
     std::vector<Node*> queue;
     int s;
+    // iterate through node list to find index of the source node
     for (int i = 0; i < numNodes; i++) {
         if (nodes[i].name == sourceName) {
             s = i;
@@ -106,16 +114,18 @@ void breadthFirst(Node* nodes, const std::string &sourceName, int numNodes) {
     printTable(nodes, numNodes);
     printQueue(queue);
     for (int outer = 0; outer < numNodes; outer++) {
-        if (nodes[outer].col == white) {
+        if (nodes[outer].col == white) { // if node is "unexplored"
             nodes[outer].col = gray;
             nodes[outer].distance = 0;
             queue.insert(queue.begin(), &nodes[outer]);
+            // print table and queue every time a node is started
             printTable(nodes, numNodes);
             printQueue(queue);
         }
         while (!queue.empty()) {
             s = static_cast<int>(queue.size()) - 1;
             Node* head = queue[s];
+            // iterate through the edges
             for (int i = 0; i < head->edges.size(); i++) {
                 if (head->edges[i]->col == white) {
                     head->edges[i]->col = gray;
@@ -124,14 +134,17 @@ void breadthFirst(Node* nodes, const std::string &sourceName, int numNodes) {
                     queue.push_back(head->edges[i]);
                 }
             }
+            // done with node and its edges
             head->col = black;
             queue.erase(queue.begin() + s);
+            // update table
             printTable(nodes, numNodes);
             printQueue(queue);
         }
     }
 }
 
+// parse integer input
 int parseInt(std::string i) {
     int out;
     try {
@@ -155,6 +168,7 @@ int parseInt(std::string i) {
     }
 }
 
+// check for "exit" input
 void chexit(std::string s) {
     std::transform(s.begin(), s.end(), s.begin(),
                    ::tolower); // Convert input to lower case for case-nonsensitive input
@@ -194,6 +208,7 @@ int main() {
         std::cout << "\tYour nodes and their names:\n";
         for (int i = 0; i < numNodes; i++) {
             // Give nodes predefined names
+            // N1, N2, N3... etc. 
             Node node;
             std::string n= "N" + std::to_string(i + 1);
             node.name = n;
@@ -209,7 +224,7 @@ int main() {
             std::string n;
             int numEdges;
             int size = static_cast<int>(nodes[i].edges.size());
-            if (size == 0) {
+            if (size == 0) { // if 0 edges, do a normal prompt
                 while (true) {
                     std::cin >> n;
                     numEdges = parseInt(n);
@@ -227,7 +242,7 @@ int main() {
                         break;
                 }
             }
-            else {
+            else { // else ask if more edges are being added
                 if (size == 1) std::cout << "\tNode " << nodes[i].name << " has " << size << " edge already. How many more do you want to add?\n";
                 else std::cout << "\tNode " << nodes[i].name << " has " << size << " edges already. How many more do you want to add?\n";
                 while (true) {
@@ -247,7 +262,7 @@ int main() {
                         break;
                 }
             }
-
+            // connect nodes
             for (int j = size; j < numEdges + size; j++) {
                 std::cout << "\tEnter the name of the node that " << nodes[i].name << "'s edge number " << j + 1 << " connects to.\n";
                 std::string name;
@@ -287,6 +302,7 @@ int main() {
                 }
             }
         }
+        // output resulting adjacency list and matrix
         std::cout << divider << "\tAdjacency list\n";
         printAdjList(nodes, numNodes);
         std::cout << divider << "\tAdjacency matrix\n";
@@ -306,6 +322,7 @@ int main() {
                 break;
             }
         }
+        //perform the search for a BF
         breadthFirst(nodes, name, numNodes);
     }
 }
