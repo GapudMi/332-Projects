@@ -99,16 +99,16 @@ void breadthFirst(Node* nodes, std::string sourceName, int numNodes) {
     while (!queue.empty()) {
         s = queue.size() - 1;
         Node* head = queue[s];
-        std::cout << "\n\thead name: " << head->name;//debug
+        //std::cout << "\n\thead name: " << head->name;//debug
         for (int i = 0; i < head->edges.size(); i++) {
-            std::cout << "\nn->col: " << head->edges[i]->col;//debug
+            //std::cout << "\nn->col: " << head->edges[i]->col;//debug
             if (head->edges[i]->col == white) {
                 head->edges[i]->col = gray;
-                std::cout << "\nn->col: " << head->edges[i]->col;//debug
+                //std::cout << "\nn->col: " << head->edges[i]->col;//debug
                 head->edges[i]->distance = head->distance + 1;
-                std::cout << "\nn->distance: " << head->edges[i]->distance;//debug
+                //std::cout << "\nn->distance: " << head->edges[i]->distance;//debug
                 head->edges[i]->predecessor = head;
-                std::cout << "\nn->predecessor: " << head->edges[i]->predecessor->name;//debug
+                //std::cout << "\nn->predecessor: " << head->edges[i]->predecessor->name;//debug
                 queue.push_back(head->edges[i]);
             }
         }
