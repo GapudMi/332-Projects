@@ -5,6 +5,8 @@
 #include <algorithm>
 #include <string>
 
+const int NODE_LIMIT = 25;
+
 enum color { white, gray, black };
 
 std::string getColorName(color c) {
@@ -179,6 +181,11 @@ int main() {
             numNodes = parseInt(num);
             if (numNodes < 0) {
                 std::cout << "\tInvalid value, please try again.\n";
+                std::cin.clear();
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            }
+            else if (numNodes > NODE_LIMIT) {
+                std::cout << "\tFor performance reasons, charts larger than " << NODE_LIMIT << " nodes are disabled.\n";
                 std::cin.clear();
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             }
