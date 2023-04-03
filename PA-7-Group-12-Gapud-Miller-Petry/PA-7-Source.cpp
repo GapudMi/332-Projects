@@ -222,7 +222,7 @@ int main() {
         for (int i = 0; i < numNodes; i++) {
             std::string n;
             int numEdges = 0;
-            int size = (nodes[i].edges.size());
+            int size = static_cast<int>((nodes[i].edges.size()));
             if (size == 0) std::cout << "\tHow many edges does node N" << (i + 1) << " have?\n";
             else if (size == 1) std::cout << "\tNode " << nodes[i].name << " has " << size << " edge already. How many more do you want to add?\n";
             else if (size+1 < numNodes) std::cout << "\tNode " << nodes[i].name << " has " << size << " edges already. How many more do you want to add?\n";
