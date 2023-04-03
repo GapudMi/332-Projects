@@ -8,7 +8,7 @@
 enum color { white, gray, black };
 
 std::string getColorName(color c) {
-    std::string a[3] = {"white", "gray", "black"};
+    std::string a[3] = { "white", "gray", "black" };
     return a[c];
 }
 
@@ -33,7 +33,7 @@ bool vectorContainsNode(std::vector<Node*> v, Node a) {
     return false;
 }
 
-void printAdjList(Node * & list, int numNodes) {
+void printAdjList(Node*& list, int numNodes) {
     for (int i = 0; i < numNodes; i++) {
         std::cout << list[i].name;
         for (Node* n : list[i].edges) {
@@ -43,7 +43,7 @@ void printAdjList(Node * & list, int numNodes) {
     }
 }
 
-void printAdjMatrix(Node * & nodes, int numNodes) {
+void printAdjMatrix(Node*& nodes, int numNodes) {
     std::cout << "\t";
     for (int i = 0; i < numNodes; i++) {
         std::cout << nodes[i].name << "\t";
@@ -66,7 +66,7 @@ void printQueue(std::vector<Node*> q) {
     std::cout << "\n";
 }
 
-void printTable(Node* & nodes, int numNodes) {
+void printTable(Node*& nodes, int numNodes) {
     std::cout << "\n\t\t\t";
     for (int i = 0; i < numNodes; i++) {
         std::cout << nodes[i].name << '\t';
@@ -134,7 +134,7 @@ int main() {
             << "\tAlternatively, type \"exit\" and press enter to quit at any time.\n"
             << divider;
         int numNodes;
-        while (!(std::cin >> numNodes)) {
+        while (!(std::cin >> numNodes) || numNodes <= 0) {
             std::cout << "\tInvalid value, please try again.\n";
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -145,7 +145,7 @@ int main() {
         std::cout << "Your nodes and their names:\n";
         for (int i = 0; i < numNodes; i++) {
             Node node;
-            std::string ARGH = "N" + std::to_string(i+1);
+            std::string ARGH = "N" + std::to_string(i + 1);
             node.name = ARGH;
             nodes[i] = node;
             nodeNames[ARGH] = i;
@@ -153,20 +153,31 @@ int main() {
         }
         std::cout << divider;
         std::cout << "\tNow, you'll need to provide information about the nodes.\n";
-        // << "\tType the name of each node, then press enter.\n"
-        // << divider;
         std::cout << divider << "\tEnter information about the edges.\n\tYou only need to specify each edge once.\n";
         for (int i = 0; i < numNodes; i++) {
-            std::cout << "\tHow many edges does node " << nodes[i].name << " have?\n";
             int numEdges;
-            while (!(std::cin >> numEdges) || numEdges >= numNodes) {
-                std::cout << "\tInvalid value, please try again.\n";
-                std::cin.clear();
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            }
             int size = nodes[i].edges.size();
-            for (int j = 0; j < numEdges - size; j++) {
-                std::cout << "\tEnter the name of edge " << j + 1 << ".\n";
+
+            if (size == 0) {
+                std::cout << "\tHow many edges does node " << nodes[i].name << " have?\n";
+                while (!(std::cin >> numEdges) || numEdges >= numNodes) {
+                    std::cout << "\tInvalid value, please try again.\n";
+                    std::cin.clear();
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                }
+            }
+            else {
+                if (size == 1) std::cout << "\tNode " << nodes[i].name << " has " << size << " edge already. How many more do you want to add?\n";
+                else std::cout << "\tNode " << nodes[i].name << " has " << size << " edges already. How many more do you want to add?\n";
+                while (!(std::cin >> numEdges) || numEdges + size >= numNodes) {
+                    std::cout << "\tInvalid value, please try again.\n";
+                    std::cin.clear();
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                }
+            }
+            
+            for (int j = size; j < numEdges + size; j++) {
+                std::cout << "\tEnter the name of the node that " << nodes[i].name << "'s edge number " << j + 1 << " connects to.\n";
                 std::string name;
                 while (1) {
                     std::cin >> name;
@@ -186,8 +197,11 @@ int main() {
                         }
                         if (!redundant) {
                             nodes[i].edges.push_back(&nodes[nodeNames[name]]); // add named edge
-                            nodes[std::stoi(name.substr(1))-1].edges.push_back(&nodes[nodeNames[nodes[i].name]]); // add that edge to the other end
-                            printAdjList(nodes, numNodes); //debugging
+                            nodes[std::stoi(name.substr(1)) - 1].edges.push_back(&nodes[nodeNames[nodes[i].name]]); // add that edge to the other end
+
+                            std::cout << divider;
+                            printAdjList(nodes, numNodes); //debugging? i actually like how this feels for ux
+                            std::cout << divider;
                             break;
                         }
                         else {
