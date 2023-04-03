@@ -74,7 +74,7 @@ void printQueue(std::vector<Node*> q) {
     std::cout << "\n";
 }
 
-// print every node and its attributes in a table
+// print node and its attributes
 void printTable(Node*& nodes, int numNodes) {
     std::cout << "\n     =============================================================================\n";
     std::cout << "\n\t\t\t";
