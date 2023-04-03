@@ -7,6 +7,11 @@
 
 enum color { white, gray, black };
 
+std::string getColorName(color c) {
+    std::string a[3] = {"white", "gray", "black"};
+    return a[c];
+}
+
 struct Node {
     std::string name;
     std::vector<Node*> edges;
@@ -68,7 +73,7 @@ void printTable(Node* & nodes, int numNodes) {
     }
     std::cout << "\n\tcolor\t\t";
     for (int i = 0; i < numNodes; i++) {
-        std::cout << nodes[i].col << '\t';
+        std::cout << getColorName(nodes[i].col) << '\t';
     }
     std::cout << "\n\tdistance\t";
     for (int i = 0; i < numNodes; i++) {
