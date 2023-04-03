@@ -9,7 +9,7 @@ const int NODE_LIMIT = 25;
 
 enum color { white, gray, black };
 
-// set up possible colors
+// change color value from int to corresponding string
 std::string getColorName(color c) {
     std::string a[3] = { "white", "gray", "black" };
     return a[c];
