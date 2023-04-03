@@ -28,7 +28,7 @@ bool vectorContainsNode(std::vector<Node*> v, Node a) {
     return false;
 }
 
-void printAdjList(Node * list, int numNodes) {
+void printAdjList(Node* list, int numNodes) {
     for (int i = 0; i < numNodes; i++) {
         std::cout << list[i].name;
         for (Node* n : list[i].edges) {
@@ -38,22 +38,51 @@ void printAdjList(Node * list, int numNodes) {
     }
 }
 
-void printAdjMatrix(Node * nodes, int numNodes) {
-    std::cout << "  ";
+void printAdjMatrix(Node* nodes, int numNodes) {
+    std::cout << "\t";
     for (int i = 0; i < numNodes; i++) {
-        std::cout << nodes[i].name << " ";
+        std::cout << nodes[i].name << "\t";
     }
     std::cout << std::endl;
     for (int i = 0; i < numNodes; i++) {
-        std::cout << nodes[i].name << " ";
+        std::cout << nodes[i].name << "\t";
         for (int j = 0; j < numNodes; j++) {
-            std::cout << vectorContainsNode(nodes[i].edges, nodes[j]) << " ";
+            std::cout << vectorContainsNode(nodes[i].edges, nodes[j]) << "\t";
         }
         std::cout << std::endl;
     }
 }
 
-void breadthFirst(Node * nodes, std::string sourceName, int numNodes) {
+void printQueue(std::vector<Node*> q) {
+    std::cout << "\n\n\tQueue: ";
+    for (int i = 0; i < q.size(); i++) {
+        std::cout << q[i]->name << ' ';
+    }
+    std::cout << "\n";
+}
+
+void printTable(Node* nodes, int numNodes) {
+    std::cout << "\n\t\t\t";
+    for (int i = 0; i < numNodes; i++) {
+        std::cout << nodes[i].name << '\t';
+    }
+    std::cout << "\n\tcolor\t\t";
+    for (int i = 0; i < numNodes; i++) {
+        std::cout << nodes[i].col << '\t';
+    }
+    std::cout << "\n\tdistance\t";
+    for (int i = 0; i < numNodes; i++) {
+        std::cout << nodes[i].distance << '\t';
+    }
+    std::cout << "\n\tpredecessor\t";
+    for (int i = 0; i < numNodes; i++) {
+        if (nodes[i].predecessor != nullptr) std::cout << nodes[i].predecessor->name << '\t';
+        else std::cout << "none\t";
+    }
+
+}
+
+void breadthFirst(Node* nodes, std::string sourceName, int numNodes) {
     std::vector<Node*> queue;
     int s;
     for (int i = 0; i < numNodes; i++) {
@@ -66,19 +95,26 @@ void breadthFirst(Node * nodes, std::string sourceName, int numNodes) {
     nodes[s].distance = 0;
     queue.push_back(&nodes[s]);
     while (!queue.empty()) {
-        Node* head = queue[0];
+        s = queue.size() - 1;
+        Node* head = queue[s];
+        std::cout << "\n\thead name: " << head->name;//debug
         for (Node* n : head->edges) {
+            std::cout << "\nn->col: " << n->col;//debug
             if (n->col == white) {
                 n->col = gray;
-                n->distance = head->distance+1;
+                std::cout << "\nn->col: " << n->col;//debug
+                n->distance = head->distance + 1;
+                std::cout << "\nn->distance: " << n->distance;//debug
                 n->predecessor = head;
+                std::cout << "\nn->predecessor: " << n->predecessor->name;//debug
                 queue.push_back(n);
             }
         }
         head->col = black;
-        Node* newHead = queue.back();
-        queue.clear(); // This empties the queue of all nodes, not just the head
-        queue.push_back(newHead); 
+        queue.erase(queue.begin() + s);
+        //queue.push_back(newHead);
+        printTable(nodes, numNodes);
+        printQueue(queue);
     }
 }
 
@@ -87,11 +123,11 @@ int main() {
     while (true) {
         std::cout << divider;
         std::cout << "\tWelcome. How many nodes does this graph have?\n"
-                  << "\tEnter the number, then press enter.\n"
-                  << "\tAlternatively, type \"exit\" and press enter to quit at any time.\n"
-                  << divider;
+            << "\tEnter the number, then press enter.\n"
+            << "\tAlternatively, type \"exit\" and press enter to quit at any time.\n"
+            << divider;
         int numNodes;
-        while(!(std::cin >> numNodes)){
+        while (!(std::cin >> numNodes)) {
             std::cout << "\tInvalid value, please try again.\n";
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -102,25 +138,26 @@ int main() {
         std::cout << "Your nodes and their names:\n";
         for (int i = 0; i < numNodes; i++) {
             Node node;
-            node.name = "N" + std::to_string(i+1);
+            node.name = "N" + std::to_string(i + 1);
             nodes[i] = node;
             nodeNames[node.name] = node;
             std::cout << node.name << "\n";
         }
         std::cout << divider;
         std::cout << "\tNow, you'll need to provide information about the nodes.\n";
-            // << "\tType the name of each node, then press enter.\n"
-            // << divider;
+        // << "\tType the name of each node, then press enter.\n"
+        // << divider;
         std::cout << divider << "\tEnter information about the edges.\n\tYou only need to specify each edge once.\n";
         for (int i = 0; i < numNodes; i++) {
             std::cout << "\tHow many edges does node " << nodes[i].name << " have?\n";
             int numEdges;
-            while (!(std::cin >> numEdges) || numEdges >= numNodes || numEdges < nodes[i].edges.size()) {
+            while (!(std::cin >> numEdges) || numEdges >= numNodes) {
                 std::cout << "\tInvalid value, please try again.\n";
                 std::cin.clear();
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             }
-            for (int j = 0; j < numEdges - nodes[i].edges.size(); j++) {
+            int size = nodes[i].edges.size();
+            for (int j = 0; j < numEdges - size; j++) {
                 std::cout << "\tEnter the name of edge " << j + 1 << ".\n";
                 std::string name;
                 while (1) {
@@ -164,7 +201,7 @@ int main() {
         Node source;
         while (true) {
             std::cin >> name;
-            std::transform(name.begin(), name.end(), name.begin(), ::toupper); //lol order
+            std::transform(name.begin(), name.end(), name.begin(), ::toupper);
             if (!nodeNames.contains(name)) {
                 std::cout << "\tThat node does not exist, please try again.\n";
             }
