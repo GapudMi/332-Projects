@@ -28,7 +28,6 @@ bool operator==(const Node& a, const Node& b)
 }
 
 
-
 bool vectorContainsNode(std::vector<Node*> v, Node a) {
     for (int i = 0; i < v.size(); i++) {
         if (v[i]->name == a.name)
@@ -117,22 +116,16 @@ void breadthFirst(Node* nodes, std::string sourceName, int numNodes) {
         while (!queue.empty()) {
             s = queue.size() - 1;
             Node* head = queue[s];
-            //std::cout << "\n\thead name: " << head->name;//debug
             for (int i = 0; i < head->edges.size(); i++) {
-                //std::cout << "\nn->col: " << head->edges[i]->col;//debug
                 if (head->edges[i]->col == white) {
                     head->edges[i]->col = gray;
-                    //std::cout << "\nn->col: " << head->edges[i]->col;//debug
                     head->edges[i]->distance = head->distance + 1;
-                    //std::cout << "\nn->distance: " << head->edges[i]->distance;//debug
                     head->edges[i]->predecessor = head;
-                    //std::cout << "\nn->predecessor: " << head->edges[i]->predecessor->name;//debug
                     queue.push_back(head->edges[i]);
                 }
             }
             head->col = black;
             queue.erase(queue.begin() + s);
-            //queue.push_back(newHead);
             printTable(nodes, numNodes);
             printQueue(queue);
         }
@@ -142,6 +135,7 @@ void breadthFirst(Node* nodes, std::string sourceName, int numNodes) {
 int parseInt(std::string i) {
     int out;
     try {
+        // If valid integer, return it
         out = std::stoi(i);
         if (out < 0)
             return -1;
@@ -149,11 +143,12 @@ int parseInt(std::string i) {
             return out;
     }
     catch (std::invalid_argument & e){
+        // If output is "exit, then exit
         std::transform(i.begin(), i.end(), i.begin(),
                        ::tolower); // Convert input to lower case for case-nonsensitive input
         if (i == "exit") exit(0);
         else
-            return -1;
+            return -1; // -1 represents an error, since we can not accept negative values anyway
     }
     catch (const std::exception& unknown) {
         return -1;
@@ -177,6 +172,7 @@ int main() {
         std::string num;
         int numNodes;
         while (true) {
+            // Check if the input is "exit", or an invalid integer.
             std::cin >> num;
             numNodes = parseInt(num);
             if (numNodes < 0) {
@@ -197,6 +193,7 @@ int main() {
         std::cout << divider;
         std::cout << "\tYour nodes and their names:\n";
         for (int i = 0; i < numNodes; i++) {
+            // Give nodes predefined names
             Node node;
             std::string n= "N" + std::to_string(i + 1);
             node.name = n;
@@ -250,19 +247,7 @@ int main() {
                         break;
                 }
             }
-            /*
-            std::cin >> n;
-            if (size == 0) {
-                std::cout << "\tHow many edges does node " << nodes[i].name << " have?\n";
-                while (!(std::cin >> numEdges) || numEdges >= numNodes) {
-                    std::cout << "\tInvalid value, please try again.\n";
-                    std::cin.clear();
-                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                }
-            }
-            else {
 
-            }*/
             for (int j = size; j < numEdges + size; j++) {
                 std::cout << "\tEnter the name of the node that " << nodes[i].name << "'s edge number " << j + 1 << " connects to.\n";
                 std::string name;
@@ -277,7 +262,6 @@ int main() {
                         }
                         bool redundant = false; // i hate doing this it makes me feel so inelegant
                         for (int iter = 0; iter < nodes[i].edges.size(); iter++) {
-                            //std::cout << "\nEdge list name " << nodes[i].edges[iter]->name << " user inputted name: " << name; Debug
                             if (nodes[i].edges[iter]->name == name) {
                                 std::cout << "\tThis edge already exists, please try again.\n"; redundant = true;
                                 break;
@@ -288,7 +272,7 @@ int main() {
                             nodes[std::stoi(name.substr(1)) - 1].edges.push_back(&nodes[nodeNames[nodes[i].name]]); // add that edge to the other end
 
                             std::cout << divider;
-                            printAdjList(nodes, numNodes); //debugging? i actually like how this feels for ux
+                            printAdjList(nodes, numNodes);
                             std::cout << divider;
                             break;
                         }
@@ -303,9 +287,9 @@ int main() {
                 }
             }
         }
-        std::cout << divider << "\tAdjaceny list\n";
+        std::cout << divider << "\tAdjacency list\n";
         printAdjList(nodes, numNodes);
-        std::cout << divider << "\tAdjaceny matrix\n";
+        std::cout << divider << "\tAdjacency matrix\n";
         printAdjMatrix(nodes, numNodes);
 
         std::cout << divider << "\tWhat is the source node of your graph?\n";
