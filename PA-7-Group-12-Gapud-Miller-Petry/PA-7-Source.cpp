@@ -220,47 +220,26 @@ int main() {
         std::cout << "\tNow, you'll need to provide information about the nodes.\n";
         std::cout << divider << "\tEnter information about the edges.\n\tYou only need to specify each edge once.\n";
         for (int i = 0; i < numNodes; i++) {
-            std::cout << "\tHow many edges does node N" << (i + 1) << " have?\n";
             std::string n;
             int numEdges;
-            int size = static_cast<int>(nodes[i].edges.size());
-            if (size == 0) { // if 0 edges, do a normal prompt
-                while (true) {
-                    std::cin >> n;
-                    numEdges = parseInt(n);
-                    if (numEdges < 0) {
-                        std::cout << "\tInvalid value, please try again.\n";
-                        std::cin.clear();
-                        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                    }
-                    else if (numEdges >= numNodes) {
-                        std::cout << "\tYou cannot have more edges than nodes.\n";
-                        std::cin.clear();
-                        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                    }
-                    else
-                        break;
+            int size = (nodes[i].edges.size());
+            if (size == 1) std::cout << "\tNode " << nodes[i].name << " has " << size << " edge already. How many more do you want to add?\n";
+            else std::cout << "\tHow many edges does node N" << (i + 1) << " have?\n";
+            while (true) {
+                std::cin >> n;
+                numEdges = parseInt(n);
+                if (numEdges < 0) {
+                    std::cout << "\tInvalid value, please try again.\n";
+                    std::cin.clear();
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 }
-            }
-            else { // else ask if more edges are being added
-                if (size == 1) std::cout << "\tNode " << nodes[i].name << " has " << size << " edge already. How many more do you want to add?\n";
-                else std::cout << "\tNode " << nodes[i].name << " has " << size << " edges already. How many more do you want to add?\n";
-                while (true) {
-                    std::cin >> n;
-                    numEdges = parseInt(n);
-                    if (numEdges < 0) {
-                        std::cout << "\tInvalid value, please try again.\n";
-                        std::cin.clear();
-                        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                    }
-                    else if (numEdges + size >= numNodes) {
-                        std::cout << "\tEdges must be less than nodes.\n";
-                        std::cin.clear();
-                        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                    }
-                    else
-                        break;
+                else if (numEdges + size >= numNodes) {
+                    std::cout << "\tYou cannot have more edges than nodes.\n";
+                    std::cin.clear();
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 }
+                else
+                    break;
             }
             // connect nodes
             for (int j = size; j < numEdges + size; j++) {
