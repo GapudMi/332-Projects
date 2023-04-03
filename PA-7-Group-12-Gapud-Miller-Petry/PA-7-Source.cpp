@@ -77,8 +77,8 @@ void breadthFirst(Node * nodes, std::string sourceName, int numNodes) {
         }
         head->col = black;
         Node* newHead = queue.back();
-        queue.clear();
-        queue.push_back(newHead);
+        queue.clear(); // This empties the queue of all nodes, not just the head
+        queue.push_back(newHead); 
     }
 }
 
@@ -159,10 +159,10 @@ int main() {
 
         std::cout << divider << "\tWhat is the source node of your graph?\n";
         std::string name;
-        std::transform(name.begin(), name.end(), name.begin(), ::toupper);
         Node source;
         while (true) {
             std::cin >> name;
+            std::transform(name.begin(), name.end(), name.begin(), ::toupper); //lol order
             if (!nodeNames.contains(name)) {
                 std::cout << "\tThat node does not exist, please try again.\n";
             }
