@@ -30,7 +30,7 @@ bool operator==(const Node& a, const Node& b)
 }
 
 // check if the vector contains a given node
-bool vectorContainsNode(std::vector<Node*> v, Node &a) {
+bool vectorContainsNode(std::vector<Node*> v, Node& a) {
     for (int i = 0; i < v.size(); i++) {
         if (v[i]->name == a.name)
             return true;
@@ -77,28 +77,60 @@ void printQueue(std::vector<Node*> q) {
 // print node and its attributes
 void printTable(Node*& nodes, int numNodes) {
     std::cout << "\n     =============================================================================\n";
+    std::string div = "\t\t- - -\n";
+    int wraparound = 10;
     std::cout << "\n\t\t\t";
-    for (int i = 0; i < numNodes; i++) {
-        std::cout << nodes[i].name << '\t';
+    if (numNodes <= wraparound) {
+        for (int i = 0; i < numNodes; i++) {
+            std::cout << nodes[i].name << '\t';
+        }
+        std::cout << "\n\tcolor\t\t";
+        for (int i = 0; i < numNodes; i++) {
+            std::cout << getColorName(nodes[i].col) << '\t';
+        }
+        std::cout << "\n\tdistance\t";
+        for (int i = 0; i < numNodes; i++) {
+            std::cout << nodes[i].distance << '\t';
+        }
+        std::cout << "\n\tpredecessor\t";
+        for (int i = 0; i < numNodes; i++) {
+            if (nodes[i].predecessor != nullptr) std::cout << nodes[i].predecessor->name << '\t';
+            else std::cout << "none\t";
+        }
     }
-    std::cout << "\n\tcolor\t\t";
-    for (int i = 0; i < numNodes; i++) {
-        std::cout << getColorName(nodes[i].col) << '\t';
-    }
-    std::cout << "\n\tdistance\t";
-    for (int i = 0; i < numNodes; i++) {
-        std::cout << nodes[i].distance << '\t';
-    }
-    std::cout << "\n\tpredecessor\t";
-    for (int i = 0; i < numNodes; i++) {
-        if (nodes[i].predecessor != nullptr) std::cout << nodes[i].predecessor->name << '\t';
-        else std::cout << "none\t";
+    else { // print formatting handling for when there are many many nodes
+        int i = 0;
+        while (1) {
+            std::cout << div;
+            std::cout << "\n\t\t\t";
+            int start = i;
+            if (i == numNodes) break;
+            i += wraparound;
+            if (i > numNodes) i = numNodes;
+            for (int j = start; j < i; j++) {
+                std::cout << nodes[j].name << '\t';
+            }
+            std::cout << "\n\tcolor\t\t";
+            for (int j = start; j < i; j++) {
+                std::cout << getColorName(nodes[j].col) << '\t';
+            }
+            std::cout << "\n\tdistance\t";
+            for (int j = start; j < i; j++) {
+                std::cout << nodes[j].distance << '\t';
+            }
+            std::cout << "\n\tpredecessor\t";
+            for (int j = start; j < i; j++) {
+                if (nodes[j].predecessor != nullptr) std::cout << nodes[j].predecessor->name << '\t';
+                else std::cout << "none\t";
+            }
+            std::cout << "\n\t\t\t";
+        }
     }
 
 }
 
 // perform the breadth-first search 
-void breadthFirst(Node* nodes, const std::string &sourceName, int numNodes) {
+void breadthFirst(Node* nodes, const std::string& sourceName, int numNodes) {
     std::vector<Node*> queue;
     int s;
     // iterate through node list to find index of the source node
@@ -155,10 +187,10 @@ int parseInt(std::string i) {
         else
             return out;
     }
-    catch (std::invalid_argument & e){
+    catch (std::invalid_argument& e) {
         // If output is "exit, then exit
         std::transform(i.begin(), i.end(), i.begin(),
-                       ::tolower); // Convert input to lower case for case-nonsensitive input
+            ::tolower); // Convert input to lower case for case-nonsensitive input
         if (i == "exit") exit(0);
         else
             return -1; // -1 represents an error, since we can not accept negative values anyway
@@ -171,7 +203,7 @@ int parseInt(std::string i) {
 // check for "exit" input
 void chexit(std::string s) {
     std::transform(s.begin(), s.end(), s.begin(),
-                   ::tolower); // Convert input to lower case for case-nonsensitive input
+        ::tolower); // Convert input to lower case for case-nonsensitive input
     if (s == "exit") exit(0);
 }
 
@@ -210,7 +242,7 @@ int main() {
             // Give nodes predefined names
             // N1, N2, N3... etc. 
             Node node;
-            std::string n= "N" + std::to_string(i + 1);
+            std::string n = "N" + std::to_string(i + 1);
             node.name = n;
             nodes[i] = node;
             nodeNames[n] = i;
@@ -225,7 +257,7 @@ int main() {
             int size = static_cast<int>((nodes[i].edges.size()));
             if (size == 0) std::cout << "\tHow many edges does node N" << (i + 1) << " have?\n";
             else if (size == 1) std::cout << "\tNode " << nodes[i].name << " has " << size << " edge already. How many more do you want to add?\n";
-            else if (size+1 < numNodes) std::cout << "\tNode " << nodes[i].name << " has " << size << " edges already. How many more do you want to add?\n";
+            else if (size + 1 < numNodes) std::cout << "\tNode " << nodes[i].name << " has " << size << " edges already. How many more do you want to add?\n";
             else {
                 std::cout << "\tNode " << nodes[i].name << " has the maximum number of edges already. Moving on.\n";
                 continue;
