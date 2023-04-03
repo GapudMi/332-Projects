@@ -111,16 +111,16 @@ int main() {
         std::cout << "\tNow, you'll need to provide information about the nodes.\n";
             // << "\tType the name of each node, then press enter.\n"
             // << divider;
-        std::cout << divider << "\tEnter information about the edges.\n";
+        std::cout << divider << "\tEnter information about the edges.\n\tYou only need to specify each edge once.\n";
         for (int i = 0; i < numNodes; i++) {
             std::cout << "\tHow many edges does node " << nodes[i].name << " have?\n";
             int numEdges;
-            while (!(std::cin >> numEdges) || numEdges >= numNodes) {
+            while (!(std::cin >> numEdges) || numEdges >= numNodes || numEdges < nodes[i].edges.size()) {
                 std::cout << "\tInvalid value, please try again.\n";
                 std::cin.clear();
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             }
-            for (int j = 0; j < numEdges; j++) {
+            for (int j = 0; j < numEdges - nodes[i].edges.size(); j++) {
                 std::cout << "\tEnter the name of edge " << j + 1 << ".\n";
                 std::string name;
                 while (1) {
@@ -132,7 +132,7 @@ int main() {
                             continue;
                         }
                         bool redundant = false; // i hate doing this it makes me feel so inelegant
-                        for (int iter = 0; iter < j; iter++) {
+                        for (int iter = 0; iter < nodes[i].edges.size(); iter++) {
                             //std::cout << "\nEdge list name " << nodes[i].edges[iter]->name << " user inputted name: " << name; Debug
                             if (nodes[i].edges[iter]->name == name) {
                                 std::cout << "\tThis edge already exists, please try again.\n"; redundant = true;
@@ -140,7 +140,9 @@ int main() {
                             }
                         }
                         if (!redundant) {
-                            nodes[i].edges.push_back(&nodeNames[name]);
+                            nodes[i].edges.push_back(&nodeNames[name]); // add named edge
+                            nodes[std::stoi(name.substr(1))-1].edges.push_back(&nodeNames[nodes[i].name]); // add that edge to the other end
+                            printAdjList(nodes, numNodes); //debugging
                             break;
                         }
                         else {
