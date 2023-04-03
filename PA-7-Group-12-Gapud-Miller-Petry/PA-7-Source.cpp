@@ -35,7 +35,7 @@ bool vectorContainsNode(std::vector<Node*> v, Node a) {
 
 void printAdjList(Node*& list, int numNodes) {
     for (int i = 0; i < numNodes; i++) {
-        std::cout << list[i].name;
+        std::cout << '\t' << list[i].name;
         for (Node* n : list[i].edges) {
             std::cout << " -> " << n->name;
         }
@@ -44,13 +44,13 @@ void printAdjList(Node*& list, int numNodes) {
 }
 
 void printAdjMatrix(Node*& nodes, int numNodes) {
-    std::cout << "\t";
+    std::cout << "\t\t";
     for (int i = 0; i < numNodes; i++) {
         std::cout << nodes[i].name << "\t";
     }
     std::cout << std::endl;
     for (int i = 0; i < numNodes; i++) {
-        std::cout << nodes[i].name << "\t";
+        std::cout << '\t' << nodes[i].name << "\t";
         for (int j = 0; j < numNodes; j++) {
             std::cout << vectorContainsNode(nodes[i].edges, nodes[j]) << "\t";
         }
@@ -67,6 +67,7 @@ void printQueue(std::vector<Node*> q) {
 }
 
 void printTable(Node*& nodes, int numNodes) {
+    std::cout << "\n     =============================================================================\n";
     std::cout << "\n\t\t\t";
     for (int i = 0; i < numNodes; i++) {
         std::cout << nodes[i].name << '\t';
@@ -98,19 +99,20 @@ void breadthFirst(Node* nodes, std::string sourceName, int numNodes) {
     }
     nodes[s].col = gray;
     nodes[s].distance = 0;
-
     queue.push_back(&nodes[s]);
+    printTable(nodes, numNodes);
+    printQueue(queue);
     for (int outer = 0; outer < numNodes; outer++) {
         if (nodes[outer].col == white) {
             nodes[outer].col = gray;
             nodes[outer].distance = 0;
             queue.insert(queue.begin(), &nodes[outer]);
+            printTable(nodes, numNodes);
+            printQueue(queue);
         }
         while (!queue.empty()) {
             s = queue.size() - 1;
             Node* head = queue[s];
-            printTable(nodes, numNodes);
-            printQueue(queue);
             //std::cout << "\n\thead name: " << head->name;//debug
             for (int i = 0; i < head->edges.size(); i++) {
                 //std::cout << "\nn->col: " << head->edges[i]->col;//debug
@@ -137,7 +139,7 @@ int main() {
     std::string divider = "     =============================================================================\n";
     while (true) {
         std::cout << divider;
-        std::cout << "\tWelcome. How many nodes does this graph have?\n"
+        std::cout << "\n\tWelcome. How many nodes does this graph have?\n"
             << "\tEnter the number, then press enter.\n"
             << "\tAlternatively, type \"exit\" and press enter to quit at any time.\n"
             << divider;
@@ -150,14 +152,14 @@ int main() {
         Node* nodes = new Node[numNodes];
         std::map<std::string, int> nodeNames;
         std::cout << divider;
-        std::cout << "Your nodes and their names:\n";
+        std::cout << "\tYour nodes and their names:\n";
         for (int i = 0; i < numNodes; i++) {
             Node node;
             std::string ARGH = "N" + std::to_string(i + 1);
             node.name = ARGH;
             nodes[i] = node;
             nodeNames[ARGH] = i;
-            std::cout << node.name << "\n";
+            std::cout << '\t' << node.name << "\n";
         }
         std::cout << divider;
         std::cout << "\tNow, you'll need to provide information about the nodes.\n";
@@ -223,7 +225,9 @@ int main() {
                 }
             }
         }
+        std::cout << divider << "\tAdjaceny list\n";
         printAdjList(nodes, numNodes);
+        std::cout << divider << "\tAdjaceny matrix\n";
         printAdjMatrix(nodes, numNodes);
 
         std::cout << divider << "\tWhat is the source node of your graph?\n";
