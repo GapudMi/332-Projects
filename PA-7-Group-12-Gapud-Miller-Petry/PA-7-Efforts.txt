@@ -5,7 +5,7 @@ The program will show you all nodes and their names.
 After that, you will be prompted to enter the number of edges of the first node. Type the number, then press enter.
 You will then be prompted to specify which nodes are connected by those edges, one by one.
 Type the name of the node connected by the edge, then press enter.
-The program will then show you the current adjacency list for the graph.
+The program will then show you the current adjacency list for the graph, to assist in understanding the developing graph.
 Repeat that until all of the edges are accounted for.
 This process repeatss for each node in the array until each node has its edges specified.
 
