@@ -23,4 +23,4 @@ Any stray, disconnected nodes will be added at the beginning of the queue, small
 Group member contribution
 Miguel Gapud 1: 100% Miguel Gapud
 Justin Petry 2: 100% Justin Petry
-Abram Miller 3: 10% Abram Miller
+Abram Miller 3: 85% Abram Miller
