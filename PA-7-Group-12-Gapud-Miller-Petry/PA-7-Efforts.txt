@@ -1,0 +1,26 @@
+How to run the program?
+Opening the PA-7-Executable.exe file will bring you to a Repl page. To run the program, press the green run button or the white triangle.
+Once the program runs, you will be prompted for the number of nodes in the graph. Type your desired number, then press enter.
+The program will show you all nodes and their names.
+After that, you will be prompted to enter the number of edges of the first node. Type the number, then press enter.
+You will then be prompted to specify which nodes are connected by those edges, one by one.
+Type the name of the node connected by the edge, then press enter.
+The program will then show you the current adjacency list for the graph.
+Repeat that until all of the edges are accounted for.
+This process repeatss for each node in the array until each node has its edges specified.
+
+If a node already has edges, you will instead be prompted to specify whether you want to add edges to the existing count. Type the number of edges you want to add, then press enter.
+You will then be prompted to specify which nodes are connected by those edges, one by one.
+Type the name of the node connected by the edge, then press enter.
+The program will then show you the current adjacency list for the graph.
+Repeat that until all of the newly added edges are accounted for.
+
+Once all the nodes are specified, you will be prompted to specify the head node for a breadth-first search. Type the node name, then press enter.
+
+At that point, the breadth-first search will run with that node as the head node, and the table and queue corresponding to each step of the search will be printed. 
+Any stray, disconnected nodes will be added at the beginning of the queue, smallest first, and be treated as the head for whatever disconnected section it is associated with.
+
+Group member contribution
+Miguel Gapud 1: 100% Miguel Gapud
+Justin Petry 2: 100% Justin Petry
+Abram Miller 3: 10% Abram Miller
