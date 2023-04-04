@@ -302,7 +302,7 @@ int main() {
                             nodes[i].edges.push_back(&nodes[nodeNames[name]]); // add named edge
                             nodes[std::stoi(name.substr(1)) - 1].edges.push_back(&nodes[nodeNames[nodes[i].name]]); // add that edge to the other end
 
-                            std::cout << divider;
+                            std::cout << divider << "\tAdjacency list\n";
                             printAdjList(nodes, numNodes);
                             std::cout << divider;
                             break;
