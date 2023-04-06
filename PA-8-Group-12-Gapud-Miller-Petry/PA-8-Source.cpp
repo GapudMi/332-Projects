@@ -19,8 +19,10 @@ struct Node {
     std::string name;
     std::vector<Node*> edges;
     color col = white;
-    double distance = std::numeric_limits<double>::infinity();
+    //double distance = std::numeric_limits<double>::infinity();
     Node* predecessor = nullptr;
+    int firstTime = 0;
+    int lastTime = std::numeric_limits<int>::infinity();
 };
 
 // operator overload for Node class
@@ -39,7 +41,7 @@ bool vectorContainsNode(std::vector<Node*> v, Node& a) {
 }
 
 // print the adjacency list
-void printAdjList(Node*& list, int numNodes) {
+void printAdjList(std::vector<Node>& list, int numNodes) {
     for (int i = 0; i < numNodes; i++) {
         std::cout << '\t' << list[i].name;
         for (Node* n : list[i].edges) {
@@ -50,7 +52,7 @@ void printAdjList(Node*& list, int numNodes) {
 }
 
 // print the adjacency matrix
-void printAdjMatrix(Node*& nodes, int numNodes) {
+void printAdjMatrix(std::vector<Node>& nodes, int numNodes) {
     std::cout << "\t\t";
     for (int i = 0; i < numNodes; i++) {
         std::cout << nodes[i].name << "\t";
@@ -75,7 +77,8 @@ void printQueue(std::vector<Node*> q) {
 }
 
 // print node and its attributes
-void printTable(Node*& nodes, int numNodes) {
+void printTable(std::vector<Node>& nodes) {
+    int numNodes = static_cast<int>(nodes.size());
     std::cout << "\n     =============================================================================\n";
     std::string div = "\t\t- - -\n";
     int wraparound = 10;
@@ -88,9 +91,13 @@ void printTable(Node*& nodes, int numNodes) {
         for (int i = 0; i < numNodes; i++) {
             std::cout << getColorName(nodes[i].col) << '\t';
         }
-        std::cout << "\n\tdistance\t";
+        std::cout << "\n\tfirsttime\t";
         for (int i = 0; i < numNodes; i++) {
-            std::cout << nodes[i].distance << '\t';
+            std::cout << nodes[i].firstTime << '\t';
+        }
+        std::cout << "\n\tlasttime\t";
+        for (int i = 0; i < numNodes; i++) {
+            std::cout << nodes[i].lastTime << '\t';
         }
         std::cout << "\n\tpredecessor\t";
         for (int i = 0; i < numNodes; i++) {
@@ -114,9 +121,13 @@ void printTable(Node*& nodes, int numNodes) {
             for (int j = start; j < i; j++) {
                 std::cout << getColorName(nodes[j].col) << '\t';
             }
-            std::cout << "\n\tdistance\t";
+            std::cout << "\n\tfirsttime\t";
             for (int j = start; j < i; j++) {
-                std::cout << nodes[j].distance << '\t';
+                std::cout << nodes[j].firstTime << '\t';
+            }
+            std::cout << "\n\tlasttime\t";
+            for (int j = start; j < i; j++) {
+                std::cout << nodes[j].lastTime << '\t';
             }
             std::cout << "\n\tpredecessor\t";
             for (int j = start; j < i; j++) {
@@ -127,6 +138,31 @@ void printTable(Node*& nodes, int numNodes) {
         }
     }
 
+}
+
+void dfsVisit(Node* n, int &time) {
+    n->col = gray;
+    n->firstTime = time;
+    time++;
+    for (Node* &v : n->edges) {
+        if (v->col == white) {
+            v->predecessor = n;
+            dfsVisit(v, time);
+        }
+    }
+    n->col = black;
+    n->lastTime = time;
+    time++;
+}
+
+void depthFirst(std::vector<Node>& nodes) {
+    int time = 0;
+    for (Node &v : nodes) {
+        if (v.col == white) {
+            dfsVisit(&v, time);
+        }
+        printTable(nodes);
+    }
 }
 
 // parse integer input
@@ -187,7 +223,7 @@ int main() {
             else
                 break;
         }
-        Node* nodes = new Node[numNodes];
+        std::vector<Node> nodes;
         std::map<std::string, int> nodeNames;
         std::cout << divider;
         std::cout << "\tYour nodes and their names:\n";
@@ -197,7 +233,7 @@ int main() {
             Node node;
             std::string n = "N" + std::to_string(i + 1);
             node.name = n;
-            nodes[i] = node;
+            nodes.push_back(node);
             nodeNames[n] = i;
             std::cout << '\t' << node.name << "\n";
         }
@@ -270,7 +306,7 @@ int main() {
         std::cout << divider << "\tAdjacency matrix\n";
         printAdjMatrix(nodes, numNodes);
 
-        std::cout << divider << "\tWhat is the source node of your graph?\n";
+        /*std::cout << divider << "\tWhat is the source node of your graph?\n";
         std::string name;
         Node source;
         while (true) {
@@ -283,6 +319,7 @@ int main() {
             else {
                 break;
             }
-        }
+        }*/
+        depthFirst(nodes);
     }
 }
