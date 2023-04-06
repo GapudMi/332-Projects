@@ -78,13 +78,14 @@ void printQueue(std::vector<Node*> q) {
 // print node and its attributes
 void printTable(std::vector<Node>& nodes) {
     int numNodes = static_cast<int>(nodes.size());
-    std::cout << "\n     =============================================================================\n";
     std::string div = "\t\t- - -\n";
     int wraparound = 10;
     std::cout << "\n\t\t\t";
     if (numNodes <= wraparound) {
+        std::cout << "\n     =============================================================================\n";
+        std::cout << "\n\t\t\t\t";
         for (int i = 0; i < numNodes; i++) {
-            std::cout << nodes[i].name << '\t';
+            std::cout << nodes[i].name << "\t\t";
         }
         std::cout << "\n\tcolor\t\t";
         for (int i = 0; i < numNodes; i++) {
@@ -92,29 +93,30 @@ void printTable(std::vector<Node>& nodes) {
         }
         std::cout << "\n\tpredecessor\t";
         for (int i = 0; i < numNodes; i++) {
-            if (nodes[i].predecessor != nullptr) std::cout << nodes[i].predecessor->name << '\t';
+            if (nodes[i].predecessor != nullptr) std::cout << nodes[i].predecessor->name << "\t\t";
             else std::cout << "none\t";
         }
         std::cout << "\n\tfirsttime\t";
         for (int i = 0; i < numNodes; i++) {
-            std::cout << nodes[i].firstTime << '\t';
+            std::cout << nodes[i].firstTime << "\t\t";
         }
         std::cout << "\n\tlasttime\t";
         for (int i = 0; i < numNodes; i++) {
-            std::cout << nodes[i].lastTime << '\t';
+            std::cout << nodes[i].lastTime << "\t\t";
         }
+        std::cout << "\n";
     }
     else { // print formatting handling for when there are many many nodes
         int i = 0;
         while (true) {
             std::cout << div;
-            std::cout << "\n\t\t\t";
+            std::cout << "\n\t\t\t\t";
             int start = i;
             if (i == numNodes) break;
             i += wraparound;
             if (i > numNodes) i = numNodes;
             for (int j = start; j < i; j++) {
-                std::cout << nodes[j].name << '\t';
+                std::cout << nodes[j].name << "\t\t";
             }
             std::cout << "\n\tcolor\t\t";
             for (int j = start; j < i; j++) {
@@ -127,11 +129,11 @@ void printTable(std::vector<Node>& nodes) {
             }
             std::cout << "\n\tfirsttime\t";
             for (int j = start; j < i; j++) {
-                std::cout << nodes[j].firstTime << '\t';
+                std::cout << nodes[j].firstTime << "\t\t";
             }
             std::cout << "\n\tlasttime\t";
             for (int j = start; j < i; j++) {
-                std::cout << nodes[j].lastTime << '\t';
+                std::cout << nodes[j].lastTime << "\t\t";
             }
             std::cout << "\n\t\t\t";
         }
@@ -178,7 +180,7 @@ int parseInt(std::string i) {
     catch (std::invalid_argument& e) {
         // If output is "exit, then exit
         std::transform(i.begin(), i.end(), i.begin(),
-            ::tolower); // Convert input to lower case for case-nonsensitive input
+                       ::tolower); // Convert input to lower case for case-nonsensitive input
         if (i == "exit") exit(0);
         else
             return -1; // -1 represents an error, since we can not accept negative values anyway
@@ -191,7 +193,7 @@ int parseInt(std::string i) {
 // check for "exit" input
 void chexit(std::string s) {
     std::transform(s.begin(), s.end(), s.begin(),
-        ::tolower); // Convert input to lower case for case-nonsensitive input
+                   ::tolower); // Convert input to lower case for case-nonsensitive input
     if (s == "exit") exit(0);
 }
 
@@ -200,9 +202,9 @@ int main() {
     while (true) {
         std::cout << divider;
         std::cout << "\tWelcome. How many nodes does this graph have?\n"
-            << "\tEnter the number, then press enter.\n"
-            << "\tAlternatively, type \"exit\" and press enter to quit at any time.\n"
-            << divider;
+                  << "\tEnter the number, then press enter.\n"
+                  << "\tAlternatively, type \"exit\" and press enter to quit at any time.\n"
+                  << divider;
         std::string num;
         int numNodes;
         while (true) {
