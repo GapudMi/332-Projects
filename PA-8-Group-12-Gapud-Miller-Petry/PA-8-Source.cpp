@@ -19,7 +19,6 @@ struct Node {
     std::string name;
     std::vector<Node*> edges;
     color col = white;
-    //double distance = std::numeric_limits<double>::infinity();
     Node* predecessor = nullptr;
     int firstTime = 0;
     int lastTime = std::numeric_limits<int>::infinity();
@@ -91,6 +90,11 @@ void printTable(std::vector<Node>& nodes) {
         for (int i = 0; i < numNodes; i++) {
             std::cout << getColorName(nodes[i].col) << '\t';
         }
+        std::cout << "\n\tpredecessor\t";
+        for (int i = 0; i < numNodes; i++) {
+            if (nodes[i].predecessor != nullptr) std::cout << nodes[i].predecessor->name << '\t';
+            else std::cout << "none\t";
+        }
         std::cout << "\n\tfirsttime\t";
         for (int i = 0; i < numNodes; i++) {
             std::cout << nodes[i].firstTime << '\t';
@@ -99,15 +103,10 @@ void printTable(std::vector<Node>& nodes) {
         for (int i = 0; i < numNodes; i++) {
             std::cout << nodes[i].lastTime << '\t';
         }
-        std::cout << "\n\tpredecessor\t";
-        for (int i = 0; i < numNodes; i++) {
-            if (nodes[i].predecessor != nullptr) std::cout << nodes[i].predecessor->name << '\t';
-            else std::cout << "none\t";
-        }
     }
     else { // print formatting handling for when there are many many nodes
         int i = 0;
-        while (1) {
+        while (true) {
             std::cout << div;
             std::cout << "\n\t\t\t";
             int start = i;
@@ -121,6 +120,11 @@ void printTable(std::vector<Node>& nodes) {
             for (int j = start; j < i; j++) {
                 std::cout << getColorName(nodes[j].col) << '\t';
             }
+            std::cout << "\n\tpredecessor\t";
+            for (int j = start; j < i; j++) {
+                if (nodes[j].predecessor != nullptr) std::cout << nodes[j].predecessor->name << '\t';
+                else std::cout << "none\t";
+            }
             std::cout << "\n\tfirsttime\t";
             for (int j = start; j < i; j++) {
                 std::cout << nodes[j].firstTime << '\t';
@@ -128,11 +132,6 @@ void printTable(std::vector<Node>& nodes) {
             std::cout << "\n\tlasttime\t";
             for (int j = start; j < i; j++) {
                 std::cout << nodes[j].lastTime << '\t';
-            }
-            std::cout << "\n\tpredecessor\t";
-            for (int j = start; j < i; j++) {
-                if (nodes[j].predecessor != nullptr) std::cout << nodes[j].predecessor->name << '\t';
-                else std::cout << "none\t";
             }
             std::cout << "\n\t\t\t";
         }
@@ -306,20 +305,6 @@ int main() {
         std::cout << divider << "\tAdjacency matrix\n";
         printAdjMatrix(nodes, numNodes);
 
-        /*std::cout << divider << "\tWhat is the source node of your graph?\n";
-        std::string name;
-        Node source;
-        while (true) {
-            std::cin >> name;
-            chexit(name);
-            std::transform(name.begin(), name.end(), name.begin(), ::toupper);
-            if (!nodeNames.contains(name)) {
-                std::cout << "\tThat node does not exist, please try again.\n";
-            }
-            else {
-                break;
-            }
-        }*/
         depthFirst(nodes);
     }
 }
