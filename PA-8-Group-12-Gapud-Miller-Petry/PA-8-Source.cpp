@@ -78,14 +78,15 @@ void printQueue(std::vector<Node*> q) {
 // print node and its attributes
 void printTable(std::vector<Node>& nodes) {
     int numNodes = static_cast<int>(nodes.size());
-    std::string div = "\t\t- - -\n";
-    int wraparound = 10;
-    std::cout << "\n\t\t\t";
+    int wraparound = 8;
+    std::string div = "\n\t\t\t\t\t- - -\n";
+    std::string bigdiv = "\n     =============================================================================\n";
+
     if (numNodes <= wraparound) {
-        std::cout << "\n     =============================================================================\n";
-        std::cout << "\n\t\t\t\t";
+        std::cout << bigdiv; // ======
+        std::cout << "\n\t\t\t";
         for (int i = 0; i < numNodes; i++) {
-            std::cout << nodes[i].name << "\t\t";
+            std::cout << nodes[i].name << "\t";
         }
         std::cout << "\n\tcolor\t\t";
         for (int i = 0; i < numNodes; i++) {
@@ -93,30 +94,33 @@ void printTable(std::vector<Node>& nodes) {
         }
         std::cout << "\n\tpredecessor\t";
         for (int i = 0; i < numNodes; i++) {
-            if (nodes[i].predecessor != nullptr) std::cout << nodes[i].predecessor->name << "\t\t";
+            if (nodes[i].predecessor != nullptr) std::cout << nodes[i].predecessor->name << "\t";
             else std::cout << "none\t";
         }
         std::cout << "\n\tfirsttime\t";
         for (int i = 0; i < numNodes; i++) {
-            std::cout << nodes[i].firstTime << "\t\t";
+            std::cout << nodes[i].firstTime << "\t";
         }
         std::cout << "\n\tlasttime\t";
         for (int i = 0; i < numNodes; i++) {
-            std::cout << nodes[i].lastTime << "\t\t";
+            std::cout << nodes[i].lastTime << "\t";
         }
         std::cout << "\n";
     }
-    else { // print formatting handling for when there are many many nodes
+    // print formatting handling for when there are many (more than wraparound val) nodes
+    else { 
         int i = 0;
-        while (true) {
-            std::cout << div;
-            std::cout << "\n\t\t\t\t";
+        std::cout << bigdiv; // ======
+        while (i < numNodes) {
+
             int start = i;
-            if (i == numNodes) break;
             i += wraparound;
             if (i > numNodes) i = numNodes;
+
+            if (start > 0) std::cout << div; // - - -
+            std::cout << "\n\t\t\t";
             for (int j = start; j < i; j++) {
-                std::cout << nodes[j].name << "\t\t";
+                std::cout << nodes[j].name << "\t";
             }
             std::cout << "\n\tcolor\t\t";
             for (int j = start; j < i; j++) {
@@ -129,16 +133,16 @@ void printTable(std::vector<Node>& nodes) {
             }
             std::cout << "\n\tfirsttime\t";
             for (int j = start; j < i; j++) {
-                std::cout << nodes[j].firstTime << "\t\t";
+                std::cout << nodes[j].firstTime << "\t";
             }
             std::cout << "\n\tlasttime\t";
             for (int j = start; j < i; j++) {
-                std::cout << nodes[j].lastTime << "\t\t";
+                std::cout << nodes[j].lastTime << "\t";
             }
-            std::cout << "\n\t\t\t";
+            std::cout << "\n";
         }
     }
-
+    std::cout << "\n";
 }
 
 void dfsVisit(Node* n, int &time) {
@@ -211,7 +215,7 @@ int main() {
             // Check if the input is "exit", or an invalid integer.
             std::cin >> num;
             numNodes = parseInt(num);
-            if (numNodes < 0) {
+            if (numNodes <= 0) {
                 std::cout << "\tInvalid value, please try again.\n";
                 std::cin.clear();
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
