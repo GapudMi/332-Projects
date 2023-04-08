@@ -145,14 +145,15 @@ void printTable(std::vector<Node>& nodes) {
     std::cout << "\n";
 }
 
-void dfsVisit(Node* n, int &time) {
+void dfsVisit(Node* n, int& time, std::vector<Node>& nodes) {
     n->col = gray;
     n->firstTime = time;
     time++;
     for (Node* &v : n->edges) {
+        printTable(nodes);
         if (v->col == white) {
             v->predecessor = n;
-            dfsVisit(v, time);
+            dfsVisit(v, time, nodes);
         }
     }
     n->col = black;
@@ -162,12 +163,13 @@ void dfsVisit(Node* n, int &time) {
 
 void depthFirst(std::vector<Node>& nodes) {
     int time = 0;
-    for (Node &v : nodes) {
+    for (Node& v : nodes) {
         if (v.col == white) {
-            dfsVisit(&v, time);
+            printTable(nodes);
+            dfsVisit(&v, time, nodes);
         }
-        printTable(nodes);
     }
+    printTable(nodes);
 }
 
 // parse integer input
