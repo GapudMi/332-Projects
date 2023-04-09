@@ -9,9 +9,7 @@ The program will then show you the current adjacency list for the graph to assis
 Repeat that until all edges are accounted for.
 This process repeats for each node in the array until each node has its edges specified.
 
-Once all the nodes are specified, you will be prompted to specify the head node for a breadth-first search. Type the node name, then press enter.
-
-At that point, the depthth-first search will run with that node as the head node, and the table and queue corresponding to each step of the search will be printed.
+Once all the nodes are specified, the program will conduct a depth-first search, starting from the first not node, and the table and queue corresponding to each step of the search will be printed.
 
 Group member contribution
 Miguel Gapud 1: 100% Miguel Gapud
