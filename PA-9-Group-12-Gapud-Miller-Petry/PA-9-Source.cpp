@@ -19,24 +19,24 @@ struct Node {
     std::string name;
     std::vector<Node*> edges;
     color col = white;
-    Node* predecessor = nullptr;
+    Node *predecessor = nullptr;
     int firstTime = 0;
     int lastTime = std::numeric_limits<int>::infinity();
 };
 
 // operator overload for Node class
-bool operator==(const Node& a, const Node& b)
+bool operator==(const Node &a, const Node &b)
 {
     return a.name == b.name;
 }
 
-bool endBefore(const Node& a, const Node& b)
+bool endBefore(const Node &a, const Node &b)
 {
     return a.lastTime > b.lastTime;
 }
 
 // check if the vector contains a given node
-bool vectorContainsNode(std::vector<Node*> v, Node& a) {
+bool vectorContainsNode(std::vector<Node*> v, Node &a) {
     for (int i = 0; i < v.size(); i++) {
         if (v[i]->name == a.name)
             return true;
@@ -45,7 +45,7 @@ bool vectorContainsNode(std::vector<Node*> v, Node& a) {
 }
 
 // print the adjacency list
-void printAdjList(std::vector<Node>& list, int numNodes) {
+void printAdjList(std::vector<Node> &list, int numNodes) {
     for (int i = 0; i < numNodes; i++) {
         std::cout << '\t' << list[i].name;
         for (Node* n : list[i].edges) {
@@ -56,7 +56,7 @@ void printAdjList(std::vector<Node>& list, int numNodes) {
 }
 
 // print the adjacency matrix
-void printAdjMatrix(std::vector<Node>& nodes, int numNodes) {
+void printAdjMatrix(std::vector<Node> &nodes, int numNodes) {
     std::cout << "\t\t";
     for (int i = 0; i < numNodes; i++) {
         std::cout << nodes[i].name << "\t";
@@ -81,7 +81,7 @@ void printQueue(std::vector<Node*> q) {
 }
 
 // print node and its attributes
-void printTable(std::vector<Node>& nodes) {
+void printTable(std::vector<Node> &nodes) {
     int numNodes = static_cast<int>(nodes.size());
     int wraparound = 8;
     std::string div = "\n\t\t\t\t\t- - -\n";
@@ -150,7 +150,7 @@ void printTable(std::vector<Node>& nodes) {
     std::cout << "\n";
 }
 
-void dfsVisit(Node* n, int& time, std::vector<Node>& nodes) {
+void dfsVisit(Node *n, int &time, std::vector<Node> &nodes) {
     n->col = gray;
     n->firstTime = time;
     time++;
@@ -165,7 +165,7 @@ void dfsVisit(Node* n, int& time, std::vector<Node>& nodes) {
     time++;
 }
 
-void depthFirst(std::vector<Node>& nodes) {
+void depthFirst(std::vector<Node> &nodes) {
     int time = 0;
     for (Node& v : nodes) {
         if (v.col == white) {
@@ -174,11 +174,11 @@ void depthFirst(std::vector<Node>& nodes) {
     }
 }
 
-void dfsVisitSCC(Node* n, int& time, std::vector<Node>& nodes) {
+void dfsVisitSCC(Node *n, int &time, std::vector<Node> &nodes) {
     n->col = gray;
     n->firstTime = time;
     time++;
-    for (Node*& v : n->edges) {
+    for (Node* &v : n->edges) {
         if (v->col == white) {
             v->predecessor = n;
             std::cout << " -> " << v->name;
@@ -190,7 +190,7 @@ void dfsVisitSCC(Node* n, int& time, std::vector<Node>& nodes) {
     time++;
 }
 
-void depthFirstSCC(std::vector<Node>& nodes) {
+void depthFirstSCC(std::vector<Node> &nodes) {
     int time = 0;
     // Get the lasttime order
     std::vector <int> timeOrder;
