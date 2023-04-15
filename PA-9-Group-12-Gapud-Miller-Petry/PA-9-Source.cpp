@@ -204,7 +204,7 @@ void depthFirstSCC(std::vector<Node>& nodes) {
         for (Node& v : nodes) {
             if (timeOrder[i] == v.lastTime) {
                 if (v.col == white) {
-                    std::cout << "\n" << v.name;
+                    std::cout << "\n\t" << v.name;
                     dfsVisitSCC(&v, time, nodes);
                 }
             }
@@ -364,11 +364,10 @@ int main() {
                 }
             }
         }
-        // output resulting adjacency list and matrix
-        std::cout << divider << "\tAdjacency list\n";
-        printAdjList(nodes, numNodes);
-        std::cout << divider << "\tAdjacency matrix\n";
+        // output resulting adjacency matrix
+        std::cout << "\tAdjacency matrix\n";
         printAdjMatrix(nodes, numNodes);
+        std::cout << divider;
         depthFirst(nodes);
 
         //std::sort(transposeNodes.begin(), transposeNodes.end(), endBefore);
@@ -376,14 +375,12 @@ int main() {
         //std::sort(nodes.begin(), nodes.end(), endBefore);
         std::vector<Node> transposeNodes = transpose(nodes, numNodes);
 
-        std::cout << divider << "Transpose\n";
-
-        std::cout << "\n\tAdjacency list\n";
+        std::cout << divider << "\tTranspose Adjacency list\n";
         printAdjMatrix(transposeNodes, numNodes);
-        std::cout << divider << "\tAdjacency matrix\n";
+        std::cout << divider << "\tTranspose Adjacency matrix\n";
         printAdjList(transposeNodes, numNodes);
         std::cout << divider;
-        std::cout << "The Strongly Connected Components are: \n";
+        std::cout << "\tThe Strongly Connected Components are:";
         depthFirstSCC(transposeNodes);
         std::cout << "\n";
     }
