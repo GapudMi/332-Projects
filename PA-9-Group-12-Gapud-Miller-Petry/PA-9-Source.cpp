@@ -155,7 +155,6 @@ void dfsVisit(Node* n, int& time, std::vector<Node>& nodes) {
     n->firstTime = time;
     time++;
     for (Node*& v : n->edges) {
-        printTable(nodes);
         if (v->col == white) {
             v->predecessor = n;
             dfsVisit(v, time, nodes);
@@ -170,11 +169,47 @@ void depthFirst(std::vector<Node>& nodes) {
     int time = 0;
     for (Node& v : nodes) {
         if (v.col == white) {
-            printTable(nodes);
             dfsVisit(&v, time, nodes);
         }
     }
-    printTable(nodes);
+}
+
+void dfsVisitSCC(Node* n, int& time, std::vector<Node>& nodes) {
+    n->col = gray;
+    n->firstTime = time;
+    time++;
+    for (Node*& v : n->edges) {
+        if (v->col == white) {
+            v->predecessor = n;
+            std::cout << " -> " << v->name;
+            dfsVisitSCC(v, time, nodes);
+        }
+    }
+    n->col = black;
+    n->lastTime = time;
+    time++;
+}
+
+void depthFirstSCC(std::vector<Node>& nodes) {
+    int time = 0;
+    // Get the lasttime order
+    std::vector <int> timeOrder;
+    for (auto n : nodes) {
+        timeOrder.push_back(n.lastTime);
+    }
+    std::sort(timeOrder.begin(), timeOrder.end());
+    
+    // force it to execute in order of greatest to least lasttime
+    for (int i = timeOrder.size() - 1; i >= 0; i--) {
+        for (Node& v : nodes) {
+            if (timeOrder[i] == v.lastTime) {
+                if (v.col == white) {
+                    std::cout << "\n" << v.name;
+                    dfsVisitSCC(&v, time, nodes);
+                }
+            }
+        }
+    }
 }
 
 // parse integer input
@@ -348,8 +383,8 @@ int main() {
         std::cout << divider << "\tAdjacency matrix\n";
         printAdjList(transposeNodes, numNodes);
         std::cout << divider;
-        for (auto n : transposeNodes) {
-            std::cout << "Lasttime: " << n.lastTime << " | name: " << n.name << std::endl;
-        }
+        std::cout << "The Strongly Connected Components are: \n";
+        depthFirstSCC(transposeNodes);
+        std::cout << "\n";
     }
 }
