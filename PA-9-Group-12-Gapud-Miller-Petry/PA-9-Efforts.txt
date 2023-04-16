@@ -1,0 +1,17 @@
+How to run the program?
+Opening the PA-8-Executable.exe file will bring you to a Repl page. To run the program, press the green run button or the white triangle.
+Once the program runs, you will be prompted for the number of nodes in the graph. Type your desired number, then press enter.
+The program will show you all nodes and their names.
+After that, you will be prompted to enter the number of edges of the first node. Type the number, then press enter.
+You will then be prompted to specify which nodes are connected by those edges, one by one.
+Type the name of the node connected by the edge, then press enter.
+The program will then show you the current adjacency list for the graph to assist in understanding the developing graph.
+Repeat that until all edges are accounted for.
+This process repeats for each node in the array until each node has its edges specified.
+
+Once all the nodes ande edges are specified, the program will display the Strongly Connected Components of the entered graph.
+
+Group member contribution
+Miguel Gapud 1: 100% Miguel Gapud
+Justin Petry 2: 100% Justin Petry
+Abram Miller 3: N/A - He told us that he'd be doing his own submission for this PA.
